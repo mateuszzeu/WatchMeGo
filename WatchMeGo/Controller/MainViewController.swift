@@ -21,6 +21,7 @@ class MainViewController: UIViewController {
         healthKitService.requestAuthorization { [weak self] success in
             if success {
                 self?.loadTodaySteps()
+                self?.loadTodayStandHours()
             } else {
                 print("HealthKit authorization failed")
             }
@@ -41,6 +42,14 @@ class MainViewController: UIViewController {
             
             let progress = min(Float(steps) / Float(stepGoal), 1.0)
             self.mainView.progressView.setProgress(progress, animated: true)
+        }
+    }
+    
+    private func loadTodayStandHours() {
+        healthKitService.fetchTodayStandHours { [weak self] standHours in
+            guard let self = self else { return }
+            let goal = 12
+            self.mainView.standHoursLabel.text = "stand hours today: \(standHours)/\(goal)"
         }
     }
     

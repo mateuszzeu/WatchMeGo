@@ -13,6 +13,8 @@ class MainView: UIView {
     let setGoalButton = UIButton(type: .system)
     let progressView = UIProgressView()
     
+    let standHoursLabel = UILabel()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = .systemBackground
@@ -28,6 +30,7 @@ class MainView: UIView {
         addSubview(stepsLabel)
         addSubview(setGoalButton)
         addSubview(progressView)
+        addSubview(standHoursLabel)
         
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.text = "WatchMeGo"
@@ -49,6 +52,10 @@ class MainView: UIView {
         setGoalButton.contentEdgeInsets = UIEdgeInsets(top: 8, left: 24, bottom: 8, right: 24)
         setGoalButton.layer.cornerRadius = 12
         
+        standHoursLabel.translatesAutoresizingMaskIntoConstraints = false
+        standHoursLabel.font = UIFont.systemFont(ofSize: 18)
+        standHoursLabel.textColor = .secondaryLabel
+        
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 40),
             titleLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
@@ -61,7 +68,10 @@ class MainView: UIView {
             progressView.centerXAnchor.constraint(equalTo: centerXAnchor),
             
             setGoalButton.topAnchor.constraint(equalTo: progressView.bottomAnchor, constant: 20),
-            setGoalButton.centerXAnchor.constraint(equalTo: centerXAnchor)
+            setGoalButton.centerXAnchor.constraint(equalTo: centerXAnchor),
+            
+            standHoursLabel.topAnchor.constraint(equalTo: setGoalButton.bottomAnchor, constant: 20),
+            standHoursLabel.centerXAnchor.constraint(equalTo: centerXAnchor)
         ])
     }
 }
