@@ -38,6 +38,9 @@ class MainViewController: UIViewController {
             let stepGoal = self.getStepGoal()
             
             self.mainView.stepsLabel.text = "steps today: \(steps)/\(stepGoal)"
+            
+            let progress = min(Float(steps) / Float(stepGoal), 1.0)
+            self.mainView.progressView.setProgress(progress, animated: true)
         }
     }
     

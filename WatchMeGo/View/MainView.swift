@@ -11,6 +11,7 @@ class MainView: UIView {
     let titleLabel = UILabel()
     let stepsLabel = UILabel()
     let setGoalButton = UIButton(type: .system)
+    let progressView = UIProgressView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -26,6 +27,7 @@ class MainView: UIView {
         addSubview(titleLabel)
         addSubview(stepsLabel)
         addSubview(setGoalButton)
+        addSubview(progressView)
         
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.text = "WatchMeGo"
@@ -34,6 +36,11 @@ class MainView: UIView {
         stepsLabel.translatesAutoresizingMaskIntoConstraints = false
         stepsLabel.font = UIFont.systemFont(ofSize: 18)
         stepsLabel.textColor = .secondaryLabel
+        
+        progressView.translatesAutoresizingMaskIntoConstraints = false
+        progressView.progress = 0
+        progressView.progressTintColor = .systemGreen
+        progressView.trackTintColor = .systemGray
         
         setGoalButton.translatesAutoresizingMaskIntoConstraints = false
         setGoalButton.setTitle("Set Goal", for: .normal)
@@ -49,7 +56,11 @@ class MainView: UIView {
             stepsLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20),
             stepsLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
             
-            setGoalButton.topAnchor.constraint(equalTo: stepsLabel.bottomAnchor, constant: 20),
+            progressView.topAnchor.constraint(equalTo: stepsLabel.bottomAnchor, constant: 20),
+            progressView.widthAnchor.constraint(equalToConstant: 200),
+            progressView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            
+            setGoalButton.topAnchor.constraint(equalTo: progressView.bottomAnchor, constant: 20),
             setGoalButton.centerXAnchor.constraint(equalTo: centerXAnchor)
         ])
     }
