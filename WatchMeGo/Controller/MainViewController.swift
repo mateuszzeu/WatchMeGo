@@ -27,19 +27,42 @@ class MainViewController: UIViewController {
         }
     }
     
-    @objc func showProgress() {
-        print("test")
-    }
-    
     private func setupActions() {
-        mainView.showProgressButton.addTarget(self, action: #selector(showProgress), for: .touchUpInside)
+        mainView.setGoalButton.addTarget(self, action: #selector(setGoal), for: .touchUpInside)
     }
     
     private func loadTodaySteps() {
         healthKitService.fetchTodaySteps { [weak self] steps in
-            self?.mainView.stepsLabel.text = "steps today: \(steps)"
+            guard let self = self else { return }
+            
+            let stepGoal = self.getStepGoal()
+            
+            self.mainView.stepsLabel.text = "steps today: \(steps)/\(stepGoal)"
         }
     }
-
+    
+    func getStepGoal() -> Int {
+        let savedGoal = UserDefaults.standard.integer(forKey: "stepGoal")
+        return savedGoal == 0 ? 8000 : savedGoal
+    }
+    
+    @objc func setGoal() {
+        let alert = UIAlertController(title: "Set Step Goal", message: nil, preferredStyle: .alert)
+        alert.addTextField { textField in
+            textField.keyboardType = .numberPad
+            textField.placeholder = "Enter your daily goal"
+        }
+        
+        let saveAction = UIAlertAction(title: "Save", style: .default) { _ in
+            if let goalText = alert.textFields?.first?.text, let goal = Int(goalText) {
+                UserDefaults.standard.set(goal, forKey: "stepGoal")
+                self.loadTodaySteps()
+            }
+        }
+        
+        alert.addAction(saveAction)
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        present(alert, animated: true)
+    }
 }
 
