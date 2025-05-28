@@ -14,6 +14,7 @@ class MainView: UIView {
     let progressView = UIProgressView()
     
     let standHoursLabel = UILabel()
+    let caloriesBurnedLabel = UILabel()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -31,6 +32,7 @@ class MainView: UIView {
         addSubview(setGoalButton)
         addSubview(progressView)
         addSubview(standHoursLabel)
+        addSubview(caloriesBurnedLabel)
         
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.text = "WatchMeGo"
@@ -56,6 +58,10 @@ class MainView: UIView {
         standHoursLabel.font = UIFont.systemFont(ofSize: 18)
         standHoursLabel.textColor = .secondaryLabel
         
+        caloriesBurnedLabel.translatesAutoresizingMaskIntoConstraints = false
+        caloriesBurnedLabel.font = UIFont.systemFont(ofSize: 18)
+        caloriesBurnedLabel.textColor = .secondaryLabel
+        
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 40),
             titleLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
@@ -71,7 +77,10 @@ class MainView: UIView {
             setGoalButton.centerXAnchor.constraint(equalTo: centerXAnchor),
             
             standHoursLabel.topAnchor.constraint(equalTo: setGoalButton.bottomAnchor, constant: 20),
-            standHoursLabel.centerXAnchor.constraint(equalTo: centerXAnchor)
+            standHoursLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
+            
+            caloriesBurnedLabel.topAnchor.constraint(equalTo: standHoursLabel.bottomAnchor, constant: 20),
+            caloriesBurnedLabel.centerXAnchor.constraint(equalTo: centerXAnchor)
         ])
     }
 }

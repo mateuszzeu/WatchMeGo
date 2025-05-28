@@ -22,6 +22,7 @@ class MainViewController: UIViewController {
             if success {
                 self?.loadTodaySteps()
                 self?.loadTodayStandHours()
+                self?.loadTodayCalories()
             } else {
                 print("HealthKit authorization failed")
             }
@@ -50,6 +51,14 @@ class MainViewController: UIViewController {
             guard let self = self else { return }
             let goal = 12
             self.mainView.standHoursLabel.text = "stand hours today: \(standHours)/\(goal)"
+        }
+    }
+    
+    private func loadTodayCalories() {
+        healthKitService.fetchTodayBurnedCalories { [weak self] caloriesBurned in
+            guard let self = self else { return }
+            let goal = 800
+            self.mainView.caloriesBurnedLabel.text = "calories burned today: \(caloriesBurned)/\(goal)"
         }
     }
     
