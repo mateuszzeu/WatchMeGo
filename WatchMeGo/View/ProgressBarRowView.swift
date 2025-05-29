@@ -57,22 +57,22 @@ class ProgressBarRowView: UIView {
         valueLabel.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            iconView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            iconView.centerYAnchor.constraint(equalTo: centerYAnchor),
-            iconView.widthAnchor.constraint(equalToConstant: 24),
-            iconView.heightAnchor.constraint(equalToConstant: 24),
+            iconView.topAnchor.constraint(equalTo: topAnchor),
+            iconView.widthAnchor.constraint(equalToConstant: 20),
+            iconView.heightAnchor.constraint(equalToConstant: 20),
             
-            titleLabel.leadingAnchor.constraint(equalTo: iconView.trailingAnchor, constant: 12),
+            titleLabel.leadingAnchor.constraint(equalTo: iconView.trailingAnchor, constant: 8),
             titleLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
-
-            valueLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
-            valueLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
-            valueLabel.widthAnchor.constraint(equalToConstant: 80),
             
-            progressView.leadingAnchor.constraint(equalTo: titleLabel.trailingAnchor, constant: 12),
-            progressView.trailingAnchor.constraint(equalTo: valueLabel.leadingAnchor, constant: -12),
-            progressView.centerYAnchor.constraint(equalTo: centerYAnchor),
-            progressView.heightAnchor.constraint(equalToConstant: 8)
+            valueLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
+            valueLabel.centerYAnchor.constraint(equalTo: iconView.centerYAnchor),
+            
+            progressView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            progressView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            progressView.topAnchor.constraint(equalTo: iconView.bottomAnchor),
+            progressView.heightAnchor.constraint(equalToConstant: 10),
+            progressView.bottomAnchor.constraint(equalTo: bottomAnchor)
+
         ])
     }
 }

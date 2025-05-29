@@ -38,7 +38,7 @@ class MainView: UIView {
             
             progressCard.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 40),
             progressCard.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            progressCard.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -24)
+            progressCard.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20)
         ])
     }
 }

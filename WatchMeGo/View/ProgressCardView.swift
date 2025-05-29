@@ -46,7 +46,6 @@ class ProgressCardView: UIView {
         caloriesRow.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 24),
             titleLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
             
             stepsRow.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 24),
