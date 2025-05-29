@@ -16,7 +16,6 @@ class MainViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view = mainView
-        setupActions()
         
         healthKitService.requestAuthorization { [weak self] success in
             if success {
@@ -29,61 +28,25 @@ class MainViewController: UIViewController {
         }
     }
     
-    private func setupActions() {
-        mainView.setGoalButton.addTarget(self, action: #selector(setGoal), for: .touchUpInside)
-    }
-    
     private func loadTodaySteps() {
         healthKitService.fetchTodaySteps { [weak self] steps in
             guard let self = self else { return }
-            
-            let stepGoal = self.getStepGoal()
-            
-            self.mainView.stepsLabel.text = "steps today: \(steps)/\(stepGoal)"
-            
-            let progress = min(Float(steps) / Float(stepGoal), 1.0)
-            self.mainView.progressView.setProgress(progress, animated: true)
+            self.mainView.progressCard.setSteps(current: steps, goal: 10000)
         }
     }
     
     private func loadTodayStandHours() {
         healthKitService.fetchTodayStandHours { [weak self] standHours in
             guard let self = self else { return }
-            let goal = 12
-            self.mainView.standHoursLabel.text = "stand hours today: \(standHours)/\(goal)"
+            self.mainView.progressCard.setStandHours(current: standHours, goal: 12)
         }
     }
     
     private func loadTodayCalories() {
         healthKitService.fetchTodayBurnedCalories { [weak self] caloriesBurned in
             guard let self = self else { return }
-            let goal = 800
-            self.mainView.caloriesBurnedLabel.text = "calories burned today: \(caloriesBurned)/\(goal)"
+            self.mainView.progressCard.setCalories(current: caloriesBurned, goal: 800)
         }
-    }
-    
-    func getStepGoal() -> Int {
-        let savedGoal = UserDefaults.standard.integer(forKey: "stepGoal")
-        return savedGoal == 0 ? 8000 : savedGoal
-    }
-    
-    @objc func setGoal() {
-        let alert = UIAlertController(title: "Set Step Goal", message: nil, preferredStyle: .alert)
-        alert.addTextField { textField in
-            textField.keyboardType = .numberPad
-            textField.placeholder = "Enter your daily goal"
-        }
-        
-        let saveAction = UIAlertAction(title: "Save", style: .default) { _ in
-            if let goalText = alert.textFields?.first?.text, let goal = Int(goalText) {
-                UserDefaults.standard.set(goal, forKey: "stepGoal")
-                self.loadTodaySteps()
-            }
-        }
-        
-        alert.addAction(saveAction)
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        present(alert, animated: true)
     }
 }
 

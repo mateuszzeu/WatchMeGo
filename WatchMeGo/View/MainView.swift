@@ -9,12 +9,8 @@ import UIKit
 class MainView: UIView {
     
     let titleLabel = UILabel()
-    let stepsLabel = UILabel()
-    let setGoalButton = UIButton(type: .system)
-    let progressView = UIProgressView()
     
-    let standHoursLabel = UILabel()
-    let caloriesBurnedLabel = UILabel()
+    let progressCard = ProgressCardView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -28,59 +24,21 @@ class MainView: UIView {
     
     private func setupUI() {
         addSubview(titleLabel)
-        addSubview(stepsLabel)
-        addSubview(setGoalButton)
-        addSubview(progressView)
-        addSubview(standHoursLabel)
-        addSubview(caloriesBurnedLabel)
+        addSubview(progressCard)
         
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.text = "WatchMeGo"
         titleLabel.font = UIFont.boldSystemFont(ofSize: 32)
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        stepsLabel.translatesAutoresizingMaskIntoConstraints = false
-        stepsLabel.font = UIFont.systemFont(ofSize: 18)
-        stepsLabel.textColor = .secondaryLabel
-        
-        progressView.translatesAutoresizingMaskIntoConstraints = false
-        progressView.progress = 0
-        progressView.progressTintColor = .systemGreen
-        progressView.trackTintColor = .systemGray
-        
-        setGoalButton.translatesAutoresizingMaskIntoConstraints = false
-        setGoalButton.setTitle("Set Goal", for: .normal)
-        setGoalButton.tintColor = .systemGreen
-        setGoalButton.backgroundColor = .secondarySystemBackground
-        setGoalButton.contentEdgeInsets = UIEdgeInsets(top: 8, left: 24, bottom: 8, right: 24)
-        setGoalButton.layer.cornerRadius = 12
-        
-        standHoursLabel.translatesAutoresizingMaskIntoConstraints = false
-        standHoursLabel.font = UIFont.systemFont(ofSize: 18)
-        standHoursLabel.textColor = .secondaryLabel
-        
-        caloriesBurnedLabel.translatesAutoresizingMaskIntoConstraints = false
-        caloriesBurnedLabel.font = UIFont.systemFont(ofSize: 18)
-        caloriesBurnedLabel.textColor = .secondaryLabel
+        progressCard.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 40),
             titleLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
             
-            stepsLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20),
-            stepsLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
-            
-            progressView.topAnchor.constraint(equalTo: stepsLabel.bottomAnchor, constant: 20),
-            progressView.widthAnchor.constraint(equalToConstant: 200),
-            progressView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            
-            setGoalButton.topAnchor.constraint(equalTo: progressView.bottomAnchor, constant: 20),
-            setGoalButton.centerXAnchor.constraint(equalTo: centerXAnchor),
-            
-            standHoursLabel.topAnchor.constraint(equalTo: setGoalButton.bottomAnchor, constant: 20),
-            standHoursLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
-            
-            caloriesBurnedLabel.topAnchor.constraint(equalTo: standHoursLabel.bottomAnchor, constant: 20),
-            caloriesBurnedLabel.centerXAnchor.constraint(equalTo: centerXAnchor)
+            progressCard.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 40),
+            progressCard.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
+            progressCard.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -24)
         ])
     }
 }
