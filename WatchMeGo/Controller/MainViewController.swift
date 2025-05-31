@@ -17,11 +17,13 @@ class MainViewController: UIViewController {
         super.viewDidLoad()
         view = mainView
         
+        let refresh = UIRefreshControl()
+        refresh.addTarget(self, action: #selector(refreshData), for: .valueChanged)
+        mainView.refreshControl = refresh
+        
         healthKitService.requestAuthorization { [weak self] success in
             if success {
-                self?.loadTodaySteps()
-                self?.loadTodayStandHours()
-                self?.loadTodayCalories()
+                self?.refreshData()
             } else {
                 print("HealthKit authorization failed")
             }
@@ -46,6 +48,16 @@ class MainViewController: UIViewController {
         healthKitService.fetchTodayBurnedCalories { [weak self] caloriesBurned in
             guard let self = self else { return }
             self.mainView.progressCard.setCalories(current: caloriesBurned, goal: 800)
+        }
+    }
+    
+    @objc private func refreshData() {
+        loadTodaySteps()
+        loadTodayStandHours()
+        loadTodayCalories()
+
+        DispatchQueue.main.async {
+            self.mainView.refreshControl?.endRefreshing()
         }
     }
 }

@@ -6,10 +6,9 @@
 //
 import UIKit
 
-class MainView: UIView {
+class MainView: UIScrollView {
     
     let titleLabel = UILabel()
-    
     let progressCard = ProgressCardView()
     
     override init(frame: CGRect) {
@@ -37,8 +36,9 @@ class MainView: UIView {
             titleLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
             
             progressCard.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 40),
-            progressCard.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            progressCard.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20)
+            progressCard.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor),
+            progressCard.trailingAnchor.constraint(equalTo: layoutMarginsGuide.trailingAnchor),
+            progressCard.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -40)
         ])
     }
 }
