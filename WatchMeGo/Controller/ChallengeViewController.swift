@@ -18,7 +18,7 @@ class ChallengeViewController: UIViewController {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         view.addGestureRecognizer(tapGesture)
         
-        challengeView.setStepsGoalButton.addTarget(self, action: #selector(setStepsGoalButtonTapped), for: .touchUpInside)
+        challengeView.stepsGoalButton.button.addTarget(self, action: #selector(setStepsGoalButtonTapped), for: .touchUpInside)
     }
     
     @objc private func dismissKeyboard() {

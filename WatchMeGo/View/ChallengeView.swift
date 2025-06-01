@@ -11,7 +11,7 @@ class ChallengeView: UIView {
     
     let titleLabel = UILabel()
     let stepsGoalTextField = GoalInputView(placeholder: "Enter your step goal")
-    let setStepsGoalButton = UIButton(type: .system)
+    let stepsGoalButton = GoalButtonView(title: "Submit")
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -26,7 +26,7 @@ class ChallengeView: UIView {
     private func setupUI() {
         addSubview(titleLabel)
         addSubview(stepsGoalTextField)
-        addSubview(setStepsGoalButton)
+        addSubview(stepsGoalButton)
         
         titleLabel.text = "Set your challenge!"
         titleLabel.textAlignment = .center
@@ -35,13 +35,7 @@ class ChallengeView: UIView {
         
         stepsGoalTextField.translatesAutoresizingMaskIntoConstraints = false
         
-        setStepsGoalButton.setTitle("Set Goal", for: .normal)
-        setStepsGoalButton.backgroundColor = .systemBlue
-        setStepsGoalButton.setTitleColor(.white, for: .normal)
-        setStepsGoalButton.layer.cornerRadius = 10
-        setStepsGoalButton.contentEdgeInsets = UIEdgeInsets(top: 8, left: 18, bottom: 8, right: 18)
-        setStepsGoalButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
-        setStepsGoalButton.translatesAutoresizingMaskIntoConstraints = false
+        stepsGoalButton.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: layoutMarginsGuide.topAnchor, constant: 20),
@@ -51,10 +45,10 @@ class ChallengeView: UIView {
             stepsGoalTextField.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor),
             stepsGoalTextField.heightAnchor.constraint(equalToConstant: 40),
             
-            setStepsGoalButton.leadingAnchor.constraint(equalTo: stepsGoalTextField.trailingAnchor, constant: 30),
-            setStepsGoalButton.centerYAnchor.constraint(equalTo: stepsGoalTextField.centerYAnchor),
-            setStepsGoalButton.trailingAnchor.constraint(lessThanOrEqualTo: layoutMarginsGuide.trailingAnchor),
-            setStepsGoalButton.heightAnchor.constraint(equalTo: stepsGoalTextField.heightAnchor)
+            stepsGoalButton.leadingAnchor.constraint(equalTo: stepsGoalTextField.trailingAnchor, constant: 30),
+            stepsGoalButton.centerYAnchor.constraint(equalTo: stepsGoalTextField.centerYAnchor),
+            stepsGoalButton.trailingAnchor.constraint(lessThanOrEqualTo: layoutMarginsGuide.trailingAnchor),
+            stepsGoalButton.heightAnchor.constraint(equalTo: stepsGoalTextField.heightAnchor)
         ])
     }
 }
