@@ -31,9 +31,11 @@ class MainViewController: UIViewController {
     }
     
     private func loadTodaySteps() {
+        let stepsGoal = UserDefaults.standard.integer(forKey: "stepsGoal")
+        
         healthKitService.fetchTodaySteps { [weak self] steps in
             guard let self = self else { return }
-            self.mainView.progressCard.setSteps(current: steps, goal: 10000)
+            self.mainView.progressCard.setSteps(current: steps, goal: stepsGoal == 0 ? 10000 : stepsGoal)
         }
     }
     

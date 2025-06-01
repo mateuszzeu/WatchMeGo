@@ -10,8 +10,8 @@ import UIKit
 class ChallengeView: UIView {
     
     let titleLabel = UILabel()
-    let stepGoalTextField = UITextField()
-    let confrimButton = UIButton(type: .system)
+    let stepsGoalTextField = UITextField()
+    let setStepsGoalButton = UIButton(type: .system)
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -25,35 +25,39 @@ class ChallengeView: UIView {
     
     private func setupUI() {
         addSubview(titleLabel)
-        addSubview(stepGoalTextField)
-        addSubview(confrimButton)
+        addSubview(stepsGoalTextField)
+        addSubview(setStepsGoalButton)
         
         titleLabel.text = "Set your challenge!"
         titleLabel.textAlignment = .center
         titleLabel.font = UIFont.systemFont(ofSize: 24, weight: .medium)
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        stepGoalTextField.placeholder = "Enter your step goal"
-        stepGoalTextField.borderStyle = .roundedRect
-        stepGoalTextField.keyboardType = .numberPad
-        stepGoalTextField.translatesAutoresizingMaskIntoConstraints = false
+        stepsGoalTextField.placeholder = "Enter your step goal"
+        stepsGoalTextField.borderStyle = .roundedRect
+        stepsGoalTextField.keyboardType = .numberPad
+        stepsGoalTextField.translatesAutoresizingMaskIntoConstraints = false
         
-        confrimButton.setTitle("Set Goal", for: .normal)
-        confrimButton.titleLabel?.font = UIFont.systemFont(ofSize: 18)
-        confrimButton.translatesAutoresizingMaskIntoConstraints = false
+        setStepsGoalButton.setTitle("Set Goal", for: .normal)
+        setStepsGoalButton.backgroundColor = .systemBlue
+        setStepsGoalButton.setTitleColor(.white, for: .normal)
+        setStepsGoalButton.layer.cornerRadius = 10
+        setStepsGoalButton.contentEdgeInsets = UIEdgeInsets(top: 8, left: 18, bottom: 8, right: 18)
+        setStepsGoalButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+        setStepsGoalButton.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: layoutMarginsGuide.topAnchor, constant: 20),
             titleLabel.centerXAnchor.constraint(equalTo: layoutMarginsGuide.centerXAnchor),
             
-            stepGoalTextField.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 100),
-            stepGoalTextField.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor),
-            stepGoalTextField.trailingAnchor.constraint(equalTo: layoutMarginsGuide.trailingAnchor),
-            stepGoalTextField.heightAnchor.constraint(equalToConstant: 40),
+            stepsGoalTextField.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 100),
+            stepsGoalTextField.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor),
+            stepsGoalTextField.heightAnchor.constraint(equalToConstant: 40),
             
-            confrimButton.topAnchor.constraint(equalTo: stepGoalTextField.bottomAnchor, constant: 50),
-            confrimButton.centerXAnchor.constraint(equalTo: layoutMarginsGuide.centerXAnchor),
-            confrimButton.heightAnchor.constraint(equalToConstant: 40)
+            setStepsGoalButton.leadingAnchor.constraint(equalTo: stepsGoalTextField.trailingAnchor, constant: 30),
+            setStepsGoalButton.centerYAnchor.constraint(equalTo: stepsGoalTextField.centerYAnchor),
+            setStepsGoalButton.trailingAnchor.constraint(lessThanOrEqualTo: layoutMarginsGuide.trailingAnchor),
+            setStepsGoalButton.heightAnchor.constraint(equalTo: stepsGoalTextField.heightAnchor)
         ])
     }
 }
