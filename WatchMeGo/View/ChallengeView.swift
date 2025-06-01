@@ -10,7 +10,7 @@ import UIKit
 class ChallengeView: UIView {
     
     let titleLabel = UILabel()
-    let stepsGoalTextField = UITextField()
+    let stepsGoalTextField = GoalInputView(placeholder: "Enter your step goal")
     let setStepsGoalButton = UIButton(type: .system)
     
     override init(frame: CGRect) {
@@ -33,9 +33,6 @@ class ChallengeView: UIView {
         titleLabel.font = UIFont.systemFont(ofSize: 24, weight: .medium)
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        stepsGoalTextField.placeholder = "Enter your step goal"
-        stepsGoalTextField.borderStyle = .roundedRect
-        stepsGoalTextField.keyboardType = .numberPad
         stepsGoalTextField.translatesAutoresizingMaskIntoConstraints = false
         
         setStepsGoalButton.setTitle("Set Goal", for: .normal)

@@ -26,7 +26,7 @@ class ChallengeViewController: UIViewController {
     }
     
     @objc private func setStepsGoalButtonTapped() {
-        guard let text = challengeView.stepsGoalTextField.text,
+        guard let text = challengeView.stepsGoalTextField.textField.text,
               let goal = Int(text), goal > 0 else {
             return
         }
