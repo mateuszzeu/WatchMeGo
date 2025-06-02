@@ -40,16 +40,20 @@ class MainViewController: UIViewController {
     }
     
     private func loadTodayStandHours() {
+        let standGoal = UserDefaults.standard.integer(forKey: "standGoal")
+        
         healthKitService.fetchTodayStandHours { [weak self] standHours in
             guard let self = self else { return }
-            self.mainView.progressCard.setStandHours(current: standHours, goal: 12)
+            self.mainView.progressCard.setStandHours(current: standHours, goal: standGoal == 0 ? 12 : standGoal)
         }
     }
     
     private func loadTodayCalories() {
+        let caloriesGoal = UserDefaults.standard.integer(forKey: "caloriesGoal")
+        
         healthKitService.fetchTodayBurnedCalories { [weak self] caloriesBurned in
             guard let self = self else { return }
-            self.mainView.progressCard.setCalories(current: caloriesBurned, goal: 800)
+            self.mainView.progressCard.setCalories(current: caloriesBurned, goal: caloriesGoal == 0 ? 500 : caloriesGoal)
         }
     }
     
