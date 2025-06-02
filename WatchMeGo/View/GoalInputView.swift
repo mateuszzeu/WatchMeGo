@@ -22,16 +22,22 @@ class GoalInputView: UIView {
     private func setupUI(placeholder: String) {
         addSubview(textField)
         
+        backgroundColor = .secondarySystemBackground
+        layer.cornerRadius = 12
+        
         textField.placeholder = placeholder
-        textField.borderStyle = .roundedRect
+        textField.backgroundColor = .clear
         textField.keyboardType = .numberPad
+        textField.font = UIFont.systemFont(ofSize: 15)
         textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.borderStyle = .none
+        textField.clearButtonMode = .whileEditing
         
         NSLayoutConstraint.activate([
-            textField.topAnchor.constraint(equalTo: topAnchor),
-            textField.bottomAnchor.constraint(equalTo: bottomAnchor),
-            textField.leadingAnchor.constraint(equalTo: leadingAnchor),
-            textField.trailingAnchor.constraint(equalTo: trailingAnchor)
+            textField.topAnchor.constraint(equalTo: topAnchor, constant: 8),
+            textField.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8),
+            textField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
+            textField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12)
         ])
     }
 }

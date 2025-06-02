@@ -62,25 +62,27 @@ class ChallengeView: UIView {
             
             stepsGoalTextField.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 100),
             stepsGoalTextField.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor),
-            stepsGoalTextField.heightAnchor.constraint(equalToConstant: 40),
+            stepsGoalTextField.heightAnchor.constraint(equalToConstant: 44),
+            stepsGoalTextField.widthAnchor.constraint(equalTo: caloriesGoalTextField.widthAnchor),
             
             stepsGoalButton.leadingAnchor.constraint(equalTo: stepsGoalTextField.trailingAnchor, constant: 30),
             stepsGoalButton.centerYAnchor.constraint(equalTo: stepsGoalTextField.centerYAnchor),
             stepsGoalButton.trailingAnchor.constraint(lessThanOrEqualTo: layoutMarginsGuide.trailingAnchor),
             stepsGoalButton.heightAnchor.constraint(equalTo: stepsGoalTextField.heightAnchor),
             
-            standGoalTextField.topAnchor.constraint(equalTo: stepsGoalTextField.bottomAnchor, constant: 50),
+            standGoalTextField.topAnchor.constraint(equalTo: stepsGoalTextField.bottomAnchor, constant: 20),
             standGoalTextField.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor),
-            standGoalTextField.heightAnchor.constraint(equalToConstant: 40),
+            standGoalTextField.heightAnchor.constraint(equalToConstant: 44),
+            standGoalTextField.widthAnchor.constraint(equalTo: caloriesGoalTextField.widthAnchor),
             
             standGoalButton.leadingAnchor.constraint(equalTo: standGoalTextField.trailingAnchor, constant: 30),
             standGoalButton.centerYAnchor.constraint(equalTo: standGoalTextField.centerYAnchor),
             standGoalButton.trailingAnchor.constraint(lessThanOrEqualTo: layoutMarginsGuide.trailingAnchor),
             standGoalButton.heightAnchor.constraint(equalTo: standGoalTextField.heightAnchor),
             
-            caloriesGoalTextField.topAnchor.constraint(equalTo: standGoalTextField.bottomAnchor, constant: 50),
+            caloriesGoalTextField.topAnchor.constraint(equalTo: standGoalTextField.bottomAnchor, constant: 20),
             caloriesGoalTextField.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor),
-            caloriesGoalTextField.heightAnchor.constraint(equalToConstant: 40),
+            caloriesGoalTextField.heightAnchor.constraint(equalToConstant: 44),
             
             caloriesGoalButton.leadingAnchor.constraint(equalTo: caloriesGoalTextField.trailingAnchor, constant: 30),
             caloriesGoalButton.centerYAnchor.constraint(equalTo: caloriesGoalTextField.centerYAnchor),

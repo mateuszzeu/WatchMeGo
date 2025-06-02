@@ -22,19 +22,20 @@ class GoalButtonView: UIView {
     private func setupUI(title: String) {
         addSubview(button)
         
+        backgroundColor = .systemBlue
+        layer.cornerRadius = 12
+        clipsToBounds = true
+        
         button.setTitle(title, for: .normal)
-        button.backgroundColor = .systemBlue
         button.setTitleColor(.white, for: .normal)
-        button.layer.cornerRadius = 10
-        button.contentEdgeInsets = UIEdgeInsets(top: 8, left: 18, bottom: 8, right: 18)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
         button.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            button.topAnchor.constraint(equalTo: topAnchor),
-            button.bottomAnchor.constraint(equalTo: bottomAnchor),
-            button.leadingAnchor.constraint(equalTo: leadingAnchor),
-            button.trailingAnchor.constraint(equalTo: trailingAnchor)
+            button.topAnchor.constraint(equalTo: topAnchor, constant: 8),
+            button.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8),
+            button.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
+            button.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12)
         ])
     }
 }
