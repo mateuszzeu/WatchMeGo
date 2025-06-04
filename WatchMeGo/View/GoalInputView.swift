@@ -22,11 +22,11 @@ class GoalInputView: UIView {
     private func setupUI(placeholder: String) {
         addSubview(textField)
         
-        backgroundColor = .secondarySystemBackground
+        backgroundColor = AppStyle.Colors.backgroundSecondary
         layer.cornerRadius = 12
         
         textField.placeholder = placeholder
-        textField.backgroundColor = .clear
+        textField.backgroundColor = AppStyle.Colors.backgroundSecondary
         textField.keyboardType = .numberPad
         textField.font = UIFont.systemFont(ofSize: 15)
         textField.translatesAutoresizingMaskIntoConstraints = false

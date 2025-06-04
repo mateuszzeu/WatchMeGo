@@ -12,7 +12,7 @@ class MainViewController: UIViewController {
     
     private let mainView = MainView()
     private let healthKitService = HealthKitService()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view = mainView
@@ -28,6 +28,10 @@ class MainViewController: UIViewController {
                 print("HealthKit authorization failed")
             }
         }
+        
+        mainView.logoutButton.addTarget(self, action: #selector(logoutTapped), for: .touchUpInside)
+        
+        loadNickname()
     }
     
     private func loadTodaySteps() {
@@ -57,14 +61,27 @@ class MainViewController: UIViewController {
         }
     }
     
+    private func loadNickname() {
+        let nickname = UserDefaults.standard.string(forKey: "loggedInNickname") ?? "Unknown User"
+        mainView.nicknameLabel.text = "Hello \(nickname)"
+    }
+    
     @objc private func refreshData() {
         loadTodaySteps()
         loadTodayStandHours()
         loadTodayCalories()
-
+        
         DispatchQueue.main.async {
             self.mainView.refreshControl?.endRefreshing()
         }
+    }
+    
+    @objc private func logoutTapped() {
+        UserDefaults.standard.removeObject(forKey: "loggedInNickname")
+        let loginVC = LoginViewController()
+        let nav = UINavigationController(rootViewController: loginVC)
+        nav.modalPresentationStyle = .fullScreen
+        self.present(nav, animated: true)
     }
 }
 

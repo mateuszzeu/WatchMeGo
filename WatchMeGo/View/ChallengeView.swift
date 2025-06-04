@@ -22,7 +22,6 @@ class ChallengeView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = .systemBackground
         setupUI()
     }
     
@@ -31,6 +30,8 @@ class ChallengeView: UIView {
     }
     
     private func setupUI() {
+        backgroundColor = AppStyle.Colors.background
+        
         addSubview(titleLabel)
         
         addSubview(stepsGoalTextField)
@@ -45,6 +46,7 @@ class ChallengeView: UIView {
         titleLabel.text = "Set your challenge!"
         titleLabel.textAlignment = .center
         titleLabel.font = UIFont.systemFont(ofSize: 24, weight: .medium)
+        titleLabel.textColor = AppStyle.Colors.textPrimary
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         
         stepsGoalTextField.translatesAutoresizingMaskIntoConstraints = false

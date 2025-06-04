@@ -29,22 +29,34 @@ class ChallengeViewController: UIViewController {
     
     @objc private func setStepsGoalButtonTapped() {
         guard let text = challengeView.stepsGoalTextField.textField.text,
-              let goal = Int(text), goal > 0 else { return }
+              let goal = Int(text), goal > 0 else {
+            showAlert(title: "Invalid Input", message: "Please enter a number greater than 0.")
+            return
+        }
         
         UserDefaults.standard.set(goal, forKey: "stepsGoal")
+        showAlert(title: "Saved", message: "Your steps goal has been saved.")
     }
     
     @objc private func setStandGoalButtonTapped() {
         guard let text = challengeView.standGoalTextField.textField.text,
-              let goal = Int(text), goal > 0 else { return }
+              let goal = Int(text), goal > 0 else {
+            showAlert(title: "Invalid Input", message: "Please enter a number greater than 0.")
+            return
+        }
         
         UserDefaults.standard.set(goal, forKey: "standGoal")
+        showAlert(title: "Saved", message: "Your stand goal has been saved.")
     }
     
     @objc private func setCaloriesGoalButtonTaped() {
         guard let text = challengeView.caloriesGoalTextField.textField.text,
-              let goal = Int(text), goal > 0 else { return }
+              let goal = Int(text), goal > 0 else {
+            showAlert(title: "Invalid Input", message: "Please enter a number greater than 0.")
+            return
+        }
         
         UserDefaults.standard.set(goal, forKey: "caloriesGoal")
+        showAlert(title: "Saved", message: "Your calories goal has been saved.")
     }
 }

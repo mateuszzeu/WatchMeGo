@@ -24,7 +24,7 @@ class ProgressCardView: UIView {
     }
     
     private func setupUI() {
-        backgroundColor = .secondarySystemBackground
+        backgroundColor = AppStyle.Colors.backgroundSecondary
         layer.cornerRadius = 20
         layer.shadowColor = UIColor.black.cgColor
         layer.shadowOpacity = 0.1
@@ -39,7 +39,7 @@ class ProgressCardView: UIView {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.text = "Today's Progress"
         titleLabel.font = UIFont.boldSystemFont(ofSize: 22)
-        titleLabel.textColor = .label
+        titleLabel.textColor = AppStyle.Colors.textPrimary
         
         stepsRow.translatesAutoresizingMaskIntoConstraints = false
         standRow.translatesAutoresizingMaskIntoConstraints = false

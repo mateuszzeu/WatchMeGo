@@ -41,7 +41,7 @@ class ProgressBarRowView: UIView {
         
         titleLabel.text = title
         titleLabel.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        titleLabel.textColor = .label
+        titleLabel.textColor = AppStyle.Colors.textPrimary
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         
         progressView.progressTintColor = progressColor
@@ -52,7 +52,7 @@ class ProgressBarRowView: UIView {
         
         valueLabel.text = "0/0"
         valueLabel.font = UIFont.monospacedDigitSystemFont(ofSize: 15, weight: .medium)
-        valueLabel.textColor = .secondaryLabel
+        valueLabel.textColor = AppStyle.Colors.textSecondary
         valueLabel.textAlignment = .right
         valueLabel.translatesAutoresizingMaskIntoConstraints = false
         

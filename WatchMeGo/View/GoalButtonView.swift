@@ -22,12 +22,12 @@ class GoalButtonView: UIView {
     private func setupUI(title: String) {
         addSubview(button)
         
-        backgroundColor = .systemBlue
+        backgroundColor = AppStyle.Colors.backgroundSecondary
         layer.cornerRadius = 12
         clipsToBounds = true
         
         button.setTitle(title, for: .normal)
-        button.setTitleColor(.white, for: .normal)
+        button.setTitleColor(AppStyle.Colors.buttonText, for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
         button.translatesAutoresizingMaskIntoConstraints = false
         
