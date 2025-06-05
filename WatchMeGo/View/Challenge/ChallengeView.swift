@@ -11,14 +11,14 @@ class ChallengeView: UIView {
     
     let titleLabel = UILabel()
     
-    let stepsGoalTextField = GoalInputView(placeholder: "Enter your step goal")
-    let stepsGoalButton = GoalButtonView(title: "Submit")
+    let stepsGoalTextField = PrimaryInputView(placeholder: "Enter your step goal")
+    let stepsGoalButton = PrimaryButtonView(title: "Submit")
     
-    let standGoalTextField = GoalInputView(placeholder: "Enter your stand goal")
-    let standGoalButton = GoalButtonView(title: "Submit")
+    let standGoalTextField = PrimaryInputView(placeholder: "Enter your stand goal")
+    let standGoalButton = PrimaryButtonView(title: "Submit")
     
-    let caloriesGoalTextField = GoalInputView(placeholder: "Enter your calories goal")
-    let caloriesGoalButton = GoalButtonView(title: "Submit")
+    let caloriesGoalTextField = PrimaryInputView(placeholder: "Enter your calories goal")
+    let caloriesGoalButton = PrimaryButtonView(title: "Submit")
     
     override init(frame: CGRect) {
         super.init(frame: frame)

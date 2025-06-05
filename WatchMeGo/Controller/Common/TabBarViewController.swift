@@ -17,6 +17,9 @@ class TabBarViewController: UITabBarController {
         let challengeVC = ChallengeViewController()
         challengeVC.tabBarItem = UITabBarItem(title: "Challenge", image: UIImage(systemName: "flag.fill"), tag: 1)
         
-        viewControllers = [mainVC, challengeVC]
+        let friendsVC = FriendsViewController()
+        friendsVC.tabBarItem = UITabBarItem(title: "Friends", image: UIImage(systemName: "person.3"), tag: 2)
+        
+        viewControllers = [mainVC, challengeVC, friendsVC]
     }
 }

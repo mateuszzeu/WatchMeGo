@@ -7,7 +7,7 @@
 
 import UIKit
 
-class GoalButtonView: UIView {
+class PrimaryButtonView: UIView {
     let button = UIButton(type: .system)
     
     init(title: String) {

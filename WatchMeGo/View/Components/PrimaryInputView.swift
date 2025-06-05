@@ -7,7 +7,7 @@
 
 import UIKit
 
-class GoalInputView: UIView {
+class PrimaryInputView: UIView {
     let textField = UITextField()
     
     init(placeholder: String) {
