@@ -12,19 +12,32 @@ final class FriendService {
     static let shared = FriendService()
 
     func fetchPendingInvites() -> [Friend] {
-        guard let currentUser = UserDefaults.standard.string(forKey: "loggedInNickname") else { return [] } // replace to if let
+        guard let currentUser = UserDefaults.standard.string(forKey: "loggedInNickname") else { return [] }
         
         let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
         let request = Friend.fetchRequest()
         request.predicate = NSPredicate(format: "owner == %@ AND status == %@", currentUser, "pending")
         
         do {
-            let invites = try context.fetch(request)
-            return invites
+            return try context.fetch(request)
         } catch {
             context.rollback()
-            print("Error fetching invites: \(error)")
             return []
+        }
+    }
+    
+    func fetchAcceptedFriends() -> [Friend] {
+        guard let currentUser = UserDefaults.standard.string(forKey: "loggedInNickname") else { return [] }
+        
+        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+        let request = Friend.fetchRequest()
+        request.predicate = NSPredicate(format: "owner == %@ AND status == %@", currentUser, "accepted")
+        
+        do {
+            return try context.fetch(request)
+        } catch {
+            context.rollback()
+            return[]
         }
     }
 }

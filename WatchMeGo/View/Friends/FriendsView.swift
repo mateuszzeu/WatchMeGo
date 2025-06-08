@@ -17,6 +17,9 @@ class FriendsView: UIView {
     let pendingInvitesLabel = UILabel()
     let pendingInvitesTable = UITableView()
     
+    let acceptedFriendsLabel = UILabel()
+    let acceptedFriendsTable = UITableView()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -35,6 +38,9 @@ class FriendsView: UIView {
         
         addSubview(pendingInvitesLabel)
         addSubview(pendingInvitesTable)
+        
+        addSubview(acceptedFriendsLabel)
+        addSubview(acceptedFriendsTable)
         
         titleLabel.text = "Friends Section"
         titleLabel.textAlignment = .center
@@ -56,6 +62,15 @@ class FriendsView: UIView {
         pendingInvitesTable.separatorStyle = .none
         pendingInvitesTable.translatesAutoresizingMaskIntoConstraints = false
         
+        acceptedFriendsLabel.text = "Friends:"
+        acceptedFriendsLabel.font = UIFont.systemFont(ofSize: 17, weight: .medium)
+        acceptedFriendsLabel.textColor = AppStyle.Colors.textPrimary
+        acceptedFriendsLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        acceptedFriendsTable.backgroundColor = AppStyle.Colors.backgroundSecondary
+        acceptedFriendsTable.separatorStyle = .none
+        acceptedFriendsTable.translatesAutoresizingMaskIntoConstraints = false
+        
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: layoutMarginsGuide.topAnchor, constant: 20),
             titleLabel.centerXAnchor.constraint(equalTo: layoutMarginsGuide.centerXAnchor),
@@ -76,7 +91,18 @@ class FriendsView: UIView {
             pendingInvitesTable.topAnchor.constraint(equalTo: pendingInvitesLabel.bottomAnchor, constant: 8),
             pendingInvitesTable.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor),
             pendingInvitesTable.trailingAnchor.constraint(equalTo: layoutMarginsGuide.trailingAnchor),
-            pendingInvitesTable.heightAnchor.constraint(equalToConstant: 100)
+            pendingInvitesTable.heightAnchor.constraint(equalToConstant: 100),
+            
+            acceptedFriendsLabel.topAnchor.constraint(equalTo: pendingInvitesTable.bottomAnchor, constant: 20),
+            acceptedFriendsLabel.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor),
+            acceptedFriendsLabel.trailingAnchor.constraint(equalTo: layoutMarginsGuide.trailingAnchor),
+            acceptedFriendsLabel.heightAnchor.constraint(equalToConstant: 30),
+            
+            acceptedFriendsTable.topAnchor.constraint(equalTo: acceptedFriendsLabel.bottomAnchor, constant: 8),
+            acceptedFriendsTable.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor),
+            acceptedFriendsTable.trailingAnchor.constraint(equalTo: layoutMarginsGuide.trailingAnchor),
+            acceptedFriendsTable.bottomAnchor.constraint(lessThanOrEqualTo: layoutMarginsGuide.bottomAnchor),
+            acceptedFriendsTable.heightAnchor.constraint(equalToConstant: 150)
         ])
     }
 }
