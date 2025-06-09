@@ -17,6 +17,7 @@ extension Friend {
     }
 
     @NSManaged public var id: UUID?
+    @NSManaged public var isRival: Bool
     @NSManaged public var nickname: String?
     @NSManaged public var status: String?
     @NSManaged public var owner: String?

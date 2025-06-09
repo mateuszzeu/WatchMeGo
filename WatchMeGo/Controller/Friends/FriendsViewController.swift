@@ -17,6 +17,9 @@ class FriendsViewController: UIViewController, UITableViewDataSource, UITableVie
         super.viewDidLoad()
         view = friendsView
         
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        view.addGestureRecognizer(tapGesture)
+        
         friendsView.pendingInvitesTable.delegate = self
         friendsView.pendingInvitesTable.dataSource = self
         friendsView.pendingInvitesTable.register(InviteCell.self, forCellReuseIdentifier: "InviteCell")
@@ -26,7 +29,7 @@ class FriendsViewController: UIViewController, UITableViewDataSource, UITableVie
         
         friendsView.acceptedFriendsTable.delegate = self
         friendsView.acceptedFriendsTable.dataSource = self
-        friendsView.acceptedFriendsTable.register(UITableViewCell.self, forCellReuseIdentifier: "FriendCell")
+        friendsView.acceptedFriendsTable.register(FriendCell.self, forCellReuseIdentifier: "FriendCell")
         
         loadAcceptedFriends()
     }
@@ -108,20 +111,38 @@ class FriendsViewController: UIViewController, UITableViewDataSource, UITableVie
                 return UITableViewCell()
             }
             let invite = pendingInvites[indexPath.row]
-            cell.nicknameLabel.text = "From: \(invite.nickname ?? "Unknown")"
             
-            cell.acceptButton.tag = indexPath.row
-            cell.rejectButton.tag = indexPath.row
-            
-            cell.acceptButton.addTarget(self, action: #selector(acceptInvite(_:)), for: .touchUpInside)
-            cell.rejectButton.addTarget(self, action: #selector(rejectInvite(_:)), for: .touchUpInside)
+            cell.configure(
+                with: invite.nickname ?? "Unknown",
+                index: indexPath.row,
+                target: self,
+                acceptSelector: #selector(acceptInvite(_:)),
+                rejectSelector: #selector(rejectInvite(_:))
+            )
             
             return cell
             
         } else if tableView == friendsView.acceptedFriendsTable {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCell", for: indexPath)
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCell", for: indexPath) as? FriendCell else {
+                return UITableViewCell()
+            }
+            
             let friend = acceptedFriends[indexPath.row]
-            cell.textLabel?.text = friend.nickname ?? "Unknown"
+            let isRival = friend.isRival
+            
+            cell.configure(with: friend.nickname ?? "Unknown", isRival: isRival)
+            
+            cell.onCompeteTapped = { [weak self] in
+                self?.showAlert(
+                    title: isRival ? "Stop competing with \(friend.nickname ?? "")?" : "Compete with \(friend.nickname ?? "")?",
+                    message: isRival ? "Do you want to stop the competition?" : "Do you want to start a competition?",
+                    okTitle: isRival ? "Stop" : "Start",
+                    cancelTitle: "Cancel",
+                    okHandler: {
+                        self?.toggleRivalStatus(for: friend)
+                    }
+                )
+            }
             return cell
         }
         
@@ -138,5 +159,30 @@ class FriendsViewController: UIViewController, UITableViewDataSource, UITableVie
     private func loadAcceptedFriends() {
         acceptedFriends = FriendService.shared.fetchAcceptedFriends()
         friendsView.acceptedFriendsTable.reloadData()
+    }
+    
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
+    }
+    
+    private func showCompeteAlert(for friend: Friend) {
+        showAlert(
+            title: "Compete with \(friend.nickname ?? "this friend")?",
+            message: "Are you sure you want to start a competition?",
+            okHandler: { print("Starting competition with \(friend.nickname ?? "unknown")") }
+        )
+    }
+    
+    private func toggleRivalStatus(for friend: Friend) {
+        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+        friend.isRival.toggle()
+        
+        do {
+            try context.save()
+            loadAcceptedFriends()
+        } catch {
+            context.rollback()
+            showAlert(title: "Error", message: "Failed to update rivalry status")
+        }
     }
 }

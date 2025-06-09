@@ -58,7 +58,7 @@ class FriendsView: UIView {
         pendingInvitesLabel.textColor = AppStyle.Colors.textPrimary
         pendingInvitesLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        pendingInvitesTable.backgroundColor = AppStyle.Colors.backgroundSecondary
+        pendingInvitesTable.backgroundColor = .clear
         pendingInvitesTable.separatorStyle = .none
         pendingInvitesTable.translatesAutoresizingMaskIntoConstraints = false
         
@@ -67,7 +67,7 @@ class FriendsView: UIView {
         acceptedFriendsLabel.textColor = AppStyle.Colors.textPrimary
         acceptedFriendsLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        acceptedFriendsTable.backgroundColor = AppStyle.Colors.backgroundSecondary
+        acceptedFriendsTable.backgroundColor = .clear
         acceptedFriendsTable.separatorStyle = .none
         acceptedFriendsTable.translatesAutoresizingMaskIntoConstraints = false
         
@@ -91,7 +91,7 @@ class FriendsView: UIView {
             pendingInvitesTable.topAnchor.constraint(equalTo: pendingInvitesLabel.bottomAnchor, constant: 8),
             pendingInvitesTable.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor),
             pendingInvitesTable.trailingAnchor.constraint(equalTo: layoutMarginsGuide.trailingAnchor),
-            pendingInvitesTable.heightAnchor.constraint(equalToConstant: 100),
+            pendingInvitesTable.heightAnchor.constraint(equalToConstant: 50),
             
             acceptedFriendsLabel.topAnchor.constraint(equalTo: pendingInvitesTable.bottomAnchor, constant: 20),
             acceptedFriendsLabel.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor),
@@ -102,7 +102,7 @@ class FriendsView: UIView {
             acceptedFriendsTable.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor),
             acceptedFriendsTable.trailingAnchor.constraint(equalTo: layoutMarginsGuide.trailingAnchor),
             acceptedFriendsTable.bottomAnchor.constraint(lessThanOrEqualTo: layoutMarginsGuide.bottomAnchor),
-            acceptedFriendsTable.heightAnchor.constraint(equalToConstant: 150)
+            acceptedFriendsTable.heightAnchor.constraint(equalToConstant: 100)
         ])
     }
 }

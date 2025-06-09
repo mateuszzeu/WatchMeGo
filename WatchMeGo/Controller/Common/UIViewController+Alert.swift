@@ -8,17 +8,27 @@
 import UIKit
 
 extension UIViewController {
-    func showAlert(title: String, message: String) {
+
+    func showAlert(
+        title: String,
+        message: String,
+        okTitle: String = "OK",
+        cancelTitle: String? = nil,
+        okHandler: (() -> Void)? = nil
+    ) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
-        present(alert, animated: true)
-    }
-    
-    func showAlert(title: String, message: String, okHandler: @escaping () -> Void) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
-            okHandler()
-        }))
+        
+        let ok = UIAlertAction(title: okTitle, style: .default) { _ in
+            okHandler?()
+        }
+        alert.addAction(ok)
+        
+        if let cancelTitle = cancelTitle {
+            let cancel = UIAlertAction(title: cancelTitle, style: .cancel)
+            alert.addAction(cancel)
+        }
+
         present(alert, animated: true)
     }
 }
+

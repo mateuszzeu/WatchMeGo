@@ -47,5 +47,13 @@ class InviteCell: UITableViewCell {
             acceptButton.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
         ])
     }
+    
+    func configure(with nickname: String, index: Int, target: Any?, acceptSelector: Selector, rejectSelector: Selector) {
+        nicknameLabel.text = "From: \(nickname)"
+        acceptButton.tag = index
+        rejectButton.tag = index
+        acceptButton.addTarget(target, action: acceptSelector, for: .touchUpInside)
+        rejectButton.addTarget(target, action: rejectSelector, for: .touchUpInside)
+    }
 }
 
