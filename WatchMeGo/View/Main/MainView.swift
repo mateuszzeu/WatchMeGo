@@ -60,7 +60,7 @@ class MainView: UIScrollView {
             progressCard.trailingAnchor.constraint(equalTo: layoutMarginsGuide.trailingAnchor),
             progressCard.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -40),
             
-            logoutButton.topAnchor.constraint(equalTo: progressCard.bottomAnchor, constant: 240),
+            logoutButton.topAnchor.constraint(equalTo: progressCard.bottomAnchor, constant: 540),
             logoutButton.centerXAnchor.constraint(equalTo: centerXAnchor),
         ])
     }

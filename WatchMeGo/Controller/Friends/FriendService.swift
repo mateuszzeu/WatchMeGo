@@ -40,5 +40,21 @@ final class FriendService {
             return[]
         }
     }
+    
+    func fetchCurrentRival() -> Friend? {
+        guard let currentUser = UserDefaults.standard.string(forKey: "loggedInNickname") else { return nil }
+        
+        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+        let request = Friend.fetchRequest()
+        request.predicate = NSPredicate(format: "owner == %@ AND status == %@ AND isRival == YES", currentUser, "accepted")
+        request.fetchLimit = 1
+        
+        do {
+            return try context.fetch(request).first
+        } catch {
+            context.rollback()
+            return nil
+        }
+    }
 }
 

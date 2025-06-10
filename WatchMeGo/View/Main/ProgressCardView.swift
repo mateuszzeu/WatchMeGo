@@ -14,6 +14,8 @@ class ProgressCardView: UIView {
     private let standRow = ProgressBarRowView(icon: UIImage(systemName: "figure.stand"), title: "Stand Hours", progressColor: .systemGreen)
     private let caloriesRow = ProgressBarRowView(icon: UIImage(systemName: "flame.fill"), title: "Calories", progressColor: .systemOrange)
     
+    private let rivalLabel = UILabel()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -35,6 +37,7 @@ class ProgressCardView: UIView {
         addSubview(stepsRow)
         addSubview(standRow)
         addSubview(caloriesRow)
+        addSubview(rivalLabel)
         
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.text = "Today's Progress"
@@ -42,8 +45,12 @@ class ProgressCardView: UIView {
         titleLabel.textColor = AppStyle.Colors.textPrimary
         
         stepsRow.translatesAutoresizingMaskIntoConstraints = false
+        
         standRow.translatesAutoresizingMaskIntoConstraints = false
+        
         caloriesRow.translatesAutoresizingMaskIntoConstraints = false
+        
+        rivalLabel.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             titleLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
@@ -61,7 +68,11 @@ class ProgressCardView: UIView {
             caloriesRow.topAnchor.constraint(equalTo: standRow.bottomAnchor, constant: 12),
             caloriesRow.leadingAnchor.constraint(equalTo: stepsRow.leadingAnchor),
             caloriesRow.trailingAnchor.constraint(equalTo: stepsRow.trailingAnchor),
-            caloriesRow.heightAnchor.constraint(equalTo: stepsRow.heightAnchor)
+            caloriesRow.heightAnchor.constraint(equalTo: stepsRow.heightAnchor),
+            
+            rivalLabel.topAnchor.constraint(equalTo: caloriesRow.bottomAnchor, constant: 30),
+            rivalLabel.leadingAnchor.constraint(equalTo: stepsRow.leadingAnchor),
+            rivalLabel.trailingAnchor.constraint(equalTo: stepsRow.trailingAnchor)
         ])
     }
     
@@ -75,5 +86,11 @@ class ProgressCardView: UIView {
     
     func setCalories(current: Int, goal: Int) {
         caloriesRow.setProgress(current: current, goal: goal)
+    }
+    
+    func configureRival(name: String) {
+        rivalLabel.text = "You're competing against \(name)"
+        rivalLabel.textColor = .systemRed
+        rivalLabel.font = .systemFont(ofSize: 14, weight: .medium)
     }
 }

@@ -32,6 +32,13 @@ class MainViewController: UIViewController {
         mainView.logoutButton.addTarget(self, action: #selector(logoutTapped), for: .touchUpInside)
         
         loadNickname()
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(refreshRivalDisplay),
+            name: .rivalStatusChanged,
+            object: nil
+        )
     }
     
     private func loadTodaySteps() {
@@ -82,6 +89,18 @@ class MainViewController: UIViewController {
         let nav = UINavigationController(rootViewController: loginVC)
         nav.modalPresentationStyle = .fullScreen
         self.present(nav, animated: true)
+    }
+    
+    @objc private func refreshRivalDisplay() {
+        if let rival = FriendService.shared.fetchCurrentRival() {
+            mainView.progressCard.configureRival(name: rival.nickname ?? "Unknown")
+        } else {
+            mainView.progressCard.configureRival(name: "None")
+        }
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: .rivalStatusChanged, object: nil)
     }
 }
 

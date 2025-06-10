@@ -173,13 +173,19 @@ class FriendsViewController: UIViewController, UITableViewDataSource, UITableVie
         )
     }
     
-    private func toggleRivalStatus(for friend: Friend) {
+    private func toggleRivalStatus(for selectedFriend: Friend) {
         let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-        friend.isRival.toggle()
+        
+        for friend in acceptedFriends {
+            friend.isRival = (friend == selectedFriend) ? !friend.isRival  : false
+        }
         
         do {
             try context.save()
             loadAcceptedFriends()
+            
+            NotificationCenter.default.post(name: .rivalStatusChanged, object: nil)
+            
         } catch {
             context.rollback()
             showAlert(title: "Error", message: "Failed to update rivalry status")
