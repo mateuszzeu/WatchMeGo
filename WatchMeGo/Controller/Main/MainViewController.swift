@@ -29,8 +29,6 @@ class MainViewController: UIViewController {
             }
         }
         
-        mainView.logoutButton.addTarget(self, action: #selector(logoutTapped), for: .touchUpInside)
-        
         loadNickname()
         
         NotificationCenter.default.addObserver(
@@ -46,7 +44,7 @@ class MainViewController: UIViewController {
         
         healthKitService.fetchTodaySteps { [weak self] steps in
             guard let self = self else { return }
-            self.mainView.progressCard.setSteps(current: steps, goal: stepsGoal == 0 ? 10000 : stepsGoal)
+            self.mainView.userProgressCard.setSteps(current: steps, goal: stepsGoal == 0 ? 10000 : stepsGoal)
         }
     }
     
@@ -55,7 +53,7 @@ class MainViewController: UIViewController {
         
         healthKitService.fetchTodayStandHours { [weak self] standHours in
             guard let self = self else { return }
-            self.mainView.progressCard.setStandHours(current: standHours, goal: standGoal == 0 ? 12 : standGoal)
+            self.mainView.userProgressCard.setStandHours(current: standHours, goal: standGoal == 0 ? 12 : standGoal)
         }
     }
     
@@ -64,7 +62,7 @@ class MainViewController: UIViewController {
         
         healthKitService.fetchTodayBurnedCalories { [weak self] caloriesBurned in
             guard let self = self else { return }
-            self.mainView.progressCard.setCalories(current: caloriesBurned, goal: caloriesGoal == 0 ? 500 : caloriesGoal)
+            self.mainView.userProgressCard.setCalories(current: caloriesBurned, goal: caloriesGoal == 0 ? 500 : caloriesGoal)
         }
     }
     
@@ -83,20 +81,16 @@ class MainViewController: UIViewController {
         }
     }
     
-    @objc private func logoutTapped() {
-        UserDefaults.standard.removeObject(forKey: "loggedInNickname")
-        let loginVC = LoginViewController()
-        let nav = UINavigationController(rootViewController: loginVC)
-        nav.modalPresentationStyle = .fullScreen
-        self.present(nav, animated: true)
-    }
-    
     @objc private func refreshRivalDisplay() {
         if let rival = FriendService.shared.fetchCurrentRival() {
-            mainView.progressCard.configureRival(name: rival.nickname ?? "Unknown")
+            configureRival(name: rival.nickname ?? "Unknown")
         } else {
-            mainView.progressCard.configureRival(name: "None")
+            configureRival(name: "Rival")
         }
+    }
+    
+    func configureRival(name: String) {
+        mainView.rivalProgressCard.titleLabel.text = "\(name)'s Progress"
     }
     
     deinit {

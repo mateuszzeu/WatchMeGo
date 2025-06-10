@@ -32,6 +32,8 @@ class FriendsViewController: UIViewController, UITableViewDataSource, UITableVie
         friendsView.acceptedFriendsTable.register(FriendCell.self, forCellReuseIdentifier: "FriendCell")
         
         loadAcceptedFriends()
+        
+        friendsView.logoutButton.addTarget(self, action: #selector(logoutTapped), for: .touchUpInside)
     }
     
     @objc private func inviteTapped() {
@@ -190,5 +192,13 @@ class FriendsViewController: UIViewController, UITableViewDataSource, UITableVie
             context.rollback()
             showAlert(title: "Error", message: "Failed to update rivalry status")
         }
+    }
+    
+    @objc private func logoutTapped() {
+        UserDefaults.standard.removeObject(forKey: "loggedInNickname")
+        let loginVC = LoginViewController()
+        let nav = UINavigationController(rootViewController: loginVC)
+        nav.modalPresentationStyle = .fullScreen
+        self.present(nav, animated: true)
     }
 }

@@ -20,6 +20,8 @@ class FriendsView: UIView {
     let acceptedFriendsLabel = UILabel()
     let acceptedFriendsTable = UITableView()
     
+    let logoutButton = UIButton(type: .system)
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -41,6 +43,8 @@ class FriendsView: UIView {
         
         addSubview(acceptedFriendsLabel)
         addSubview(acceptedFriendsTable)
+        
+        addSubview(logoutButton)
         
         titleLabel.text = "Friends Section"
         titleLabel.textAlignment = .center
@@ -70,6 +74,11 @@ class FriendsView: UIView {
         acceptedFriendsTable.backgroundColor = .clear
         acceptedFriendsTable.separatorStyle = .none
         acceptedFriendsTable.translatesAutoresizingMaskIntoConstraints = false
+        
+        logoutButton.setTitle("Logout", for: .normal)
+        logoutButton.titleLabel?.font = UIFont.systemFont(ofSize: 18)
+        logoutButton.setTitleColor(AppStyle.Colors.textPrimary, for: .normal)
+        logoutButton.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: layoutMarginsGuide.topAnchor, constant: 20),
@@ -102,7 +111,10 @@ class FriendsView: UIView {
             acceptedFriendsTable.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor),
             acceptedFriendsTable.trailingAnchor.constraint(equalTo: layoutMarginsGuide.trailingAnchor),
             acceptedFriendsTable.bottomAnchor.constraint(lessThanOrEqualTo: layoutMarginsGuide.bottomAnchor),
-            acceptedFriendsTable.heightAnchor.constraint(equalToConstant: 100)
+            acceptedFriendsTable.heightAnchor.constraint(equalToConstant: 100),
+            
+            logoutButton.topAnchor.constraint(equalTo: acceptedFriendsTable.bottomAnchor, constant: 200),
+            logoutButton.centerXAnchor.constraint(equalTo: centerXAnchor),
         ])
     }
 }
