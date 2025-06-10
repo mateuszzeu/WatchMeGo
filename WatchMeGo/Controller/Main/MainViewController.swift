@@ -75,6 +75,7 @@ class MainViewController: UIViewController {
         loadTodaySteps()
         loadTodayStandHours()
         loadTodayCalories()
+        refreshRivalDisplay()
         
         DispatchQueue.main.async {
             self.mainView.refreshControl?.endRefreshing()
