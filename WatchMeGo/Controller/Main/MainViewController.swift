@@ -76,6 +76,7 @@ class MainViewController: UIViewController {
         loadTodayStandHours()
         loadTodayCalories()
         refreshRivalDisplay()
+        fetchAndSaveToFirebaseTodayProgress()
         
         DispatchQueue.main.async {
             self.mainView.refreshControl?.endRefreshing()
@@ -92,6 +93,23 @@ class MainViewController: UIViewController {
     
     func configureRival(name: String) {
         mainView.rivalProgressCard.titleLabel.text = "\(name)'s Progress"
+    }
+    
+    private func fetchAndSaveToFirebaseTodayProgress() {
+        let nickname = UserDefaults.standard.string(forKey: "loggedInNickname") ?? "Unknown"
+
+        healthKitService.fetchTodaySteps { [weak self] steps in
+            self?.healthKitService.fetchTodayStandHours { standHours in
+                self?.healthKitService.fetchTodayBurnedCalories { calories in
+                    FirestoreService.shared.saveProgress(
+                        for: nickname,
+                        steps: steps,
+                        stand: standHours,
+                        calories: calories
+                    )
+                }
+            }
+        }
     }
     
     deinit {
