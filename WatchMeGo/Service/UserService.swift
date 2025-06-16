@@ -10,7 +10,7 @@ import UIKit
 struct UserService {
     
     static func createUser(email: String, nickname: String, password: String) {
-        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+        let context = CoreDataManager.shared.context
         
         let user = User(context: context)
         user.email = email
@@ -27,7 +27,7 @@ struct UserService {
     }
     
     static func authenticateUser(nickname: String, password: String) -> Bool {
-        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+        let context = CoreDataManager.shared.context
         let request = User.fetchRequest()
         
         request.predicate = NSPredicate(format: "nickname == %@ AND password == %@", nickname, password)

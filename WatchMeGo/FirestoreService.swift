@@ -19,19 +19,18 @@ class FirestoreService {
             "calories": calories,
             "timestamp": Timestamp(date: Date())
         ]
-        db.collection("progress").document(nickname).setData(userProgress)
+        db.collection("usersProgress").document(nickname).setData(userProgress)
+    }
+    
+    func fetchProgress(for nickname: String, completion: @escaping (Int, Int, Int) -> Void) {
+        db.collection("usersProgress").document(nickname).getDocument { snapshot, error in
+            guard let data = snapshot?.data(),
+                  let steps = data["steps"] as? Int,
+                  let stand = data["stand"] as? Int,
+                  let calories = data["calories"] as? Int else {
+                return
+            }
+            completion(steps, stand, calories)
+        }
     }
 }
-
-//  func fetchProgress(for nickname: String, completion: @escaping (Int, Int, Int) -> Void) {
-//    db.collection("progress").document(nickname).getDocument { snapshot, error in
-//      guard let data = snapshot?.data(),
-//            let steps = data["steps"] as? Int,
-//            let stand = data["stand"] as? Int,
-//            let calories = data["calories"] as? Int else {
-//        return
-//      }
-//      completion(steps, stand, calories)
-//    }
-//  }
-//}

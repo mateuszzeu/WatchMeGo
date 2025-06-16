@@ -14,7 +14,7 @@ final class FriendService {
     func fetchPendingInvites() -> [Friend] {
         guard let currentUser = UserDefaults.standard.string(forKey: "loggedInNickname") else { return [] }
         
-        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+        let context = CoreDataManager.shared.context
         let request = Friend.fetchRequest()
         request.predicate = NSPredicate(format: "owner == %@ AND status == %@", currentUser, "pending")
         
@@ -29,7 +29,7 @@ final class FriendService {
     func fetchAcceptedFriends() -> [Friend] {
         guard let currentUser = UserDefaults.standard.string(forKey: "loggedInNickname") else { return [] }
         
-        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+        let context = CoreDataManager.shared.context
         let request = Friend.fetchRequest()
         request.predicate = NSPredicate(format: "owner == %@ AND status == %@", currentUser, "accepted")
         
@@ -44,7 +44,7 @@ final class FriendService {
     func fetchCurrentRival() -> Friend? {
         guard let currentUser = UserDefaults.standard.string(forKey: "loggedInNickname") else { return nil }
         
-        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+        let context = CoreDataManager.shared.context
         let request = Friend.fetchRequest()
         request.predicate = NSPredicate(format: "owner == %@ AND status == %@ AND isRival == YES", currentUser, "accepted")
         request.fetchLimit = 1

@@ -46,7 +46,7 @@ class FriendsViewController: UIViewController, UITableViewDataSource, UITableVie
             return
         }
         
-        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+        let context = CoreDataManager.shared.context
         let invite = Friend(context: context)
         invite.id = UUID()
         invite.nickname = senderNickname
@@ -68,7 +68,7 @@ class FriendsViewController: UIViewController, UITableViewDataSource, UITableVie
         let index = sender.tag
         let invite = pendingInvites[index]
         
-        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+        let context = CoreDataManager.shared.context
         invite.status = "accepted"
         
         do {
@@ -85,7 +85,7 @@ class FriendsViewController: UIViewController, UITableViewDataSource, UITableVie
         let index = sender.tag
         let invite = pendingInvites[index]
         
-        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+        let context = CoreDataManager.shared.context
         invite.status = "rejected"
         
         do {
@@ -176,7 +176,7 @@ class FriendsViewController: UIViewController, UITableViewDataSource, UITableVie
     }
     
     private func toggleRivalStatus(for selectedFriend: Friend) {
-        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+        let context = CoreDataManager.shared.context
         
         for friend in acceptedFriends {
             friend.isRival = (friend == selectedFriend) ? !friend.isRival  : false

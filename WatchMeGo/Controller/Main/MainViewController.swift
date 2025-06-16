@@ -76,7 +76,8 @@ class MainViewController: UIViewController {
         loadTodayStandHours()
         loadTodayCalories()
         refreshRivalDisplay()
-        fetchAndSaveToFirebaseTodayProgress()
+        loadRivalProgressFromFirestore()
+        saveProgressToFirestore()
         
         DispatchQueue.main.async {
             self.mainView.refreshControl?.endRefreshing()
@@ -92,12 +93,14 @@ class MainViewController: UIViewController {
     }
     
     func configureRival(name: String) {
-        mainView.rivalProgressCard.titleLabel.text = "\(name)'s Progress"
+        DispatchQueue.main.async {
+            self.mainView.rivalProgressCard.titleLabel.text = "\(name)'s Progress"
+        }
     }
     
-    private func fetchAndSaveToFirebaseTodayProgress() {
+    private func saveProgressToFirestore() {
         let nickname = UserDefaults.standard.string(forKey: "loggedInNickname") ?? "Unknown"
-
+        
         healthKitService.fetchTodaySteps { [weak self] steps in
             self?.healthKitService.fetchTodayStandHours { standHours in
                 self?.healthKitService.fetchTodayBurnedCalories { calories in
@@ -108,6 +111,19 @@ class MainViewController: UIViewController {
                         calories: calories
                     )
                 }
+            }
+        }
+    }
+    
+    private func loadRivalProgressFromFirestore() {
+        guard let rival = FriendService.shared.fetchCurrentRival(),
+              let nickname = rival.nickname else { return }
+        
+        FirestoreService.shared.fetchProgress(for: nickname) { [weak self] steps, stand, calories in
+            DispatchQueue.main.async {
+                self?.mainView.rivalProgressCard.setSteps(current: steps, goal: 10000)
+                self?.mainView.rivalProgressCard.setStandHours(current: stand, goal: 10)
+                self?.mainView.rivalProgressCard.setCalories(current: calories, goal: 800)
             }
         }
     }
