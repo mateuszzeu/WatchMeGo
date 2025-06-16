@@ -69,7 +69,14 @@ class FriendsViewController: UIViewController, UITableViewDataSource, UITableVie
         let invite = pendingInvites[index]
         
         let context = CoreDataManager.shared.context
+        
         invite.status = "accepted"
+        
+        let invitedFriend = Friend(context: context)
+        invitedFriend.id = UUID()
+        invitedFriend.nickname = invite.owner
+        invitedFriend.owner = invite.nickname
+        invitedFriend.status = "accepted"
         
         do {
             try context.save()
