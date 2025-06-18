@@ -8,24 +8,27 @@
 import UIKit
 
 class FriendCell: UITableViewCell {
+    
     let nicknameLabel = UILabel()
     let competeButton = UIButton(type: .system)
-    
+    let deleteButton = UIButton(type: .system)
+
     var onCompeteTapped: (() -> Void)?
-    
+    var onDeleteTapped: (() -> Void)?
+
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupUI()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     private func setupUI() {
-        
         contentView.addSubview(nicknameLabel)
         contentView.addSubview(competeButton)
+        contentView.addSubview(deleteButton)
         
         nicknameLabel.font = .systemFont(ofSize: 16)
         nicknameLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -35,19 +38,31 @@ class FriendCell: UITableViewCell {
         competeButton.addTarget(self, action: #selector(competeTapped), for: .touchUpInside)
         competeButton.translatesAutoresizingMaskIntoConstraints = false
         
+        deleteButton.setImage(UIImage(systemName: "trash"), for: .normal)
+        deleteButton.tintColor = .gray 
+        deleteButton.addTarget(self, action: #selector(deleteTapped), for: .touchUpInside)
+        deleteButton.translatesAutoresizingMaskIntoConstraints = false
+        
         NSLayoutConstraint.activate([
             nicknameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             nicknameLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             
-            competeButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            deleteButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            deleteButton.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            
+            competeButton.trailingAnchor.constraint(equalTo: deleteButton.leadingAnchor, constant: -16),
             competeButton.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
         ])
     }
-    
+
     @objc private func competeTapped() {
         onCompeteTapped?()
     }
-    
+
+    @objc private func deleteTapped() {
+        onDeleteTapped?()
+    }
+
     func configure(with nickname: String, isRival: Bool) {
         nicknameLabel.text = nickname
         competeButton.tintColor = isRival ? .red : .gray

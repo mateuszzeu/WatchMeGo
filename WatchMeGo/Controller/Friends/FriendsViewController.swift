@@ -152,6 +152,17 @@ class FriendsViewController: UIViewController, UITableViewDataSource, UITableVie
                     }
                 )
             }
+            
+            cell.onDeleteTapped = { [weak self] in
+                self?.showAlert(
+                    title: "Delete \(friend.nickname ?? "friend")?",
+                    message: "Are you sure you want to remove this user from your friends list?",
+                    okTitle: "Delete",
+                    cancelTitle: "Cancel"
+                ) {
+                    self?.deleteFriend(friend)
+                }
+            }
             return cell
         }
         
@@ -198,6 +209,35 @@ class FriendsViewController: UIViewController, UITableViewDataSource, UITableVie
         } catch {
             context.rollback()
             showAlert(title: "Error", message: "Failed to update rivalry status")
+        }
+    }
+    
+    private func deleteFriend(_ friend: Friend) {
+        let context = CoreDataManager.shared.context
+        context.delete(friend)
+
+        if let currentUser = UserDefaults.standard.string(forKey: "loggedInNickname"),
+           let otherNickname = friend.nickname {
+            
+            let mirrorRequest = Friend.fetchRequest()
+            mirrorRequest.predicate = NSPredicate(
+                format: "owner == %@ AND nickname == %@ AND status == %@", otherNickname, currentUser, "accepted"
+            )
+            
+            if let mirror = try? context.fetch(mirrorRequest).first {
+                context.delete(mirror)
+            }
+        }
+
+        do {
+            try context.save()
+            if friend.isRival {
+                NotificationCenter.default.post(name: .rivalStatusChanged, object: nil)
+            }
+            loadAcceptedFriends()
+        } catch {
+            context.rollback()
+            showAlert(title: "Error", message: "Failed to delete friend.")
         }
     }
     
