@@ -22,22 +22,25 @@ class PrimaryInputView: UIView {
     private func setupUI(placeholder: String) {
         addSubview(textField)
         
-        backgroundColor = AppStyle.Colors.backgroundSecondary
+        backgroundColor = .clear
         layer.cornerRadius = 12
+        layer.borderWidth = 1
+        layer.borderColor = AppStyle.Colors.border.cgColor
         
         textField.placeholder = placeholder
-        textField.backgroundColor = AppStyle.Colors.backgroundSecondary
+        textField.backgroundColor = .clear
         textField.keyboardType = .numberPad
-        textField.font = UIFont.systemFont(ofSize: 15)
-        textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.font = UIFont.systemFont(ofSize: 14)
+        textField.textColor = AppStyle.Colors.textPrimary
         textField.borderStyle = .none
         textField.clearButtonMode = .whileEditing
+        textField.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            textField.topAnchor.constraint(equalTo: topAnchor, constant: 8),
-            textField.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8),
-            textField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
-            textField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12)
+            textField.topAnchor.constraint(equalTo: topAnchor, constant: 10),
+            textField.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10),
+            textField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 14),
+            textField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -14)
         ])
     }
 }

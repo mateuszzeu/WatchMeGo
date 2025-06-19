@@ -84,14 +84,16 @@ class FriendsView: UIView {
             titleLabel.topAnchor.constraint(equalTo: layoutMarginsGuide.topAnchor, constant: 20),
             titleLabel.centerXAnchor.constraint(equalTo: layoutMarginsGuide.centerXAnchor),
             
-            friendsNicknameTextField.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 100),
+            friendsNicknameTextField.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 60),
             friendsNicknameTextField.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor),
             friendsNicknameTextField.heightAnchor.constraint(equalToConstant: 44),
+            friendsNicknameTextField.widthAnchor.constraint(equalToConstant: 220),
             
             inviteButton.leadingAnchor.constraint(equalTo: friendsNicknameTextField.trailingAnchor, constant: 30),
             inviteButton.centerYAnchor.constraint(equalTo: friendsNicknameTextField.centerYAnchor),
             inviteButton.trailingAnchor.constraint(lessThanOrEqualTo: layoutMarginsGuide.trailingAnchor),
             inviteButton.heightAnchor.constraint(equalTo: friendsNicknameTextField.heightAnchor),
+            inviteButton.widthAnchor.constraint(equalToConstant: 80),
             
             pendingInvitesLabel.topAnchor.constraint(equalTo: inviteButton.bottomAnchor, constant: 20),
             pendingInvitesLabel.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor),
@@ -113,7 +115,7 @@ class FriendsView: UIView {
             acceptedFriendsTable.bottomAnchor.constraint(lessThanOrEqualTo: layoutMarginsGuide.bottomAnchor),
             acceptedFriendsTable.heightAnchor.constraint(equalToConstant: 100),
             
-            logoutButton.topAnchor.constraint(equalTo: acceptedFriendsTable.bottomAnchor, constant: 200),
+            logoutButton.topAnchor.constraint(equalTo: acceptedFriendsTable.bottomAnchor, constant: 250),
             logoutButton.centerXAnchor.constraint(equalTo: centerXAnchor),
         ])
     }

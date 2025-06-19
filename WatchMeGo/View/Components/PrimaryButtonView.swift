@@ -22,20 +22,22 @@ class PrimaryButtonView: UIView {
     private func setupUI(title: String) {
         addSubview(button)
         
-        backgroundColor = AppStyle.Colors.backgroundSecondary
-        layer.cornerRadius = 12
-        clipsToBounds = true
+        backgroundColor = .clear
         
         button.setTitle(title, for: .normal)
-        button.setTitleColor(AppStyle.Colors.buttonText, for: .normal)
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+        button.setTitleColor(.white, for: .normal)
+        button.backgroundColor = AppStyle.Colors.buttonText
+        button.layer.cornerRadius = 12
+        button.clipsToBounds = true
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 15)
         button.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            button.topAnchor.constraint(equalTo: topAnchor, constant: 8),
-            button.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8),
-            button.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
-            button.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12)
+            button.topAnchor.constraint(equalTo: topAnchor),
+            button.bottomAnchor.constraint(equalTo: bottomAnchor),
+            button.leadingAnchor.constraint(equalTo: leadingAnchor),
+            button.trailingAnchor.constraint(equalTo: trailingAnchor),
+            button.heightAnchor.constraint(equalToConstant: 44)
         ])
     }
 }
