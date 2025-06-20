@@ -20,6 +20,12 @@ class ChallengeView: UIView {
     let caloriesGoalTextField = PrimaryInputView(placeholder: "Enter your calories goal")
     let caloriesGoalButton = PrimaryButtonView(title: "Submit")
     
+    let podiumContainer = UIView()
+    let goldView = PodiumView(place: 0, name: "Lizunka", days: 9)
+    let silverView = PodiumView(place: 1, name: "Kamilka", days: 6)
+    let bronzeView = PodiumView(place: 2, name: "Martynka", days: 3)
+
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -43,6 +49,11 @@ class ChallengeView: UIView {
         addSubview(caloriesGoalTextField)
         addSubview(caloriesGoalButton)
         
+        addSubview(podiumContainer)
+        podiumContainer.addSubview(goldView)
+        podiumContainer.addSubview(silverView)
+        podiumContainer.addSubview(bronzeView)
+        
         titleLabel.text = "Set your challenge!"
         titleLabel.textAlignment = .center
         titleLabel.font = UIFont.systemFont(ofSize: 24, weight: .medium)
@@ -57,6 +68,17 @@ class ChallengeView: UIView {
         
         caloriesGoalTextField.translatesAutoresizingMaskIntoConstraints = false
         caloriesGoalButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        podiumContainer.backgroundColor = .clear
+        podiumContainer.layer.shadowColor = UIColor.black.cgColor
+        podiumContainer.layer.shadowOpacity = 0.2
+        podiumContainer.layer.shadowOffset = CGSize(width: 3, height: 3)
+        podiumContainer.layer.shadowRadius = 5
+        podiumContainer.translatesAutoresizingMaskIntoConstraints = false
+        
+        goldView.translatesAutoresizingMaskIntoConstraints = false
+        silverView.translatesAutoresizingMaskIntoConstraints = false
+        bronzeView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: layoutMarginsGuide.topAnchor, constant: 20),
@@ -91,6 +113,26 @@ class ChallengeView: UIView {
             caloriesGoalButton.centerYAnchor.constraint(equalTo: caloriesGoalTextField.centerYAnchor),
             caloriesGoalButton.trailingAnchor.constraint(equalTo: layoutMarginsGuide.trailingAnchor),
             caloriesGoalButton.heightAnchor.constraint(equalTo: caloriesGoalTextField.heightAnchor),
+            
+            podiumContainer.topAnchor.constraint(equalTo: caloriesGoalButton.bottomAnchor, constant: 40),
+            podiumContainer.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor),
+            podiumContainer.trailingAnchor.constraint(equalTo: layoutMarginsGuide.trailingAnchor),
+
+            goldView.topAnchor.constraint(equalTo: podiumContainer.topAnchor),
+            goldView.leadingAnchor.constraint(equalTo: podiumContainer.leadingAnchor),
+            goldView.trailingAnchor.constraint(equalTo: podiumContainer.trailingAnchor),
+            goldView.heightAnchor.constraint(equalToConstant: 90),
+
+            silverView.topAnchor.constraint(equalTo: goldView.bottomAnchor, constant: 16),
+            silverView.leadingAnchor.constraint(equalTo: podiumContainer.leadingAnchor),
+            silverView.trailingAnchor.constraint(equalTo: podiumContainer.trailingAnchor),
+            silverView.heightAnchor.constraint(equalToConstant: 90),
+
+            bronzeView.topAnchor.constraint(equalTo: silverView.bottomAnchor, constant: 16),
+            bronzeView.leadingAnchor.constraint(equalTo: podiumContainer.leadingAnchor),
+            bronzeView.trailingAnchor.constraint(equalTo: podiumContainer.trailingAnchor),
+            bronzeView.heightAnchor.constraint(equalToConstant: 90),
+            bronzeView.bottomAnchor.constraint(equalTo: podiumContainer.bottomAnchor)
         ])
     }
 }

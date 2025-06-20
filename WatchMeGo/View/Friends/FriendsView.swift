@@ -34,7 +34,7 @@ class FriendsView: UIView {
     }
     
     private func setupUI() {
-        backgroundColor = AppStyle.Colors.background
+        backgroundColor = AppStyle.Colors.backgroundSecondary
         
         addSubview(titleLabel)
         addSubview(friendsNicknameTextField)
@@ -77,7 +77,7 @@ class FriendsView: UIView {
         
         pendingInvitesTable.layer.cornerRadius = 12
         pendingInvitesTable.layer.masksToBounds = true
-        pendingInvitesTable.backgroundColor = .clear
+        //pendingInvitesTable.backgroundColor = AppStyle.Colors.backgroundSecondary
         pendingInvitesTable.separatorStyle = .none
         pendingInvitesTable.translatesAutoresizingMaskIntoConstraints = false
         
@@ -91,12 +91,11 @@ class FriendsView: UIView {
         acceptedFriendsContainer.layer.shadowOpacity = 0.2
         acceptedFriendsContainer.layer.shadowOffset = CGSize(width: 3, height: 3)
         acceptedFriendsContainer.layer.shadowRadius = 5
-        acceptedFriendsContainer.layer.masksToBounds = false
         acceptedFriendsContainer.translatesAutoresizingMaskIntoConstraints = false
         
         acceptedFriendsTable.layer.cornerRadius = 12
         acceptedFriendsTable.layer.masksToBounds = true
-        acceptedFriendsTable.backgroundColor = .clear
+        //acceptedFriendsTable.backgroundColor = AppStyle.Colors.backgroundSecondary
         acceptedFriendsTable.separatorStyle = .none
         acceptedFriendsTable.translatesAutoresizingMaskIntoConstraints = false
         

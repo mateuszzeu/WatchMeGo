@@ -27,9 +27,9 @@ class ProgressCardView: UIView {
         backgroundColor = AppStyle.Colors.backgroundSecondary
         layer.cornerRadius = 20
         layer.shadowColor = UIColor.black.cgColor
-        layer.shadowOpacity = 0.1
-        layer.shadowOffset = CGSize(width: 0, height: 2)
-        layer.shadowRadius = 8
+        layer.shadowOpacity = 0.2
+        layer.shadowOffset = CGSize(width: 3, height: 3)
+        layer.shadowRadius = 5
         
         addSubview(titleLabel)
         addSubview(stepsRow)
