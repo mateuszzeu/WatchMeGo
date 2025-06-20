@@ -28,6 +28,11 @@ class ChallengeViewController: UIViewController {
     }
     
     @objc private func setStepsGoalButtonTapped() {
+        if isCompeting() {
+            showAlert(title: "Action Blocked", message: "You can't change your step goal while competing.")
+            return
+        }
+        
         guard let text = challengeView.stepsGoalTextField.textField.text,
               let goal = Int(text), goal > 0 else {
             showAlert(title: "Invalid Input", message: "Please enter a number greater than 0.")
@@ -39,6 +44,11 @@ class ChallengeViewController: UIViewController {
     }
     
     @objc private func setStandGoalButtonTapped() {
+        if isCompeting() {
+            showAlert(title: "Action Blocked", message: "You can't change your stand goal while competing.")
+            return
+        }
+        
         guard let text = challengeView.standGoalTextField.textField.text,
               let goal = Int(text), goal > 0 else {
             showAlert(title: "Invalid Input", message: "Please enter a number greater than 0.")
@@ -50,6 +60,11 @@ class ChallengeViewController: UIViewController {
     }
     
     @objc private func setCaloriesGoalButtonTaped() {
+        if isCompeting() {
+            showAlert(title: "Action Blocked", message: "You can't change your calories goal while competing.")
+            return
+        }
+        
         guard let text = challengeView.caloriesGoalTextField.textField.text,
               let goal = Int(text), goal > 0 else {
             showAlert(title: "Invalid Input", message: "Please enter a number greater than 0.")
@@ -58,5 +73,9 @@ class ChallengeViewController: UIViewController {
         
         UserDefaults.standard.set(goal, forKey: "caloriesGoal")
         showAlert(title: "Saved", message: "Your calories goal has been saved.")
+    }
+    
+    private func isCompeting() -> Bool {
+        return FriendService.shared.fetchCurrentRival() != nil
     }
 }
