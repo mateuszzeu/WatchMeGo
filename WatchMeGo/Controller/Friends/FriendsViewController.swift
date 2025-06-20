@@ -137,18 +137,18 @@ class FriendsViewController: UIViewController, UITableViewDataSource, UITableVie
             }
             
             let friend = acceptedFriends[indexPath.row]
-            let isRival = friend.isRival
+            let isAlly = friend.isAlly
             
-            cell.configure(with: friend.nickname ?? "Unknown", isRival: isRival)
+            cell.configure(with: friend.nickname ?? "Unknown", isAlly: isAlly)
             
             cell.onCompeteTapped = { [weak self] in
                 self?.showAlert(
-                    title: isRival ? "Stop competing with \(friend.nickname ?? "")?" : "Compete with \(friend.nickname ?? "")?",
-                    message: isRival ? "Do you want to stop the competition?" : "Do you want to start a competition?",
-                    okTitle: isRival ? "Stop" : "Start",
+                    title: isAlly ? "Stop competing with \(friend.nickname ?? "")?" : "Compete with \(friend.nickname ?? "")?",
+                    message: isAlly ? "Do you want to stop the competition?" : "Do you want to start a competition?",
+                    okTitle: isAlly ? "Stop" : "Start",
                     cancelTitle: "Cancel",
                     okHandler: {
-                        self?.toggleRivalStatus(for: friend)
+                        self?.toggleAllyStatus(for: friend)
                     }
                 )
             }
@@ -193,22 +193,22 @@ class FriendsViewController: UIViewController, UITableViewDataSource, UITableVie
         )
     }
     
-    private func toggleRivalStatus(for selectedFriend: Friend) {
+    private func toggleAllyStatus(for selectedFriend: Friend) {
         let context = CoreDataManager.shared.context
         
         for friend in acceptedFriends {
-            friend.isRival = (friend == selectedFriend) ? !friend.isRival  : false
+            friend.isAlly = (friend == selectedFriend) ? !friend.isAlly  : false
         }
         
         do {
             try context.save()
             loadAcceptedFriends()
             
-            NotificationCenter.default.post(name: .rivalStatusChanged, object: nil)
+            NotificationCenter.default.post(name: .allyStatusChanged, object: nil)
             
         } catch {
             context.rollback()
-            showAlert(title: "Error", message: "Failed to update rivalry status")
+            showAlert(title: "Error", message: "Failed to update ally status")
         }
     }
     
@@ -231,8 +231,8 @@ class FriendsViewController: UIViewController, UITableViewDataSource, UITableVie
 
         do {
             try context.save()
-            if friend.isRival {
-                NotificationCenter.default.post(name: .rivalStatusChanged, object: nil)
+            if friend.isAlly {
+                NotificationCenter.default.post(name: .allyStatusChanged, object: nil)
             }
             loadAcceptedFriends()
         } catch {

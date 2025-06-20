@@ -84,23 +84,23 @@ class ChallengeViewController: UIViewController {
     }
     
     private func isCompeting() -> Bool {
-        return FriendService.shared.fetchCurrentRival() != nil
+        return FriendService.shared.fetchCurrentAlly() != nil
     }
     
     @objc private func goldTapped() {
-        openRivalDetails(name: "Lizunka", days: 9)
+        openAllyDetails(name: "Lizunka", days: 9)
     }
 
     @objc private func silverTapped() {
-        openRivalDetails(name: "Kamilka", days: 6)
+        openAllyDetails(name: "Kamilka", days: 6)
     }
 
     @objc private func bronzeTapped() {
-        openRivalDetails(name: "Martynka", days: 3)
+        openAllyDetails(name: "Martynka", days: 3)
     }
 
-    private func openRivalDetails(name: String, days: Int) {
-        let vc = PodiumRivalDetailsViewController()
+    private func openAllyDetails(name: String, days: Int) {
+        let vc = PodiumAllyDetailsViewController()
         vc.title = name
         navigationController?.pushViewController(vc, animated: true)
     }

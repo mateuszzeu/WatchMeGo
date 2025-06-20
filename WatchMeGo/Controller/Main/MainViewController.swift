@@ -33,8 +33,8 @@ class MainViewController: UIViewController {
         
         NotificationCenter.default.addObserver(
             self,
-            selector: #selector(refreshRivalDisplay),
-            name: .rivalStatusChanged,
+            selector: #selector(refreshAllyDisplay),
+            name: .allyStatusChanged,
             object: nil
         )
     }
@@ -75,8 +75,8 @@ class MainViewController: UIViewController {
         loadTodaySteps()
         loadTodayStandHours()
         loadTodayCalories()
-        refreshRivalDisplay()
-        loadRivalProgressFromFirestore()
+        refreshAllyDisplay()
+        loadAllyProgressFromFirestore()
         saveProgressToFirestore()
         
         DispatchQueue.main.async {
@@ -84,26 +84,26 @@ class MainViewController: UIViewController {
         }
     }
     
-    @objc private func refreshRivalDisplay() {
-        if let rival = FriendService.shared.fetchCurrentRival() {
-            configureRival(name: rival.nickname ?? "Unknown")
+    @objc private func refreshAllyDisplay() {
+        if let ally = FriendService.shared.fetchCurrentAlly() {
+            configureAlly(name: ally.nickname ?? "Unknown")
         } else {
-            configureRival(name: "Rival")
+            configureAlly(name: "Ally")
         }
     }
     
-    func configureRival(name: String) {
+    func configureAlly(name: String) {
         DispatchQueue.main.async {
-            self.mainView.rivalProgressCard.titleLabel.text = "\(name)'s Progress"
+            self.mainView.allyProgressCard.titleLabel.text = "\(name)'s Progress"
             
-            self.mainView.rivalProgressCard.stepsRow.progressView.progressTintColor = .systemIndigo
-            self.mainView.rivalProgressCard.stepsRow.iconView.tintColor = .systemIndigo
+            self.mainView.allyProgressCard.stepsRow.progressView.progressTintColor = .systemIndigo
+            self.mainView.allyProgressCard.stepsRow.iconView.tintColor = .systemIndigo
 
-            self.mainView.rivalProgressCard.standRow.progressView.progressTintColor = .systemTeal
-            self.mainView.rivalProgressCard.standRow.iconView.tintColor = .systemTeal
+            self.mainView.allyProgressCard.standRow.progressView.progressTintColor = .systemTeal
+            self.mainView.allyProgressCard.standRow.iconView.tintColor = .systemTeal
 
-            self.mainView.rivalProgressCard.caloriesRow.progressView.progressTintColor = .systemRed
-            self.mainView.rivalProgressCard.caloriesRow.iconView.tintColor = .systemRed
+            self.mainView.allyProgressCard.caloriesRow.progressView.progressTintColor = .systemRed
+            self.mainView.allyProgressCard.caloriesRow.iconView.tintColor = .systemRed
         }
     }
     
@@ -124,21 +124,21 @@ class MainViewController: UIViewController {
         }
     }
     
-    private func loadRivalProgressFromFirestore() {
-        guard let rival = FriendService.shared.fetchCurrentRival(),
-              let nickname = rival.nickname else { return }
+    private func loadAllyProgressFromFirestore() {
+        guard let ally = FriendService.shared.fetchCurrentAlly(),
+              let nickname = ally.nickname else { return }
         
         FirestoreService.shared.fetchProgress(for: nickname) { [weak self] steps, stand, calories in
             DispatchQueue.main.async {
-                self?.mainView.rivalProgressCard.setSteps(current: steps, goal: 10000)
-                self?.mainView.rivalProgressCard.setStandHours(current: stand, goal: 10)
-                self?.mainView.rivalProgressCard.setCalories(current: calories, goal: 800)
+                self?.mainView.allyProgressCard.setSteps(current: steps, goal: 10000)
+                self?.mainView.allyProgressCard.setStandHours(current: stand, goal: 10)
+                self?.mainView.allyProgressCard.setCalories(current: calories, goal: 800)
             }
         }
     }
     
     deinit {
-        NotificationCenter.default.removeObserver(self, name: .rivalStatusChanged, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .allyStatusChanged, object: nil)
     }
 }
 

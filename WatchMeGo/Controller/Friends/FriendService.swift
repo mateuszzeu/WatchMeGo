@@ -41,12 +41,12 @@ final class FriendService {
         }
     }
     
-    func fetchCurrentRival() -> Friend? {
+    func fetchCurrentAlly() -> Friend? {
         guard let currentUser = UserDefaults.standard.string(forKey: "loggedInNickname") else { return nil }
         
         let context = CoreDataManager.shared.context
         let request = Friend.fetchRequest()
-        request.predicate = NSPredicate(format: "owner == %@ AND status == %@ AND isRival == YES", currentUser, "accepted")
+        request.predicate = NSPredicate(format: "owner == %@ AND status == %@ AND isAlly == YES", currentUser, "accepted")
         request.fetchLimit = 1
         
         do {

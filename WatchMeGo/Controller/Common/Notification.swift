@@ -7,5 +7,5 @@
 import Foundation
 
 extension Notification.Name {
-    static let rivalStatusChanged = Notification.Name("rivalStatusChanged")
+    static let allyStatusChanged = Notification.Name("allyStatusChanged")
 }

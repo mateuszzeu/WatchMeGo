@@ -63,8 +63,8 @@ class FriendCell: UITableViewCell {
         onDeleteTapped?()
     }
 
-    func configure(with nickname: String, isRival: Bool) {
+    func configure(with nickname: String, isAlly: Bool) {
         nicknameLabel.text = nickname
-        competeButton.tintColor = isRival ? .red : .gray
+        competeButton.tintColor = isAlly ? .red : .gray
     }
 }

@@ -13,7 +13,7 @@ class MainView: UIScrollView {
     let userProgressCard = ProgressCardView()
     let nicknameLabel = UILabel()
     
-    let rivalProgressCard = ProgressCardView()
+    let allyProgressCard = ProgressCardView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -32,7 +32,7 @@ class MainView: UIScrollView {
         
         addSubview(nicknameLabel)
         
-        addSubview(rivalProgressCard)
+        addSubview(allyProgressCard)
         
         titleLabel.text = "WatchMeGo"
         titleLabel.font = UIFont.boldSystemFont(ofSize: 32)
@@ -45,8 +45,8 @@ class MainView: UIScrollView {
         nicknameLabel.textColor = AppStyle.Colors.textSecondary
         nicknameLabel.translatesAutoresizingMaskIntoConstraints = false
           
-        rivalProgressCard.translatesAutoresizingMaskIntoConstraints = false
-        rivalProgressCard.titleLabel.text = "Rival's Progress"
+        allyProgressCard.translatesAutoresizingMaskIntoConstraints = false
+        allyProgressCard.titleLabel.text = "Ally's Progress"
         
         NSLayoutConstraint.activate([
             nicknameLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
@@ -60,10 +60,10 @@ class MainView: UIScrollView {
             userProgressCard.trailingAnchor.constraint(equalTo: layoutMarginsGuide.trailingAnchor),
             userProgressCard.heightAnchor.constraint(equalToConstant: 250),
        
-            rivalProgressCard.topAnchor.constraint(equalTo: userProgressCard.bottomAnchor, constant: 50),
-            rivalProgressCard.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor),
-            rivalProgressCard.trailingAnchor.constraint(equalTo: layoutMarginsGuide.trailingAnchor),
-            rivalProgressCard.heightAnchor.constraint(equalToConstant: 250),
+            allyProgressCard.topAnchor.constraint(equalTo: userProgressCard.bottomAnchor, constant: 50),
+            allyProgressCard.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor),
+            allyProgressCard.trailingAnchor.constraint(equalTo: layoutMarginsGuide.trailingAnchor),
+            allyProgressCard.heightAnchor.constraint(equalToConstant: 250),
         ])
     }
 }

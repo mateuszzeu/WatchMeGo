@@ -1,5 +1,5 @@
 //
-//  PodiumRivalDetailsView.swift
+//  PodiumAllyDetailsView.swift
 //  WatchMeGo
 //
 //  Created by Liza on 20/06/2025.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class PodiumRivalDetailsView: UIView {
+class PodiumAllyDetailsView: UIView {
     
     let statusLabel = UILabel()
     
