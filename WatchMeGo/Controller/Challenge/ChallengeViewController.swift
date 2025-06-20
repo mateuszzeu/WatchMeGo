@@ -21,6 +21,14 @@ class ChallengeViewController: UIViewController {
         challengeView.stepsGoalButton.button.addTarget(self, action: #selector(setStepsGoalButtonTapped), for: .touchUpInside)
         challengeView.standGoalButton.button.addTarget(self, action: #selector(setStandGoalButtonTapped), for: .touchUpInside)
         challengeView.caloriesGoalButton.button.addTarget(self, action: #selector(setCaloriesGoalButtonTaped), for: .touchUpInside)
+        
+        let goldTap = UITapGestureRecognizer(target: self, action: #selector(goldTapped))
+        let silverTap = UITapGestureRecognizer(target: self, action: #selector(silverTapped))
+        let bronzeTap = UITapGestureRecognizer(target: self, action: #selector(bronzeTapped))
+
+        challengeView.goldView.addGestureRecognizer(goldTap)
+        challengeView.silverView.addGestureRecognizer(silverTap)
+        challengeView.bronzeView.addGestureRecognizer(bronzeTap)
     }
     
     @objc private func dismissKeyboard() {
@@ -77,5 +85,23 @@ class ChallengeViewController: UIViewController {
     
     private func isCompeting() -> Bool {
         return FriendService.shared.fetchCurrentRival() != nil
+    }
+    
+    @objc private func goldTapped() {
+        openRivalDetails(name: "Lizunka", days: 9)
+    }
+
+    @objc private func silverTapped() {
+        openRivalDetails(name: "Kamilka", days: 6)
+    }
+
+    @objc private func bronzeTapped() {
+        openRivalDetails(name: "Martynka", days: 3)
+    }
+
+    private func openRivalDetails(name: String, days: Int) {
+        let vc = PodiumRivalDetailsViewController()
+        vc.title = name
+        navigationController?.pushViewController(vc, animated: true)
     }
 }
