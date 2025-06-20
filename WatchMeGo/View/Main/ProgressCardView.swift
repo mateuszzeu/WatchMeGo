@@ -10,9 +10,9 @@ import UIKit
 class ProgressCardView: UIView {
     var titleLabel = UILabel()
     
-    private let stepsRow = ProgressBarRowView(icon: UIImage(systemName: "figure.walk"), title: "Steps", progressColor: .systemBlue)
-    private let standRow = ProgressBarRowView(icon: UIImage(systemName: "figure.stand"), title: "Stand Hours", progressColor: .systemGreen)
-    private let caloriesRow = ProgressBarRowView(icon: UIImage(systemName: "flame.fill"), title: "Calories", progressColor: .systemOrange)
+    let stepsRow = ProgressBarRowView(icon: UIImage(systemName: "figure.walk"), title: "Steps", progressColor: .systemBlue)
+    let standRow = ProgressBarRowView(icon: UIImage(systemName: "figure.stand"), title: "Stand Hours", progressColor: .systemGreen)
+    let caloriesRow = ProgressBarRowView(icon: UIImage(systemName: "flame.fill"), title: "Calories", progressColor: .systemOrange)
     
     override init(frame: CGRect) {
         super.init(frame: frame)

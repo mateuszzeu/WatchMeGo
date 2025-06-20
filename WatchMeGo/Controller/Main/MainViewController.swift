@@ -95,6 +95,15 @@ class MainViewController: UIViewController {
     func configureRival(name: String) {
         DispatchQueue.main.async {
             self.mainView.rivalProgressCard.titleLabel.text = "\(name)'s Progress"
+            
+            self.mainView.rivalProgressCard.stepsRow.progressView.progressTintColor = .systemIndigo
+            self.mainView.rivalProgressCard.stepsRow.iconView.tintColor = .systemIndigo
+
+            self.mainView.rivalProgressCard.standRow.progressView.progressTintColor = .systemTeal
+            self.mainView.rivalProgressCard.standRow.iconView.tintColor = .systemTeal
+
+            self.mainView.rivalProgressCard.caloriesRow.progressView.progressTintColor = .systemRed
+            self.mainView.rivalProgressCard.caloriesRow.iconView.tintColor = .systemRed
         }
     }
     

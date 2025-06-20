@@ -8,9 +8,9 @@
 import UIKit
 
 class ProgressBarRowView: UIView {
-    private let iconView = UIImageView()
+    let iconView = UIImageView()
     private let titleLabel = UILabel()
-    private let progressView = UIProgressView()
+    let progressView = UIProgressView()
     private let valueLabel = UILabel()
     
     init(icon: UIImage?, title: String, progressColor: UIColor) {
