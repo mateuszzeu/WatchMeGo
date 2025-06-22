@@ -46,6 +46,18 @@ class FriendsViewController: UIViewController, UITableViewDataSource, UITableVie
             return
         }
         
+        if receiverNickname == senderNickname {
+            showAlert(title: "Invalid", message: "You cannot invite yourself.")
+            clearTextField(friendsView.friendsNicknameTextField.textField)
+            return
+        }
+        
+        if acceptedFriends.contains(where: { $0.nickname == receiverNickname }) {
+            showAlert(title: "Already Friends", message: "\(receiverNickname) is already your friend.")
+            clearTextField(friendsView.friendsNicknameTextField.textField)
+            return
+        }
+        
         let context = CoreDataManager.shared.context
         let invite = Friend(context: context)
         invite.id = UUID()
@@ -55,15 +67,12 @@ class FriendsViewController: UIViewController, UITableViewDataSource, UITableVie
         
         do {
             try context.save()
-            
-            clearTextField(friendsView.friendsNicknameTextField.textField)
-            
             showAlert(title: "Success", message: "Invite sent to \(receiverNickname)")
+            clearTextField(friendsView.friendsNicknameTextField.textField)
         } catch {
             context.rollback()
             showAlert(title: "Error", message: "Failed to send invite")
         }
-        
         loadPendingInvites()
     }
     
@@ -218,7 +227,7 @@ class FriendsViewController: UIViewController, UITableViewDataSource, UITableVie
     private func deleteFriend(_ friend: Friend) {
         let context = CoreDataManager.shared.context
         context.delete(friend)
-
+        
         if let currentUser = UserDefaults.standard.string(forKey: "loggedInNickname"),
            let otherNickname = friend.nickname {
             
@@ -231,7 +240,7 @@ class FriendsViewController: UIViewController, UITableViewDataSource, UITableVie
                 context.delete(mirror)
             }
         }
-
+        
         do {
             try context.save()
             if friend.isAlly {
