@@ -30,6 +30,8 @@ class FriendCell: UITableViewCell {
         contentView.addSubview(competeButton)
         contentView.addSubview(deleteButton)
         
+        backgroundColor = .clear
+        
         nicknameLabel.font = .systemFont(ofSize: 16)
         nicknameLabel.translatesAutoresizingMaskIntoConstraints = false
         

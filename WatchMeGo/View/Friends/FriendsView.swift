@@ -77,7 +77,7 @@ class FriendsView: UIView {
         
         pendingInvitesTable.layer.cornerRadius = 12
         pendingInvitesTable.layer.masksToBounds = true
-        //pendingInvitesTable.backgroundColor = AppStyle.Colors.backgroundSecondary
+        pendingInvitesTable.backgroundColor = AppStyle.Colors.backgroundSecondary
         pendingInvitesTable.separatorStyle = .none
         pendingInvitesTable.translatesAutoresizingMaskIntoConstraints = false
         
@@ -95,7 +95,7 @@ class FriendsView: UIView {
         
         acceptedFriendsTable.layer.cornerRadius = 12
         acceptedFriendsTable.layer.masksToBounds = true
-        //acceptedFriendsTable.backgroundColor = AppStyle.Colors.backgroundSecondary
+        acceptedFriendsTable.backgroundColor = AppStyle.Colors.backgroundSecondary
         acceptedFriendsTable.separatorStyle = .none
         acceptedFriendsTable.translatesAutoresizingMaskIntoConstraints = false
         

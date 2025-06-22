@@ -27,6 +27,8 @@ class InviteCell: UITableViewCell {
         contentView.addSubview(acceptButton)
         contentView.addSubview(rejectButton)
         
+        backgroundColor = .clear
+        
         nicknameLabel.font = UIFont.systemFont(ofSize: 16)
         nicknameLabel.translatesAutoresizingMaskIntoConstraints = false
         
