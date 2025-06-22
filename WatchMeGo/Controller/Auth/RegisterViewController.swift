@@ -34,12 +34,29 @@ class RegisterViewController: UIViewController {
         let nickname = registerView.nicknameField.text ?? ""
         let password = registerView.passwordField.text ?? ""
         
-        UserService.createUser(email: email, nickname: nickname, password: password)
+        guard email.count >= 3, nickname.count >= 3, password.count >= 3 else {
+            showAlert(title: "Invalid Input", message: "All fields must be at least 3 characters long.")
+            return
+        }
         
+        if UserService.isEmailOrNicknameTaken(email: email, nickname: nickname) {
+            showAlert(title: "Account Exists", message: "This email or nickname is already in use.")
+            return
+        }
+        
+        UserService.createUser(email: email, nickname: nickname, password: password)
         UserDefaults.standard.set(nickname, forKey: "loggedInNickname")
-        let mainVC = MainViewController()
-        navigationController?.setViewControllers([mainVC], animated: true)
+        
+        let tabBarVC = TabBarViewController()
+        tabBarVC.modalPresentationStyle = .fullScreen
+
+        if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate,
+           let window = sceneDelegate.window {
+            window.rootViewController = tabBarVC
+            window.makeKeyAndVisible()
+        }
     }
+
     
     @objc private func textFieldDidChange() {
         registerView.createAccountButton.isEnabled = allFieldsFilled()

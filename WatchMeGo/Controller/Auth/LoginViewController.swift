@@ -30,7 +30,12 @@ class LoginViewController: UIViewController {
                 
                 let tabBarVC = TabBarViewController()
                 tabBarVC.modalPresentationStyle = .fullScreen
-                self.present(tabBarVC, animated: true)
+                
+                if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate,
+                   let window = sceneDelegate.window {
+                    window.rootViewController = tabBarVC
+                    window.makeKeyAndVisible()
+                }
             }
         } else {
             showAlert(title: "Error", message: "Incorrect nickname or password.")

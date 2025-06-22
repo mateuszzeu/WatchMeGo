@@ -45,4 +45,19 @@ struct UserService {
             fatalError("Core Data fetching error: \(error.localizedDescription)")
         }
     }
+    
+    static func isEmailOrNicknameTaken(email: String, nickname: String) -> Bool {
+        let context = CoreDataManager.shared.context
+        let request = User.fetchRequest()
+        
+        request.predicate = NSPredicate(format: "email == %@ OR nickname == %@", email, nickname)
+        
+        do {
+            let matches = try context.fetch(request)
+            return !matches.isEmpty
+        } catch {
+            context.rollback()
+            fatalError("Core Data fetch error: \(error.localizedDescription)")
+        }
+    }
 }
