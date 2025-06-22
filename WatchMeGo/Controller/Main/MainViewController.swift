@@ -28,7 +28,6 @@ class MainViewController: UIViewController {
                 print("HealthKit authorization failed")
             }
         }
-        
         loadNickname()
         
         NotificationCenter.default.addObserver(
@@ -40,29 +39,29 @@ class MainViewController: UIViewController {
     }
     
     private func loadTodaySteps() {
-        let stepsGoal = UserDefaults.standard.integer(forKey: "stepsGoal")
-        
+        guard let nickname = UserDefaults.standard.string(forKey: "loggedInNickname") else { return }
+        let stepsGoal = UserDefaults.standard.integer(forKey: "\(nickname)_stepsGoal")
+
         healthKitService.fetchTodaySteps { [weak self] steps in
-            guard let self = self else { return }
-            self.mainView.userProgressCard.setSteps(current: steps, goal: stepsGoal == 0 ? 10000 : stepsGoal)
+            self?.mainView.userProgressCard.setSteps(current: steps, goal: stepsGoal == 0 ? 10000 : stepsGoal)
         }
     }
     
     private func loadTodayStandHours() {
-        let standGoal = UserDefaults.standard.integer(forKey: "standGoal")
-        
+        guard let nickname = UserDefaults.standard.string(forKey: "loggedInNickname") else { return }
+        let standGoal = UserDefaults.standard.integer(forKey: "\(nickname)_standGoal")
+
         healthKitService.fetchTodayStandHours { [weak self] standHours in
-            guard let self = self else { return }
-            self.mainView.userProgressCard.setStandHours(current: standHours, goal: standGoal == 0 ? 12 : standGoal)
+            self?.mainView.userProgressCard.setStandHours(current: standHours, goal: standGoal == 0 ? 12 : standGoal)
         }
     }
     
     private func loadTodayCalories() {
-        let caloriesGoal = UserDefaults.standard.integer(forKey: "caloriesGoal")
-        
+        guard let nickname = UserDefaults.standard.string(forKey: "loggedInNickname") else { return }
+        let caloriesGoal = UserDefaults.standard.integer(forKey: "\(nickname)_caloriesGoal")
+
         healthKitService.fetchTodayBurnedCalories { [weak self] caloriesBurned in
-            guard let self = self else { return }
-            self.mainView.userProgressCard.setCalories(current: caloriesBurned, goal: caloriesGoal == 0 ? 500 : caloriesGoal)
+            self?.mainView.userProgressCard.setCalories(current: caloriesBurned, goal: caloriesGoal == 0 ? 500 : caloriesGoal)
         }
     }
     
@@ -78,6 +77,7 @@ class MainViewController: UIViewController {
         refreshAllyDisplay()
         loadAllyProgressFromFirestore()
         saveProgressToFirestore()
+        saveDailyChallengeToFirestore()
         
         DispatchQueue.main.async {
             self.mainView.refreshControl?.endRefreshing()
@@ -98,10 +98,10 @@ class MainViewController: UIViewController {
             
             self.mainView.allyProgressCard.stepsRow.progressView.progressTintColor = .systemIndigo
             self.mainView.allyProgressCard.stepsRow.iconView.tintColor = .systemIndigo
-
+            
             self.mainView.allyProgressCard.standRow.progressView.progressTintColor = .systemTeal
             self.mainView.allyProgressCard.standRow.iconView.tintColor = .systemTeal
-
+            
             self.mainView.allyProgressCard.caloriesRow.progressView.progressTintColor = .systemRed
             self.mainView.allyProgressCard.caloriesRow.iconView.tintColor = .systemRed
         }
@@ -129,16 +129,86 @@ class MainViewController: UIViewController {
               let nickname = ally.nickname else { return }
         
         FirestoreService.shared.fetchProgress(for: nickname) { [weak self] steps, stand, calories in
+            let stepsGoal = UserDefaults.standard.integer(forKey: "\(nickname)_stepsGoal") //change if different phones
+            let standGoal = UserDefaults.standard.integer(forKey: "\(nickname)_standGoal")
+            let caloriesGoal = UserDefaults.standard.integer(forKey: "\(nickname)_caloriesGoal")
+            
             DispatchQueue.main.async {
-                self?.mainView.allyProgressCard.setSteps(current: steps, goal: 10000)
-                self?.mainView.allyProgressCard.setStandHours(current: stand, goal: 10)
-                self?.mainView.allyProgressCard.setCalories(current: calories, goal: 800)
+                self?.mainView.allyProgressCard.setSteps(current: steps, goal: stepsGoal == 0 ? 10000 : stepsGoal)
+                self?.mainView.allyProgressCard.setStandHours(current: stand, goal: standGoal == 0 ? 10 : standGoal)
+                self?.mainView.allyProgressCard.setCalories(current: calories, goal: caloriesGoal == 0 ? 800 : caloriesGoal)
             }
         }
+    }
+
+    
+    private func saveDailyChallengeToFirestore() {
+        guard let nickname = UserDefaults.standard.string(forKey: "loggedInNickname") else { return }
+        let date = getTodayDateString()
+
+        let userStepsGoal = UserDefaults.standard.integer(forKey: "\(nickname)_stepsGoal")
+        let userStandGoal = UserDefaults.standard.integer(forKey: "\(nickname)_standGoal")
+        let userCaloriesGoal = UserDefaults.standard.integer(forKey: "\(nickname)_caloriesGoal")
+
+        healthKitService.fetchTodaySteps { [weak self] steps in
+            self?.healthKitService.fetchTodayStandHours { stand in
+                self?.healthKitService.fetchTodayBurnedCalories { calories in
+                    if self == nil { return }
+
+                    let userChallengeMet = steps >= userStepsGoal && stand >= userStandGoal && calories >= userCaloriesGoal
+
+                    if let ally = FriendService.shared.fetchCurrentAlly(), let allyNickname = ally.nickname {
+                        let allyStepsGoal = UserDefaults.standard.integer(forKey: "\(allyNickname)_stepsGoal")
+                        let allyStandGoal = UserDefaults.standard.integer(forKey: "\(allyNickname)_standGoal")
+                        let allyCaloriesGoal = UserDefaults.standard.integer(forKey: "\(allyNickname)_caloriesGoal")
+
+                        FirestoreService.shared.fetchProgress(for: allyNickname) { allySteps, allyStand, allyCalories in
+                            let allyChallengeMet = allySteps >= allyStepsGoal &&
+                                                   allyStand >= allyStandGoal &&
+                                                   allyCalories >= allyCaloriesGoal
+
+                            FirestoreService.shared.saveDailyChallengeResult(
+                                date: date,
+                                userNickname: nickname,
+                                steps: steps,
+                                stand: stand,
+                                calories: calories,
+                                userChallengeMet: userChallengeMet,
+                                allyNickname: allyNickname,
+                                allySteps: allySteps,
+                                allyStand: allyStand,
+                                allyCalories: allyCalories,
+                                allyChallengeMet: allyChallengeMet
+                            )
+                        }
+                    } else {
+                        FirestoreService.shared.saveDailyChallengeResult(
+                            date: date,
+                            userNickname: nickname,
+                            steps: steps,
+                            stand: stand,
+                            calories: calories,
+                            userChallengeMet: userChallengeMet,
+                            allyNickname: nil,
+                            allySteps: nil,
+                            allyStand: nil,
+                            allyCalories: nil,
+                            allyChallengeMet: nil
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    
+    private func getTodayDateString() -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter.string(from: Date())
     }
     
     deinit {
         NotificationCenter.default.removeObserver(self, name: .allyStatusChanged, object: nil)
     }
 }
-

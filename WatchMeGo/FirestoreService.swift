@@ -33,4 +33,66 @@ class FirestoreService {
             completion(steps, stand, calories)
         }
     }
+    
+    func saveDailyChallengeResult(
+        date: String,
+        userNickname: String,
+        steps: Int,
+        stand: Int,
+        calories: Int,
+        userChallengeMet: Bool,
+        allyNickname: String?,
+        allySteps: Int?,
+        allyStand: Int?,
+        allyCalories: Int?,
+        allyChallengeMet: Bool?
+    ) {
+        var data: [String: Any] = [
+            "date": date,
+            "userNickname": userNickname,
+            "steps": steps,
+            "stand": stand,
+            "calories": calories,
+            "userChallengeMet": userChallengeMet
+        ]
+        
+        var bothChallengeMet = false
+        
+        if let allyNickname = allyNickname {
+            data["allyNickname"] = allyNickname
+            data["allySteps"] = allySteps ?? 0
+            data["allyStand"] = allyStand ?? 0
+            data["allyCalories"] = allyCalories ?? 0
+            data["allyChallengeMet"] = allyChallengeMet ?? false
+            
+            bothChallengeMet = userChallengeMet && (allyChallengeMet ?? false)
+        }
+        
+        data["bothChallengeMet"] = bothChallengeMet
+        
+        let documentId = "\(userNickname)_\(date)"
+        db.collection("dailyChallengeResults").document(documentId).setData(data)
+    }
+    
+    func fetchAllyStreaks(for userNickname: String, completion: @escaping ([String: Int]) -> Void) {
+        db.collection("dailyChallengeResults")
+            .whereField("userNickname", isEqualTo: userNickname)
+            .whereField("bothChallengeMet", isEqualTo: true)
+            .getDocuments { snapshot, error in
+                guard let documents = snapshot?.documents else {
+                    completion([:])
+                    return
+                }
+                
+                var streaks: [String: Int] = [:]
+                
+                for document in documents {
+                    if let ally = document.data()["allyNickname"] as? String {
+                        streaks[ally, default: 0] += 1
+                    }
+                }
+                
+                completion(streaks)
+            }
+    }
 }
