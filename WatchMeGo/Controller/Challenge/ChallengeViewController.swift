@@ -31,7 +31,7 @@ class ChallengeViewController: UIViewController {
         challengeView.bronzeView.addGestureRecognizer(bronzeTap)
         
         loadPodiumData()
-        loadSavedGoals()
+        //loadSavedGoals()
     }
     
     @objc private func dismissKeyboard() {
@@ -53,6 +53,9 @@ class ChallengeViewController: UIViewController {
         }
 
         UserDefaults.standard.set(goal, forKey: "\(nickname)_stepsGoal")
+        
+        clearTextField(challengeView.stepsGoalTextField.textField)
+        
         showAlert(title: "Saved", message: "Your steps goal has been saved.")
     }
     
@@ -71,6 +74,9 @@ class ChallengeViewController: UIViewController {
         }
 
         UserDefaults.standard.set(goal, forKey: "\(nickname)_standGoal")
+        
+        clearTextField(challengeView.standGoalTextField.textField)
+        
         showAlert(title: "Saved", message: "Your stand goal has been saved.")
     }
     
@@ -89,6 +95,9 @@ class ChallengeViewController: UIViewController {
         }
 
         UserDefaults.standard.set(goal, forKey: "\(nickname)_caloriesGoal")
+        
+        clearTextField(challengeView.caloriesGoalTextField.textField)
+        
         showAlert(title: "Saved", message: "Your calories goal has been saved.")
     }
     
@@ -114,23 +123,23 @@ class ChallengeViewController: UIViewController {
         navigationController?.pushViewController(vc, animated: true)
     }
     
-    private func loadSavedGoals() {
-            guard let nickname = UserDefaults.standard.string(forKey: "loggedInNickname") else { return }
-
-            let steps = UserDefaults.standard.integer(forKey: "\(nickname)_stepsGoal")
-            let stand = UserDefaults.standard.integer(forKey: "\(nickname)_standGoal")
-            let calories = UserDefaults.standard.integer(forKey: "\(nickname)_caloriesGoal")
-
-            if steps > 0 {
-                challengeView.stepsGoalTextField.textField.text = "\(steps)"
-            }
-            if stand > 0 {
-                challengeView.standGoalTextField.textField.text = "\(stand)"
-            }
-            if calories > 0 {
-                challengeView.caloriesGoalTextField.textField.text = "\(calories)"
-            }
-        }
+//    private func loadSavedGoals() {
+//            guard let nickname = UserDefaults.standard.string(forKey: "loggedInNickname") else { return }
+//
+//            let steps = UserDefaults.standard.integer(forKey: "\(nickname)_stepsGoal")
+//            let stand = UserDefaults.standard.integer(forKey: "\(nickname)_standGoal")
+//            let calories = UserDefaults.standard.integer(forKey: "\(nickname)_caloriesGoal")
+//
+//            if steps > 0 {
+//                challengeView.stepsGoalTextField.textField.text = "\(steps)"
+//            }
+//            if stand > 0 {
+//                challengeView.standGoalTextField.textField.text = "\(stand)"
+//            }
+//            if calories > 0 {
+//                challengeView.caloriesGoalTextField.textField.text = "\(calories)"
+//            }
+//        }
     
     private func loadPodiumData() {
         let nickname = UserDefaults.standard.string(forKey: "loggedInNickname") ?? ""

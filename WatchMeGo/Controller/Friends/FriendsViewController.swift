@@ -55,6 +55,9 @@ class FriendsViewController: UIViewController, UITableViewDataSource, UITableVie
         
         do {
             try context.save()
+            
+            clearTextField(friendsView.friendsNicknameTextField.textField)
+            
             showAlert(title: "Success", message: "Invite sent to \(receiverNickname)")
         } catch {
             context.rollback()

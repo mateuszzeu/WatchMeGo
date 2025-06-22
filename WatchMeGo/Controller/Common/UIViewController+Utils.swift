@@ -1,8 +1,8 @@
 //
-//  UIVie Controller+Alert.swift
+//  UIViewController+Utils.swift
 //  WatchMeGo
 //
-//  Created by Liza on 02/06/2025.
+//  Created by Liza on 22/06/2025.
 //
 
 import UIKit
@@ -30,5 +30,9 @@ extension UIViewController {
 
         present(alert, animated: true)
     }
-}
 
+    func clearTextField(_ textField: UITextField) {
+        textField.text = ""
+        textField.resignFirstResponder()
+    }
+}
