@@ -55,7 +55,6 @@ class RegisterView: UIView {
             emailField.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 120),
             emailField.widthAnchor.constraint(equalToConstant: 250),
             emailField.heightAnchor.constraint(equalToConstant: 35),
-            emailField.widthAnchor.constraint(equalToConstant: 350),
             
             nicknameField.centerXAnchor.constraint(equalTo: centerXAnchor),
             nicknameField.topAnchor.constraint(equalTo: emailField.bottomAnchor, constant: 20),
