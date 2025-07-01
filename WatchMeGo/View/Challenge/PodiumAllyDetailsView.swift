@@ -24,7 +24,7 @@ class PodiumAllyDetailsView: UIView {
     }
 
     private func setupUI() {
-        backgroundColor = AppStyle.Colors.background
+        backgroundColor = UIColor.systemPink.withAlphaComponent(0.1)
 
         addSubview(progressCard)
         addSubview(currentStreakLabel)

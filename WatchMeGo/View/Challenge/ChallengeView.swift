@@ -21,9 +21,9 @@ class ChallengeView: UIView {
     let caloriesGoalButton = PrimaryButtonView(title: "Submit")
     
     let podiumContainer = UIView()
-    let goldView = PodiumView(place: 0, name: "Lizunka", days: 9)
-    let silverView = PodiumView(place: 1, name: "Kamilka", days: 6)
-    let bronzeView = PodiumView(place: 2, name: "Martynka", days: 3)
+    let goldView = PodiumView(place: 0)
+    let silverView = PodiumView(place: 1)
+    let bronzeView = PodiumView(place: 2)
 
     
     override init(frame: CGRect) {

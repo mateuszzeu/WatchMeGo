@@ -106,15 +106,18 @@ class ChallengeViewController: UIViewController {
     }
     
     @objc private func goldTapped() {
-        openAllyDetails(name: "Lizunka", days: 9)
+        guard let name = challengeView.goldView.name, let days = challengeView.goldView.days else { return }
+        openAllyDetails(name: name, days: days)
     }
-    
+
     @objc private func silverTapped() {
-        openAllyDetails(name: "Kamilka", days: 6)
+        guard let name = challengeView.silverView.name, let days = challengeView.silverView.days else { return }
+        openAllyDetails(name: name, days: days)
     }
-    
+
     @objc private func bronzeTapped() {
-        openAllyDetails(name: "Martynka", days: 3)
+        guard let name = challengeView.bronzeView.name, let days = challengeView.bronzeView.days else { return }
+        openAllyDetails(name: name, days: days)
     }
     
     private func openAllyDetails(name: String, days: Int) {
@@ -146,17 +149,14 @@ class ChallengeViewController: UIViewController {
         FirestoreService.shared.fetchAllyStreaks(for: nickname) { [weak self] streaks in
             let sorted = streaks.sorted { $0.value > $1.value }
             DispatchQueue.main.async {
-                if sorted.indices.contains(0) {
-                    self?.challengeView.goldView.nameLabel.text = sorted[0].key
-                    self?.challengeView.goldView.daysLabel.text = "\(sorted[0].value) days 🔥"
-                }
-                if sorted.indices.contains(1) {
-                    self?.challengeView.silverView.nameLabel.text = sorted[1].key
-                    self?.challengeView.silverView.daysLabel.text = "\(sorted[1].value) days 🔥"
-                }
-                if sorted.indices.contains(2) {
-                    self?.challengeView.bronzeView.nameLabel.text = sorted[2].key
-                    self?.challengeView.bronzeView.daysLabel.text = "\(sorted[2].value) days 🔥"
+                let views = [self?.challengeView.goldView, self?.challengeView.silverView, self?.challengeView.bronzeView]
+                for (index, view) in views.enumerated() {
+                    if index < sorted.count {
+                        let result = sorted[index]
+                        view?.update(name: result.key, days: result.value)
+                    } else {
+                        view?.update(name: nil, days: nil)
+                    }
                 }
             }
         }

@@ -8,45 +8,51 @@
 import UIKit
 
 class PodiumView: UIView {
-    
+
     let iconLabel = UILabel()
     let nameLabel = UILabel()
     let daysLabel = UILabel()
-    
-    init(place: Int, name: String, days: Int) {
+
+    private let place: Int
+    private(set) var name: String?
+    private(set) var days: Int?
+
+    init(place: Int, name: String? = nil, days: Int? = nil) {
+        self.place = place
+        self.name = name
+        self.days = days
         super.init(frame: .zero)
-        setupUI(place: place, name: name, days: days)
+        setupUI()
+        update(name: name, days: days)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setupUI(place: Int, name: String, days: Int) {
+    private func setupUI() {
         addSubview(iconLabel)
         addSubview(nameLabel)
         addSubview(daysLabel)
-        
+
         let icons = ["🥇", "🥈", "🥉"]
         let borderColors: [UIColor] = [.systemYellow, .systemGray2, .systemOrange]
-        
+
         backgroundColor = AppStyle.Colors.backgroundSecondary
         layer.cornerRadius = 14
         layer.borderWidth = 3
         layer.borderColor = borderColors[place].cgColor
-        
+
         iconLabel.text = icons[place]
         iconLabel.font = AppStyle.Fonts.title
         iconLabel.textAlignment = .center
         iconLabel.translatesAutoresizingMaskIntoConstraints = false
-        
-        nameLabel.text = name
+
         nameLabel.font = AppStyle.Fonts.subtitle
         nameLabel.textAlignment = .left
         nameLabel.textColor = AppStyle.Colors.textPrimary
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
-        
-        daysLabel.text = "\(days) days 🔥"
+
         daysLabel.font = AppStyle.Fonts.caption
         daysLabel.textColor = AppStyle.Colors.textSecondary
         daysLabel.textAlignment = .right
@@ -63,5 +69,21 @@ class PodiumView: UIView {
             daysLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
             daysLabel.centerYAnchor.constraint(equalTo: centerYAnchor)
         ])
+    }
+
+    func update(name: String?, days: Int?) {
+        self.name = name
+        self.days = days
+
+        if let name = name, let days = days {
+            nameLabel.text = name
+            daysLabel.text = "\(days) days 🔥"
+            let borderColors: [UIColor] = [.systemYellow, .systemGray2, .systemOrange]
+            layer.borderColor = borderColors[place].cgColor
+        } else {
+            nameLabel.text = "Waiting for friend"
+            daysLabel.text = ""
+            layer.borderColor = UIColor.systemGray3.cgColor
+        }
     }
 }
