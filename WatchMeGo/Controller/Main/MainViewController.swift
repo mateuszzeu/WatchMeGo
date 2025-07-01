@@ -96,14 +96,14 @@ class MainViewController: UIViewController {
         DispatchQueue.main.async {
             self.mainView.allyProgressCard.titleLabel.text = "\(name)'s Progress"
             
-            self.mainView.allyProgressCard.stepsRow.progressView.progressTintColor = AppStyle.Colors.accent
-            self.mainView.allyProgressCard.stepsRow.iconView.tintColor = AppStyle.Colors.accent
+            self.mainView.allyProgressCard.stepsRow.progressView.progressTintColor = .systemIndigo
+            self.mainView.allyProgressCard.stepsRow.iconView.tintColor = .systemIndigo
 
-            self.mainView.allyProgressCard.standRow.progressView.progressTintColor = AppStyle.Colors.accent
-            self.mainView.allyProgressCard.standRow.iconView.tintColor = AppStyle.Colors.accent
+            self.mainView.allyProgressCard.standRow.progressView.progressTintColor = .systemTeal
+            self.mainView.allyProgressCard.standRow.iconView.tintColor = .systemTeal
 
-            self.mainView.allyProgressCard.caloriesRow.progressView.progressTintColor = AppStyle.Colors.accent
-            self.mainView.allyProgressCard.caloriesRow.iconView.tintColor = AppStyle.Colors.accent
+            self.mainView.allyProgressCard.caloriesRow.progressView.progressTintColor = .systemRed
+            self.mainView.allyProgressCard.caloriesRow.iconView.tintColor = .systemRed
         }
     }
     
