@@ -9,10 +9,15 @@ import UIKit
 
 class LoginView: UIView {
     
+    let titleLabel = UILabel()
+
     let nicknameField = UITextField()
     let passwordField = UITextField()
+
     let logInButton = UIButton(type: .system)
     let registerButton = UIButton(type: .system)
+
+    private let stackView = UIStackView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -26,23 +31,37 @@ class LoginView: UIView {
     private func setupUI() {
         backgroundColor = AppStyle.Colors.background
         
-        addSubview(nicknameField)
-        addSubview(passwordField)
-        addSubview(logInButton)
-        addSubview(registerButton)
+        addSubview(titleLabel)
+        addSubview(stackView)
+
+        stackView.axis = .vertical
+        stackView.spacing = 16
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.addArrangedSubview(nicknameField)
+        stackView.addArrangedSubview(passwordField)
+        stackView.addArrangedSubview(logInButton)
+        stackView.addArrangedSubview(registerButton)
+
+        titleLabel.text = "Welcome Back"
+        titleLabel.font = UIFont.boldSystemFont(ofSize: 32)
+        titleLabel.textColor = AppStyle.Colors.textPrimary
+        titleLabel.textAlignment = .center
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
         
         nicknameField.autocapitalizationType = .none
         nicknameField.returnKeyType = .next
-        nicknameField.applyInputFieldStyle(placeholder: "Write your nickname...")
+        nicknameField.applyInputFieldStyle(placeholder: "Nickname")
 
         passwordField.isSecureTextEntry = true
         passwordField.returnKeyType = .done
-        passwordField.applyInputFieldStyle(placeholder: "Write your password...")
+        passwordField.applyInputFieldStyle(placeholder: "Password")
 
         logInButton.translatesAutoresizingMaskIntoConstraints = false
         logInButton.setTitle("Log in", for: .normal)
-        logInButton.setTitleColor(AppStyle.Colors.textSecondary, for: .normal)
-        logInButton.titleLabel?.font = UIFont.systemFont(ofSize: 18)
+        logInButton.setTitleColor(.white, for: .normal)
+        logInButton.backgroundColor = AppStyle.Colors.buttonText
+        logInButton.layer.cornerRadius = 16
+        logInButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
 
         registerButton.translatesAutoresizingMaskIntoConstraints = false
         registerButton.setTitle("Don't have an account? Sign up!", for: .normal)
@@ -50,24 +69,16 @@ class LoginView: UIView {
         registerButton.titleLabel?.font = UIFont.systemFont(ofSize: 14)
         
         NSLayoutConstraint.activate([
-            nicknameField.centerXAnchor.constraint(equalTo: centerXAnchor),
-            nicknameField.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 120),
-            nicknameField.widthAnchor.constraint(equalToConstant: 250),
-            nicknameField.heightAnchor.constraint(equalToConstant: 35),
-            
-            passwordField.centerXAnchor.constraint(equalTo: centerXAnchor),
-            passwordField.topAnchor.constraint(equalTo: nicknameField.bottomAnchor, constant: 20),
-            passwordField.widthAnchor.constraint(equalToConstant: 250),
-            passwordField.heightAnchor.constraint(equalToConstant: 35),
-            passwordField.widthAnchor.constraint(equalTo: nicknameField.widthAnchor),
-            
-            logInButton.centerXAnchor.constraint(equalTo: centerXAnchor),
-            logInButton.topAnchor.constraint(equalTo: passwordField.bottomAnchor, constant: 30),
-            logInButton.widthAnchor.constraint(equalTo: nicknameField.widthAnchor),
-            
-            registerButton.centerXAnchor.constraint(equalTo: centerXAnchor),
-            registerButton.topAnchor.constraint(equalTo: logInButton.bottomAnchor, constant: 20),
-            registerButton.widthAnchor.constraint(equalTo: nicknameField.widthAnchor),
+            titleLabel.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 80),
+            titleLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
+
+            stackView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 40),
+            stackView.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: layoutMarginsGuide.trailingAnchor),
+
+            nicknameField.heightAnchor.constraint(equalToConstant: 44),
+            passwordField.heightAnchor.constraint(equalTo: nicknameField.heightAnchor),
+            logInButton.heightAnchor.constraint(equalToConstant: 50)
         ])
     }
 }

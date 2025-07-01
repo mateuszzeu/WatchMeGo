@@ -8,11 +8,15 @@
 import UIKit
 
 class RegisterView: UIView {
-    
+
+    let titleLabel = UILabel()
+
     let emailField = UITextField()
     let nicknameField = UITextField()
     let passwordField = UITextField()
     let createAccountButton = UIButton(type: .system)
+
+    private let stackView = UIStackView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -26,50 +30,56 @@ class RegisterView: UIView {
     private func setupUI() {
         backgroundColor = AppStyle.Colors.background
         
-        addSubview(emailField)
-        addSubview(nicknameField)
-        addSubview(passwordField)
-        addSubview(createAccountButton)
+        addSubview(titleLabel)
+        addSubview(stackView)
+
+        stackView.axis = .vertical
+        stackView.spacing = 16
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.addArrangedSubview(emailField)
+        stackView.addArrangedSubview(nicknameField)
+        stackView.addArrangedSubview(passwordField)
+        stackView.addArrangedSubview(createAccountButton)
+
+        titleLabel.text = "Create Account"
+        titleLabel.font = UIFont.boldSystemFont(ofSize: 32)
+        titleLabel.textColor = AppStyle.Colors.textPrimary
+        titleLabel.textAlignment = .center
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
         
         emailField.autocapitalizationType = .none
         emailField.keyboardType = .emailAddress
         emailField.returnKeyType = .next
-        emailField.applyInputFieldStyle(placeholder: "Your email...")
+        emailField.applyInputFieldStyle(placeholder: "Email")
 
         nicknameField.autocapitalizationType = .none
         nicknameField.returnKeyType = .next
-        nicknameField.applyInputFieldStyle(placeholder: "Your nickname...")
+        nicknameField.applyInputFieldStyle(placeholder: "Nickname")
 
         passwordField.isSecureTextEntry = true
         passwordField.returnKeyType = .done
-        passwordField.applyInputFieldStyle(placeholder: "Password...")
+        passwordField.applyInputFieldStyle(placeholder: "Password")
 
         createAccountButton.translatesAutoresizingMaskIntoConstraints = false
         createAccountButton.setTitle("Register", for: .normal)
         createAccountButton.isEnabled = false
-        createAccountButton.setTitleColor(AppStyle.Colors.textSecondary, for: .normal)
-        createAccountButton.titleLabel?.font = UIFont.systemFont(ofSize: 18)
+        createAccountButton.setTitleColor(.white, for: .normal)
+        createAccountButton.backgroundColor = AppStyle.Colors.buttonText
+        createAccountButton.layer.cornerRadius = 16
+        createAccountButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
         
         NSLayoutConstraint.activate([
-            emailField.centerXAnchor.constraint(equalTo: centerXAnchor),
-            emailField.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 120),
-            emailField.widthAnchor.constraint(equalToConstant: 250),
-            emailField.heightAnchor.constraint(equalToConstant: 35),
-            
-            nicknameField.centerXAnchor.constraint(equalTo: centerXAnchor),
-            nicknameField.topAnchor.constraint(equalTo: emailField.bottomAnchor, constant: 20),
-            nicknameField.widthAnchor.constraint(equalToConstant: 250),
-            nicknameField.heightAnchor.constraint(equalToConstant: 35),
-            nicknameField.widthAnchor.constraint(equalTo: emailField.widthAnchor),
-            
-            passwordField.centerXAnchor.constraint(equalTo: centerXAnchor),
-            passwordField.topAnchor.constraint(equalTo: nicknameField.bottomAnchor, constant: 20),
-            passwordField.widthAnchor.constraint(equalToConstant: 250),
-            passwordField.heightAnchor.constraint(equalToConstant: 35),
-            passwordField.widthAnchor.constraint(equalTo: emailField.widthAnchor),
-            
-            createAccountButton.centerXAnchor.constraint(equalTo: centerXAnchor),
-            createAccountButton.topAnchor.constraint(equalTo: passwordField.bottomAnchor, constant: 20)
+            titleLabel.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 80),
+            titleLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
+
+            stackView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 40),
+            stackView.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: layoutMarginsGuide.trailingAnchor),
+
+            emailField.heightAnchor.constraint(equalToConstant: 44),
+            nicknameField.heightAnchor.constraint(equalTo: emailField.heightAnchor),
+            passwordField.heightAnchor.constraint(equalTo: emailField.heightAnchor),
+            createAccountButton.heightAnchor.constraint(equalToConstant: 50)
         ])
     }
 }
