@@ -20,7 +20,7 @@ class ChallengeViewController: UIViewController {
         
         challengeView.stepsGoalButton.button.addTarget(self, action: #selector(setStepsGoalButtonTapped), for: .touchUpInside)
         challengeView.standGoalButton.button.addTarget(self, action: #selector(setStandGoalButtonTapped), for: .touchUpInside)
-        challengeView.caloriesGoalButton.button.addTarget(self, action: #selector(setCaloriesGoalButtonTaped), for: .touchUpInside)
+        challengeView.caloriesGoalButton.button.addTarget(self, action: #selector(setCaloriesGoalButtonTapped), for: .touchUpInside)
         
         let goldTap = UITapGestureRecognizer(target: self, action: #selector(goldTapped))
         let silverTap = UITapGestureRecognizer(target: self, action: #selector(silverTapped))
@@ -80,7 +80,7 @@ class ChallengeViewController: UIViewController {
         showAlert(title: "Saved", message: "Your stand goal has been saved.")
     }
     
-    @objc private func setCaloriesGoalButtonTaped() {
+    @objc private func setCaloriesGoalButtonTapped() {
         guard let nickname = UserDefaults.standard.string(forKey: "loggedInNickname") else { return }
 
         if isCompeting() {
