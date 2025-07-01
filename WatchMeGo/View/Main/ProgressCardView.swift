@@ -13,17 +13,17 @@ class ProgressCardView: UIView {
     let stepsRow = ProgressBarRowView(
         icon: UIImage(systemName: "figure.walk"),
         title: "Steps",
-        progressColor: AppStyle.Colors.accent
+        progressColor: .systemBlue
     )
     let standRow = ProgressBarRowView(
         icon: UIImage(systemName: "figure.stand"),
         title: "Stand Hours",
-        progressColor: AppStyle.Colors.accent
+        progressColor: .systemGreen
     )
     let caloriesRow = ProgressBarRowView(
         icon: UIImage(systemName: "flame.fill"),
         title: "Calories",
-        progressColor: AppStyle.Colors.accent
+        progressColor: .systemOrange
     )
     
     override init(frame: CGRect) {
