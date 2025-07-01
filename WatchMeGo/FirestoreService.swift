@@ -95,4 +95,53 @@ class FirestoreService {
                 completion(streaks)
             }
     }
+
+    func fetchDailyChallengeResults(
+        for userNickname: String,
+        allyNickname: String,
+        completion: @escaping ([DailyChallengeResult]) -> Void
+    ) {
+        db.collection("dailyChallengeResults")
+            .whereField("userNickname", isEqualTo: userNickname)
+            .whereField("allyNickname", isEqualTo: allyNickname)
+            .order(by: "date", descending: true)
+            .getDocuments { snapshot, error in
+                guard let documents = snapshot?.documents else {
+                    completion([])
+                    return
+                }
+
+                let results: [DailyChallengeResult] = documents.compactMap { doc in
+                    let data = doc.data()
+                    guard let date = data["date"] as? String,
+                          let steps = data["steps"] as? Int,
+                          let stand = data["stand"] as? Int,
+                          let calories = data["calories"] as? Int,
+                          let userChallengeMet = data["userChallengeMet"] as? Bool,
+                          let bothChallengeMet = data["bothChallengeMet"] as? Bool else {
+                        return nil
+                    }
+
+                    let allySteps = data["allySteps"] as? Int
+                    let allyStand = data["allyStand"] as? Int
+                    let allyCalories = data["allyCalories"] as? Int
+                    let allyChallengeMet = data["allyChallengeMet"] as? Bool
+
+                    return DailyChallengeResult(
+                        date: date,
+                        steps: steps,
+                        stand: stand,
+                        calories: calories,
+                        userChallengeMet: userChallengeMet,
+                        allySteps: allySteps,
+                        allyStand: allyStand,
+                        allyCalories: allyCalories,
+                        allyChallengeMet: allyChallengeMet,
+                        bothChallengeMet: bothChallengeMet
+                    )
+                }
+
+                completion(results)
+            }
+    }
 }

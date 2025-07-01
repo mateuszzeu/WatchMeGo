@@ -118,7 +118,7 @@ class ChallengeViewController: UIViewController {
     }
     
     private func openAllyDetails(name: String, days: Int) {
-        let vc = PodiumAllyDetailsViewController()
+        let vc = PodiumAllyDetailsViewController(allyNickname: name, currentStreak: days)
         vc.title = name
         navigationController?.pushViewController(vc, animated: true)
     }
