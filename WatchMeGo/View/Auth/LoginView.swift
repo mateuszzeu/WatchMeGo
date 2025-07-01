@@ -54,7 +54,6 @@ class LoginView: UIView {
             nicknameField.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 120),
             nicknameField.widthAnchor.constraint(equalToConstant: 250),
             nicknameField.heightAnchor.constraint(equalToConstant: 35),
-            nicknameField.widthAnchor.constraint(equalToConstant: 350),
             
             passwordField.centerXAnchor.constraint(equalTo: centerXAnchor),
             passwordField.topAnchor.constraint(equalTo: nicknameField.bottomAnchor, constant: 20),
