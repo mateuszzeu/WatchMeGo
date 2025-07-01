@@ -30,7 +30,7 @@ class PrimaryInputView: UIView {
         textField.placeholder = placeholder
         textField.backgroundColor = .clear
         textField.keyboardType = .numberPad
-        textField.font = UIFont.systemFont(ofSize: 14)
+        textField.font = AppStyle.Fonts.body
         textField.textColor = AppStyle.Colors.textPrimary
         textField.borderStyle = .none
         textField.clearButtonMode = .whileEditing

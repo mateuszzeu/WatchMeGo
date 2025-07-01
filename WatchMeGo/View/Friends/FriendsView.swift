@@ -51,6 +51,7 @@ class FriendsView: UIView {
         contentStack.addArrangedSubview(acceptedFriendsLabel)
         contentStack.addArrangedSubview(acceptedFriendsContainer)
         contentStack.addArrangedSubview(logoutButton)
+        contentStack.setCustomSpacing(40, after: acceptedFriendsContainer)
 
         inputStack.axis = .horizontal
         inputStack.spacing = 12
@@ -63,7 +64,7 @@ class FriendsView: UIView {
 
         titleLabel.text = "Friends Hub"
         titleLabel.textAlignment = .center
-        titleLabel.font = UIFont.boldSystemFont(ofSize: 32)
+        titleLabel.font = AppStyle.Fonts.largeTitle
         titleLabel.textColor = AppStyle.Colors.textPrimary
         titleLabel.setContentHuggingPriority(.required, for: .vertical)
 
@@ -72,7 +73,7 @@ class FriendsView: UIView {
         inviteButton.translatesAutoresizingMaskIntoConstraints = false
 
         pendingInvitesLabel.text = "Invites"
-        pendingInvitesLabel.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
+        pendingInvitesLabel.font = AppStyle.Fonts.subtitle
         pendingInvitesLabel.textColor = AppStyle.Colors.textPrimary
 
         pendingInvitesContainer.layer.cornerRadius = 12
@@ -90,7 +91,7 @@ class FriendsView: UIView {
         pendingInvitesTable.translatesAutoresizingMaskIntoConstraints = false
 
         acceptedFriendsLabel.text = "Friends"
-        acceptedFriendsLabel.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
+        acceptedFriendsLabel.font = AppStyle.Fonts.subtitle
         acceptedFriendsLabel.textColor = AppStyle.Colors.textPrimary
 
         acceptedFriendsContainer.layer.cornerRadius = 12
@@ -107,7 +108,7 @@ class FriendsView: UIView {
         acceptedFriendsTable.translatesAutoresizingMaskIntoConstraints = false
 
         logoutButton.setTitle("Logout", for: .normal)
-        logoutButton.titleLabel?.font = UIFont.systemFont(ofSize: 18)
+        logoutButton.titleLabel?.font = AppStyle.Fonts.button
         logoutButton.setTitleColor(AppStyle.Colors.textPrimary, for: .normal)
         logoutButton.translatesAutoresizingMaskIntoConstraints = false
 
@@ -115,6 +116,7 @@ class FriendsView: UIView {
             contentStack.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 20),
             contentStack.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor),
             contentStack.trailingAnchor.constraint(equalTo: layoutMarginsGuide.trailingAnchor),
+            contentStack.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -20),
 
             friendsNicknameTextField.heightAnchor.constraint(equalToConstant: 44),
             inviteButton.widthAnchor.constraint(equalToConstant: 100),

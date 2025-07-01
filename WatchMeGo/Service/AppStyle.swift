@@ -8,7 +8,7 @@
 import UIKit
 
 struct AppStyle {
-    
+
     struct Colors {
         static var background: UIColor {
             UIColor(light: "#F8F8FC", dark: "#181520")
@@ -33,6 +33,16 @@ struct AppStyle {
         static var buttonText: UIColor {
             UIColor(light: "#5A69FF", dark: "#7D8BFF")
         }
+    }
+
+    struct Fonts {
+        static var largeTitle: UIFont { .systemFont(ofSize: 32, weight: .bold) }
+        static var title: UIFont { .systemFont(ofSize: 22, weight: .bold) }
+        static var subtitle: UIFont { .systemFont(ofSize: 18, weight: .semibold) }
+        static var body: UIFont { .systemFont(ofSize: 16) }
+        static var caption: UIFont { .systemFont(ofSize: 13) }
+        static var button: UIFont { .systemFont(ofSize: 18, weight: .bold) }
+        static var smallButton: UIFont { .systemFont(ofSize: 15, weight: .bold) }
     }
 }
 
