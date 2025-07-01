@@ -67,6 +67,6 @@ class FriendCell: UITableViewCell {
 
     func configure(with nickname: String, isAlly: Bool) {
         nicknameLabel.text = nickname
-        competeButton.tintColor = isAlly ? .red : .gray
+        competeButton.tintColor = isAlly ? AppStyle.Colors.accent : .gray
     }
 }

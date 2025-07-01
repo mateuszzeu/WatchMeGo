@@ -30,8 +30,12 @@ struct AppStyle {
             UIColor(light: "#D4D3E0", dark: "#3D394D")
         }
 
+        static var accent: UIColor {
+            UIColor(light: "#123524", dark: "#123524")
+        }
+
         static var buttonText: UIColor {
-            UIColor(light: "#5A69FF", dark: "#7D8BFF")
+            accent
         }
     }
 
