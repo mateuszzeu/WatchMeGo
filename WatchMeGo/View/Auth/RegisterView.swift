@@ -42,7 +42,7 @@ class RegisterView: UIView {
         stackView.addArrangedSubview(createAccountButton)
 
         titleLabel.text = "Create Account"
-        titleLabel.font = UIFont.boldSystemFont(ofSize: 32)
+        titleLabel.font = AppStyle.Fonts.largeTitle
         titleLabel.textColor = AppStyle.Colors.textPrimary
         titleLabel.textAlignment = .center
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -66,7 +66,7 @@ class RegisterView: UIView {
         createAccountButton.setTitleColor(.white, for: .normal)
         createAccountButton.backgroundColor = AppStyle.Colors.buttonText
         createAccountButton.layer.cornerRadius = 16
-        createAccountButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
+        createAccountButton.titleLabel?.font = AppStyle.Fonts.button
         
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 80),

@@ -33,12 +33,12 @@ class PodiumAllyDetailsView: UIView {
 
         progressCard.translatesAutoresizingMaskIntoConstraints = false
 
-        currentStreakLabel.font = .systemFont(ofSize: 18, weight: .medium)
+        currentStreakLabel.font = AppStyle.Fonts.subtitle
         currentStreakLabel.textColor = AppStyle.Colors.textPrimary
         currentStreakLabel.textAlignment = .center
         currentStreakLabel.translatesAutoresizingMaskIntoConstraints = false
 
-        longestStreakLabel.font = .systemFont(ofSize: 15)
+        longestStreakLabel.font = AppStyle.Fonts.caption
         longestStreakLabel.textColor = AppStyle.Colors.textSecondary
         longestStreakLabel.textAlignment = .center
         longestStreakLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -70,7 +70,7 @@ class PodiumAllyDetailsView: UIView {
 
         for result in results {
             let label = UILabel()
-            label.font = .systemFont(ofSize: 14)
+            label.font = AppStyle.Fonts.caption
             label.textColor = AppStyle.Colors.textPrimary
             label.text = "\(result.date): \(result.bothChallengeMet ? "✅" : "❌")"
             resultsStack.addArrangedSubview(label)

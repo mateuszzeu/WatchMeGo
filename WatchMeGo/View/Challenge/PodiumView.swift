@@ -36,18 +36,18 @@ class PodiumView: UIView {
         layer.borderColor = borderColors[place].cgColor
         
         iconLabel.text = icons[place]
-        iconLabel.font = .systemFont(ofSize: 28)
+        iconLabel.font = AppStyle.Fonts.title
         iconLabel.textAlignment = .center
         iconLabel.translatesAutoresizingMaskIntoConstraints = false
         
         nameLabel.text = name
-        nameLabel.font = .systemFont(ofSize: 18, weight: .semibold)
+        nameLabel.font = AppStyle.Fonts.subtitle
         nameLabel.textAlignment = .left
         nameLabel.textColor = AppStyle.Colors.textPrimary
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         
         daysLabel.text = "\(days) days 🔥"
-        daysLabel.font = .systemFont(ofSize: 14)
+        daysLabel.font = AppStyle.Fonts.caption
         daysLabel.textColor = AppStyle.Colors.textSecondary
         daysLabel.textAlignment = .right
         daysLabel.translatesAutoresizingMaskIntoConstraints = false

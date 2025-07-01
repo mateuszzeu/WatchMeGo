@@ -56,7 +56,7 @@ class ChallengeView: UIView {
         
         titleLabel.text = "Set your challenge!"
         titleLabel.textAlignment = .center
-        titleLabel.font = UIFont.systemFont(ofSize: 24, weight: .medium)
+        titleLabel.font = AppStyle.Fonts.title
         titleLabel.textColor = AppStyle.Colors.textPrimary
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         

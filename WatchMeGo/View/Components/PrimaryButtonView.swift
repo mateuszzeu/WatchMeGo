@@ -29,7 +29,7 @@ class PrimaryButtonView: UIView {
         button.backgroundColor = AppStyle.Colors.buttonText
         button.layer.cornerRadius = 12
         button.clipsToBounds = true
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 15)
+        button.titleLabel?.font = AppStyle.Fonts.smallButton
         button.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([

@@ -38,7 +38,7 @@ class ProgressCardView: UIView {
         
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.text = "Today's Progress"
-        titleLabel.font = UIFont.boldSystemFont(ofSize: 22)
+        titleLabel.font = AppStyle.Fonts.title
         titleLabel.textColor = AppStyle.Colors.textPrimary
         
         stepsRow.translatesAutoresizingMaskIntoConstraints = false

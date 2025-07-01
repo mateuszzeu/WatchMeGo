@@ -43,7 +43,7 @@ class LoginView: UIView {
         stackView.addArrangedSubview(registerButton)
 
         titleLabel.text = "Welcome Back"
-        titleLabel.font = UIFont.boldSystemFont(ofSize: 32)
+        titleLabel.font = AppStyle.Fonts.largeTitle
         titleLabel.textColor = AppStyle.Colors.textPrimary
         titleLabel.textAlignment = .center
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -61,12 +61,12 @@ class LoginView: UIView {
         logInButton.setTitleColor(.white, for: .normal)
         logInButton.backgroundColor = AppStyle.Colors.buttonText
         logInButton.layer.cornerRadius = 16
-        logInButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
+        logInButton.titleLabel?.font = AppStyle.Fonts.button
 
         registerButton.translatesAutoresizingMaskIntoConstraints = false
         registerButton.setTitle("Don't have an account? Sign up!", for: .normal)
         registerButton.setTitleColor(AppStyle.Colors.buttonText, for: .normal)
-        registerButton.titleLabel?.font = UIFont.systemFont(ofSize: 14)
+        registerButton.titleLabel?.font = AppStyle.Fonts.caption
         
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 80),

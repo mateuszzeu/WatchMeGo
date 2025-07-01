@@ -35,13 +35,13 @@ class MainView: UIScrollView {
         addSubview(allyProgressCard)
         
         titleLabel.text = "WatchMeGo"
-        titleLabel.font = UIFont.boldSystemFont(ofSize: 32)
+        titleLabel.font = AppStyle.Fonts.largeTitle
         titleLabel.textColor = AppStyle.Colors.textPrimary
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         
         userProgressCard.translatesAutoresizingMaskIntoConstraints = false
         
-        nicknameLabel.font = UIFont.systemFont(ofSize: 13)
+        nicknameLabel.font = AppStyle.Fonts.caption
         nicknameLabel.textColor = AppStyle.Colors.textSecondary
         nicknameLabel.translatesAutoresizingMaskIntoConstraints = false
           

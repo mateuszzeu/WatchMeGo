@@ -40,7 +40,7 @@ class ProgressBarRowView: UIView {
         iconView.translatesAutoresizingMaskIntoConstraints = false
         
         titleLabel.text = title
-        titleLabel.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        titleLabel.font = AppStyle.Fonts.body
         titleLabel.textColor = AppStyle.Colors.textPrimary
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         
