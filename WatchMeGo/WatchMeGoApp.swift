@@ -6,12 +6,19 @@
 //
 
 import SwiftUI
+import FirebaseCore
 
 @main
 struct WatchMeGoApp: App {
+
+    init() {
+        FirebaseApp.configure()
+    }
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            AppRootView()
+                .tint(.phthaloGreen)
         }
     }
 }

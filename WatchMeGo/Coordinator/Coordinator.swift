@@ -14,12 +14,12 @@ final class Coordinator {
     enum Screen {
         case login
         case register
-        case chat
+        case main
     }
 
     func login(_ user: AppUser) {
         currentUser = user
-        screen = .chat
+        screen = .main
     }
 
     func logout() {
