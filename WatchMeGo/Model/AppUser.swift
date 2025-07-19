@@ -7,8 +7,26 @@
 import Foundation
 
 struct AppUser: Identifiable, Codable {
-    let id: String   
+    let id: String
     var name: String
-    var friends: [String]
     var createdAt: Date
+    
+    var friends: [String]
+    var pendingInvites: [String]
+    var sentInvites: [String]
+    
+    var currentProgress: DailyProgress?
+    var history: [String: DailyProgress]
+    
+    var activeCompetitionWith: String?
 }
+
+
+struct DailyProgress: Codable {
+    var date: String
+    var calories: Int
+    var exerciseMinutes: Int
+    var standHours: Int
+    var challengeMet: Bool
+}
+

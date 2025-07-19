@@ -10,35 +10,30 @@ import SwiftUI
 struct MainView: View {
     @Bindable private var viewModel = MainViewModel()
     @Bindable var coordinator: Coordinator
-
+    
     @State private var selectedDifficulty: Difficulty = .medium
-
+    
     var body: some View {
         VStack {
             PickDifficultyView(selectedDifficulty: $selectedDifficulty)
-
+            
             Spacer()
-
+            
             if viewModel.isAuthorized {
                 ProgressBarView(label: "Calories", value: viewModel.calories, goal: selectedDifficulty.caloriesGoal, color: Color("ActivityMove"), iconName: "flame.fill")
                 ProgressBarView(label: "Exercise Minutes", value: viewModel.exerciseMinutes, goal: selectedDifficulty.exerciseGoal, color: Color("ActivityExercise"), iconName: "figure.run")
                 ProgressBarView(label: "Stand Hours", value: viewModel.standHours, goal: selectedDifficulty.standGoal, color: Color("ActivityStand"), iconName: "clock")
-
-                Button("Refresh") {
-                    viewModel.refreshAll()
-                }
-                .buttonStyle(.borderedProminent)
             } else {
                 Text("HealthKit access required or denied.")
                     .foregroundColor(Color("TextPrimary"))
             }
-
+            
             Spacer()
         }
         .padding()
-        .onAppear {
-            viewModel.requestHealthKitAccessAndFetchAll()
-        }
+        .task {
+                    await viewModel.loadDataAndSave(for: coordinator.currentUser?.id)
+                }
         .background(Color("BackgroundPrimary"))
     }
 }

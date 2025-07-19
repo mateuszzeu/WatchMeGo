@@ -20,8 +20,13 @@ final class RegisterViewModel {
             let appUser = AppUser(
                 id: user.uid,
                 name: username,
+                createdAt: Date(),
                 friends: [],
-                createdAt: Date()
+                pendingInvites: [],
+                sentInvites: [],
+                currentProgress: nil,
+                history: [:],
+                activeCompetitionWith: nil
             )
 
             try UserService.createUser(appUser)
