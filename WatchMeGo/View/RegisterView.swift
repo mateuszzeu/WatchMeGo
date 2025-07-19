@@ -24,19 +24,19 @@ struct RegisterView: View {
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
                 .padding(12)
-                .background(Color(.secondarySystemBackground))
+                .background(Color("BackgroundPrimary"))
                 .cornerRadius(10)
 
             SecureField("Password", text: $password)
                 .padding(12)
-                .background(Color(.secondarySystemBackground))
+                .background(Color("BackgroundPrimary"))
                 .cornerRadius(10)
 
             TextField("Username", text: $username)
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
                 .padding(12)
-                .background(Color(.secondarySystemBackground))
+                .background(Color("BackgroundPrimary"))
                 .cornerRadius(10)
 
             Button(action: {
@@ -53,14 +53,14 @@ struct RegisterView: View {
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.borderedProminent)
-            .tint(.phthaloGreen)
+            .tint(Color("ButtonPrimary"))
             .disabled(email.isEmpty || password.isEmpty || username.isEmpty)
 
             Button("Already have an account? Sign In") {
                 coordinator.showLogin()
             }
             .font(.footnote)
-            .tint(.phthaloGreen)
+            .tint(Color("ButtonPrimary"))
 
             if let info = viewModel.infoMessage {
                 Text(info)
@@ -74,4 +74,5 @@ struct RegisterView: View {
 #Preview {
     RegisterView(coordinator: Coordinator())
 }
+
 

@@ -18,6 +18,8 @@ struct PickDifficultyView: View {
             }
         }
         .pickerStyle(.segmented)
+        .tint(Color("ButtonPrimary"))
         .padding(.bottom, 12)
     }
 }
+

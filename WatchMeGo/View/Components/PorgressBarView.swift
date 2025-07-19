@@ -1,5 +1,5 @@
 //
-//  PorgressBarView.swift
+//  ProgressBarView.swift
 //  WatchMeGo
 //
 //  Created by Liza on 19/07/2025.
@@ -46,15 +46,29 @@ struct ProgressBarView: View {
     }
 }
 
-
-
-
-
 #Preview {
     VStack(spacing: 20) {
-        ProgressBarView(label: "Calories", value: 320, goal: 500, color: .red, iconName: "flame.fill")
-        ProgressBarView(label: "Exercise Minutes", value: 18, goal: 30, color: .green, iconName: "figure.run")
-        ProgressBarView(label: "Stand Hours", value: 9, goal: 12, color: .blue, iconName: "clock")
+        ProgressBarView(
+            label: "Calories",
+            value: 320,
+            goal: 500,
+            color: Color("ActivityMove"),
+            iconName: "flame.fill"
+        )
+        ProgressBarView(
+            label: "Exercise Minutes",
+            value: 18,
+            goal: 30,
+            color: Color("ActivityExercise"),
+            iconName: "figure.run"
+        )
+        ProgressBarView(
+            label: "Stand Hours",
+            value: 9,
+            goal: 12,
+            color: Color("ActivityStand"),
+            iconName: "clock"
+        )
     }
     .padding()
     .frame(maxWidth: 500)

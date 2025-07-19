@@ -18,7 +18,8 @@ struct WatchMeGoApp: App {
     var body: some Scene {
         WindowGroup {
             AppRootView()
-                .tint(.phthaloGreen)
+                .preferredColorScheme(.dark)
         }
     }
 }
+

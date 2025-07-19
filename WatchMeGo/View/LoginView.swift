@@ -23,12 +23,12 @@ struct LoginView: View {
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
                 .padding(12)
-                .background(Color(.secondarySystemBackground))
+                .background(Color("BackgroundPrimary"))
                 .cornerRadius(10)
 
             SecureField("Password", text: $password)
                 .padding(12)
-                .background(Color(.secondarySystemBackground))
+                .background(Color("BackgroundPrimary"))
                 .cornerRadius(10)
 
             Button(action: {
@@ -38,14 +38,14 @@ struct LoginView: View {
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.borderedProminent)
-            .tint(.phthaloGreen)
+            .tint(Color("ButtonPrimary"))
             .disabled(email.isEmpty || password.isEmpty)
 
             Button("No account? Register") {
                 coordinator.showRegister()
             }
             .font(.footnote)
-            .tint(.phthaloGreen)
+            .tint(Color("ButtonPrimary"))
 
             if let info = viewModel.infoMessage {
                 Text(info)
@@ -59,3 +59,4 @@ struct LoginView: View {
 #Preview {
     LoginView(coordinator: Coordinator())
 }
+
