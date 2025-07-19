@@ -10,16 +10,21 @@ import SwiftUI
 struct MainView: View {
     @Bindable private var viewModel = MainViewModel()
     @Bindable var coordinator: Coordinator
-
+    
+    @State private var selectedDifficulty: Difficulty = .medium
+    
     var body: some View {
-        VStack(spacing: 16) {
+        VStack {
+            
+            PickDifficultyView(selectedDifficulty: $selectedDifficulty)
+            
+            Spacer()
+            
             if viewModel.isAuthorized {
-                Text("Calories burned today: \(viewModel.calories)")
-                    .font(.title)
-                Text("Exercise minutes today: \(viewModel.exerciseMinutes)")
-                    .font(.title2)
-                Text("Stand hours today: \(viewModel.standHours)")
-                    .font(.title2)
+                ProgressBarView(label: "Calories", value: viewModel.calories, goal: selectedDifficulty.caloriesGoal, color: .activityMove, iconName: "flame.fill")
+                ProgressBarView(label: "Exercise Minutes", value: viewModel.exerciseMinutes, goal: selectedDifficulty.exerciseGoal, color: .activityExercise, iconName: "figure.run")
+                ProgressBarView(label: "Stand Hours", value: viewModel.standHours, goal: selectedDifficulty.standGoal, color: .activityStand, iconName: "clock")
+                
                 Button("Refresh") {
                     viewModel.refreshAll()
                 }
@@ -28,6 +33,8 @@ struct MainView: View {
                 Text("HealthKit access required or denied.")
                     .foregroundColor(.red)
             }
+            
+            Spacer()
         }
         .padding()
         .onAppear {
