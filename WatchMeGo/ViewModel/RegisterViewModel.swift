@@ -12,19 +12,22 @@ import FirebaseAuth
 final class RegisterViewModel {
     var infoMessage: String?
 
-    func register(email: String, password: String, coordinator: Coordinator) async {
+    func register(email: String, password: String, username: String, coordinator: Coordinator) async {
         do {
             let result = try await Auth.auth().createUser(withEmail: email, password: password)
             let user = result.user
 
-            let newUser = AppUser(
+            let appUser = AppUser(
                 id: user.uid,
-                email: user.email ?? email,
-                name: user.email?.components(separatedBy: "@").first ?? email
+                name: username,
+                friends: [],
+                createdAt: Date()
             )
 
+            try UserService.createUser(appUser)
+
             await MainActor.run {
-                coordinator.login(newUser)
+                coordinator.login(appUser)
                 self.infoMessage = "Registered & Signed in!"
             }
         } catch {
@@ -34,6 +37,7 @@ final class RegisterViewModel {
         }
     }
 }
+
 
 
 

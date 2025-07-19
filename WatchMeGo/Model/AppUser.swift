@@ -7,7 +7,8 @@
 import Foundation
 
 struct AppUser: Identifiable, Codable {
-    let id: String
-    let email: String
+    let id: String   
     var name: String
+    var friends: [String]
+    var createdAt: Date
 }

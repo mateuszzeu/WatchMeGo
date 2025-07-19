@@ -17,16 +17,20 @@ final class LoginViewModel {
             let result = try await Auth.auth().signIn(withEmail: email, password: password)
             let user = result.user
 
-            let newUser = AppUser(
-                id: user.uid,
-                email: user.email ?? email,
-                name: user.email?.components(separatedBy: "@").first ?? email
-            )
-
-            await MainActor.run {
-                coordinator.login(newUser)
-                self.infoMessage = "Signed in!"
+            UserService.fetchUser(id: user.uid) { result in
+                switch result {
+                case .success(let appUser):
+                    Task { @MainActor in
+                        coordinator.login(appUser)
+                        self.infoMessage = "Signed in!"
+                    }
+                case .failure(let error):
+                    Task { @MainActor in
+                        self.infoMessage = "User data not found: \(error.localizedDescription)"
+                    }
+                }
             }
+
         } catch {
             await MainActor.run {
                 self.infoMessage = error.localizedDescription
@@ -34,4 +38,5 @@ final class LoginViewModel {
         }
     }
 }
+
 

@@ -12,6 +12,7 @@ struct RegisterView: View {
     @Bindable private var viewModel = RegisterViewModel()
     @State private var email = ""
     @State private var password = ""
+    @State private var username = ""
 
     var body: some View {
         VStack(spacing: 16) {
@@ -31,15 +32,29 @@ struct RegisterView: View {
                 .background(Color(.secondarySystemBackground))
                 .cornerRadius(10)
 
+            TextField("Username", text: $username)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled()
+                .padding(12)
+                .background(Color(.secondarySystemBackground))
+                .cornerRadius(10)
+
             Button(action: {
-                Task { await viewModel.register(email: email, password: password, coordinator: coordinator) }
+                Task {
+                    await viewModel.register(
+                        email: email,
+                        password: password,
+                        username: username,
+                        coordinator: coordinator
+                    )
+                }
             }) {
                 Text("Register")
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.borderedProminent)
             .tint(.phthaloGreen)
-            .disabled(email.isEmpty || password.isEmpty)
+            .disabled(email.isEmpty || password.isEmpty || username.isEmpty)
 
             Button("Already have an account? Sign In") {
                 coordinator.showLogin()
@@ -59,3 +74,4 @@ struct RegisterView: View {
 #Preview {
     RegisterView(coordinator: Coordinator())
 }
+
