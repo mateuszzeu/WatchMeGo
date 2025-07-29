@@ -8,47 +8,51 @@ import Foundation
 
 @Observable
 final class MainViewModel {
+    
     var isAuthorized = false
-
     var calories = 0
     var exerciseMinutes = 0
     var standHours = 0
-
+    
     func loadDataAndSave(for userID: String?) async {
         isAuthorized = await HealthKitService.shared.requestAuthorization()
-        guard isAuthorized else { return }
-
-        async let calories = HealthKitService.shared.fetchTodayBurnedCalories()
-        async let minutes = HealthKitService.shared.fetchTodayExerciseMinutes()
+        guard isAuthorized else {
+            ErrorHandler.shared.handle(AppError.authenticationError)
+            return
+        }
+        
+        async let cals = HealthKitService.shared.fetchTodayBurnedCalories()
+        async let mins = HealthKitService.shared.fetchTodayExerciseMinutes()
         async let hours = HealthKitService.shared.fetchTodayStandHours()
-
-        self.calories = await calories
-        self.exerciseMinutes = await minutes
-        self.standHours = await hours
-
-        saveProgress(for: userID)
+        
+        calories = await cals
+        exerciseMinutes = await mins
+        standHours = await hours
+        
+        await saveProgress(for: userID)
     }
-
-    func saveProgress(for userID: String?) {
-        guard let userID else { return }
-
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-
+    
+    private func saveProgress(for userID: String?) async {
+        guard let userID else {
+            ErrorHandler.shared.handle(AppError.unknownError)
+            return
+        }
+        
+        let dateFormat = DateFormatter()
+        dateFormat.dateFormat = "yyyy-MM-dd"
+        
         let progress = DailyProgress(
-            date: formatter.string(from: Date()),
+            date: dateFormat.string(from: Date()),
             calories: calories,
             exerciseMinutes: exerciseMinutes,
             standHours: standHours,
             challengeMet: false
         )
-
-        UserService.saveProgress(for: userID, progress: progress) { error in
-            if let error = error {
-                print("Failed to save progress:", error.localizedDescription)
-            } else {
-                print("Progress saved.")
-            }
+        
+        do {
+            try await UserService.saveProgress(for: userID, progress: progress)
+        } catch {
+            ErrorHandler.shared.handle(error)
         }
     }
 }

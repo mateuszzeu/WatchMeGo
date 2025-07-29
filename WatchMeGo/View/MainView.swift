@@ -31,10 +31,10 @@ struct MainView: View {
             Spacer()
         }
         .padding()
-        .task {
-                    await viewModel.loadDataAndSave(for: coordinator.currentUser?.id)
-                }
         .background(Color("BackgroundPrimary"))
+        .task {
+            await viewModel.loadDataAndSave(for: coordinator.currentUser?.id)
+        }
     }
 }
 

@@ -19,7 +19,7 @@ struct AppRootView: View {
                 case .register:
                     RegisterView(coordinator: coordinator)
                 case .main:
-                    MainView(coordinator: coordinator)
+                    MainTabView(coordinator: coordinator)
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
