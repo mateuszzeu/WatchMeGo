@@ -8,6 +8,7 @@
 import Foundation
 import FirebaseAuth
 
+@MainActor
 @Observable
 final class LoginViewModel {
     var infoMessage: String?
@@ -20,23 +21,17 @@ final class LoginViewModel {
             UserService.fetchUser(id: user.uid) { result in
                 switch result {
                 case .success(let appUser):
-                    Task { @MainActor in
-                        coordinator.login(appUser)
-                        self.infoMessage = "Signed in!"
-                    }
+                    coordinator.login(appUser)
+                    self.infoMessage = "Signed in!"
                 case .failure(let error):
-                    Task { @MainActor in
-                        self.infoMessage = "User data not found: \(error.localizedDescription)"
-                    }
+                    ErrorHandler.shared.handle(error)
                 }
             }
-
         } catch {
-            await MainActor.run {
-                self.infoMessage = error.localizedDescription
-            }
+            ErrorHandler.shared.handle(error)
         }
     }
 }
+
 
 

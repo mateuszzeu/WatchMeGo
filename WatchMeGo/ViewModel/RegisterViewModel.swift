@@ -8,6 +8,7 @@
 import Foundation
 import FirebaseAuth
 
+@MainActor
 @Observable
 final class RegisterViewModel {
     var infoMessage: String?
@@ -30,18 +31,14 @@ final class RegisterViewModel {
             )
 
             try UserService.createUser(appUser)
-
-            await MainActor.run {
-                coordinator.login(appUser)
-                self.infoMessage = "Registered & Signed in!"
-            }
+            coordinator.login(appUser)
+            self.infoMessage = "Registered & Signed in!"
         } catch {
-            await MainActor.run {
-                self.infoMessage = error.localizedDescription
-            }
+            ErrorHandler.shared.handle(error)
         }
     }
 }
+
 
 
 
