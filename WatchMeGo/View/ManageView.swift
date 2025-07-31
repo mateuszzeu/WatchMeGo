@@ -8,91 +8,94 @@
 import SwiftUI
 
 struct ManageView: View {
-    @Bindable private var viewModel = ManageViewModel()
     @Bindable var coordinator: Coordinator
+    @Bindable private var viewModel: ManageViewModel
+
+    init(coordinator: Coordinator) {
+        self.coordinator = coordinator
+        self.viewModel = ManageViewModel(currentUser: coordinator.currentUser!)
+    }
 
     var body: some View {
-        VStack(spacing: 16) {
+        VStack(alignment: .leading, spacing: 24) {
+            HStack {
+                TextField("Invite...", text: $viewModel.usernameToInvite)
+                    .textFieldStyle(.roundedBorder)
+                    .autocorrectionDisabled()
+                    .textInputAutocapitalization(.never)
+                    .background(Color("BackgroundPrimary"))
+                    .foregroundColor(Color("TextPrimary"))
 
-            VStack(spacing: 8) {
-                HStack {
-                    TextField("Enter username", text: $viewModel.usernameToInvite)
-                        .textFieldStyle(.roundedBorder)
-                        .autocorrectionDisabled()
-                        .textInputAutocapitalization(.never)
-
-                    Button(action: {
-                        viewModel.sendInviteTapped(coordinator: coordinator)
-                    }) {
-                        Text("Send")
-                            .frame(width: 60)
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .disabled(viewModel.usernameToInvite.isEmpty)
+                Button {
+                    viewModel.sendInviteTapped()
+                } label: {
+                    Image(systemName: "paperplane.fill")
+                        .foregroundColor(.white)
+                        .padding(10)
+                        .background(Color("ButtonPrimary"))
+                        .clipShape(Circle())
                 }
-
-                if let inviteStatus = viewModel.inviteStatus {
-                    Text(inviteStatus)
-                        .foregroundColor(.secondary)
-                        .font(.caption)
-                }
-            }
-            .padding(.horizontal)
-
-            Divider().padding(.vertical, 8)
-
-            if !viewModel.pendingUsers.isEmpty {
-                Text("Pending Invites")
-                    .font(.headline)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal)
-
-                List(viewModel.pendingUsers) { user in
-                    HStack {
-                        Text(user.name)
-                        Spacer()
-
-                        Button("Accept") {
-                            viewModel.accept(user, coordinator: coordinator)
-                        }
-                        .buttonStyle(.bordered)
-                        .tint(.green)
-
-                        Button("Decline") {
-                            viewModel.decline(user, coordinator: coordinator)
-                        }
-                        .buttonStyle(.bordered)
-                        .tint(.red)
-                    }
-                }
-                .frame(height: 180)
-                .listStyle(.plain)
+                .disabled(viewModel.usernameToInvite.isEmpty)
+                .opacity(viewModel.usernameToInvite.isEmpty ? 0.5 : 1)
             }
 
-            if !viewModel.friends.isEmpty {
+            VStack(alignment: .leading, spacing: 6) {
                 Text("Friends")
                     .font(.headline)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal)
+                    .foregroundColor(Color("TextPrimary"))
 
-                List(viewModel.friends) { user in
-                    Text(user.name)
+                if viewModel.friends.isEmpty {
+                    Text("No friends yet")
+                        .foregroundColor(.gray)
+                } else {
+                    ForEach(viewModel.friends) { user in
+                        HStack {
+                            Text(user.name)
+                            Spacer()
+                        }
+                    }
                 }
-                .listStyle(.plain)
             }
 
+            VStack(alignment: .leading, spacing: 6) {
+                Text("Pending Invites")
+                    .font(.headline)
+                    .foregroundColor(Color("TextPrimary"))
+
+                if viewModel.pendingUsers.isEmpty {
+                    Text("No pending invites")
+                        .foregroundColor(.gray)
+                } else {
+                    ForEach(viewModel.pendingUsers) { user in
+                        HStack(spacing: 5) {
+                            Text(user.name)
+                            Spacer()
+                            Button("Accept") {
+                                viewModel.accept(user)
+                            }
+                            .buttonStyle(.bordered)
+                            .tint(.green)
+
+                            Button("Decline") {
+                                viewModel.decline(user)
+                            }
+                            .buttonStyle(.bordered)
+                            .tint(.red)
+                        }
+                    }
+                }
+            }
+            
             Spacer()
         }
-        .padding(.top, 40)
+        .padding()
         .task {
-            await viewModel.loadData(coordinator: coordinator)
+            await viewModel.loadData()
         }
     }
+
 }
 
 #Preview {
     ManageView(coordinator: Coordinator())
 }
-
-
-

@@ -18,20 +18,15 @@ final class LoginViewModel {
             let result = try await Auth.auth().signIn(withEmail: email, password: password)
             let user = result.user
 
-            UserService.fetchUser(id: user.uid) { result in
-                switch result {
-                case .success(let appUser):
-                    coordinator.login(appUser)
-                    self.infoMessage = "Signed in!"
-                case .failure(let error):
-                    ErrorHandler.shared.handle(error)
-                }
-            }
+            let appUser = try await UserService.fetchUser(id: user.uid)
+            coordinator.login(appUser)
+            infoMessage = "Signed in!"
         } catch {
             ErrorHandler.shared.handle(error)
         }
     }
 }
+
 
 
 

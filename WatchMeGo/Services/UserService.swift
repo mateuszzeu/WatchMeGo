@@ -16,16 +16,12 @@ final class UserService {
         try users.document(user.id).setData(from: user)
     }
     
-    static func fetchUser(id: String, completion: @escaping (Result<AppUser, Error>) -> Void) {
-        users.document(id).getDocument { snap, error in
-            if let error = error {
-                completion(.failure(error))
-            } else if let user = try? snap?.data(as: AppUser.self) {
-                completion(.success(user))
-            } else {
-                completion(.failure(AppError.userNotFound))
-            }
+    static func fetchUser(id: String) async throws -> AppUser {
+        let snapshot = try await users.document(id).getDocument()
+        guard let user = try? snapshot.data(as: AppUser.self) else {
+            throw AppError.userNotFound
         }
+        return user
     }
     
     static func fetchUsers(usernames: [String]) async throws -> [AppUser] {
