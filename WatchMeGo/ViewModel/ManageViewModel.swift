@@ -73,4 +73,19 @@ final class ManageViewModel {
         currentUser = updatedUser
         await loadData()
     }
+    
+    @MainActor
+    func toggleCompetition(with friend: AppUser) async {
+        if currentUser.activeCompetitionWith == friend.name {
+            currentUser.activeCompetitionWith = nil
+        } else {
+            currentUser.activeCompetitionWith = friend.name
+        }
+        do {
+            try await UserService.updateCompetition(userID: currentUser.id, with: currentUser.activeCompetitionWith)
+            await loadData()
+        } catch {
+            ErrorHandler.shared.handle(error)
+        }
+    }
 }

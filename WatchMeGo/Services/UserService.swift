@@ -77,4 +77,9 @@ final class UserService {
             "sentInvites": FieldValue.arrayRemove([me.name])
         ])
     }
+    
+    static func updateCompetition(userID: String, with friendName: String?) async throws {
+        let update: [String: Any] = ["activeCompetitionWith": friendName as Any]
+        try await users.document(userID).updateData(update)
+    }
 }
