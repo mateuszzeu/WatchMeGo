@@ -16,6 +16,16 @@ final class ManageViewModel {
     var inviteStatus: String?
     var pendingUsers: [AppUser] = []
     var friends: [AppUser] = []
+    
+    var hasPendingCompetitionInvite: Bool {
+        currentUser.competitionStatus == "pending"
+            && currentUser.pendingCompetitionWith != nil
+            && currentUser.activeCompetitionWith == nil
+    }
+
+    var pendingCompetitionFrom: String? {
+        hasPendingCompetitionInvite ? currentUser.pendingCompetitionWith : nil
+    }
 
     init(currentUser: AppUser) {
         self.currentUser = currentUser
@@ -73,7 +83,7 @@ final class ManageViewModel {
         currentUser = updatedUser
         await loadData()
     }
-    
+
     @MainActor
     func toggleCompetition(with friend: AppUser) async {
         if currentUser.activeCompetitionWith == friend.name {
@@ -84,6 +94,40 @@ final class ManageViewModel {
         do {
             try await UserService.updateCompetition(userID: currentUser.id, with: currentUser.activeCompetitionWith)
             await loadData()
+        } catch {
+            ErrorHandler.shared.handle(error)
+        }
+    }
+
+    @MainActor
+    func inviteToCompetition(friend: AppUser) async {
+        do {
+            try await UserService.sendCompetitionInvite(from: currentUser.id, to: friend.id)
+            await loadData()
+        } catch {
+            ErrorHandler.shared.handle(error)
+        }
+    }
+
+    @MainActor
+    func acceptCompetitionInvite() async {
+        guard let fromUserID = currentUser.pendingCompetitionWith else { return }
+        do {
+            let otherUser = try await UserService.fetchUser(id: fromUserID)
+            try await UserService.acceptCompetitionInvite(userID: currentUser.id, friendID: otherUser.id)
+            try await refreshUserAndReload()
+        } catch {
+            ErrorHandler.shared.handle(error)
+        }
+    }
+
+    @MainActor
+    func declineCompetitionInvite() async {
+        guard let fromUserID = currentUser.pendingCompetitionWith else { return }
+        do {
+            let otherUser = try await UserService.fetchUser(id: fromUserID)
+            try await UserService.declineCompetitionInvite(userID: currentUser.id, friendID: otherUser.id)
+            try await refreshUserAndReload()
         } catch {
             ErrorHandler.shared.handle(error)
         }

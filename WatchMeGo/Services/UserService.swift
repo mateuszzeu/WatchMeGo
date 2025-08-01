@@ -82,4 +82,58 @@ final class UserService {
         let update: [String: Any] = ["activeCompetitionWith": friendName as Any]
         try await users.document(userID).updateData(update)
     }
+    
+    static func sendCompetitionInvite(from userID: String, to friendID: String) async throws {
+        let usersRef = users
+        
+        let fromDoc = try await usersRef.document(userID).getDocument()
+        let toDoc = try await usersRef.document(friendID).getDocument()
+        
+        guard let fromData = fromDoc.data(), let toData = toDoc.data() else {
+            throw AppError.userNotFound
+        }
+        
+        let fromStatus = fromData["competitionStatus"] as? String ?? "none"
+        let toStatus = toData["competitionStatus"] as? String ?? "none"
+        if fromStatus == "active" || toStatus == "active" {
+            throw AppError.alreadyInCompetition
+        }
+        
+        try await usersRef.document(userID).updateData([
+            "pendhoingCompetitionWith": friendID,
+            "competitionStatus": "pending"
+        ])
+        try await usersRef.document(friendID).updateData([
+            "pendingCompetitionWith": userID,
+            "competitionStatus": "pending"
+        ])
+    }
+    
+    static func acceptCompetitionInvite(userID: String, friendID: String) async throws {
+        let usersRef = users
+
+        try await usersRef.document(userID).updateData([
+            "activeCompetitionWith": friendID,
+            "pendingCompetitionWith": FieldValue.delete(),
+            "competitionStatus": "active"
+        ])
+        try await usersRef.document(friendID).updateData([
+            "activeCompetitionWith": userID,
+            "pendingCompetitionWith": FieldValue.delete(),
+            "competitionStatus": "active"
+        ])
+    }
+
+    static func declineCompetitionInvite(userID: String, friendID: String) async throws {
+        let usersRef = users
+
+        try await usersRef.document(userID).updateData([
+            "pendingCompetitionWith": FieldValue.delete(),
+            "competitionStatus": "none"
+        ])
+        try await usersRef.document(friendID).updateData([
+            "pendingCompetitionWith": FieldValue.delete(),
+            "competitionStatus": "none"
+        ])
+    }
 }

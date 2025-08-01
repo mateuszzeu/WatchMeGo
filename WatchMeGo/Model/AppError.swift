@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-enum AppError: LocalizedError {
+enum AppError: Error, LocalizedError {
     case invalidEmail
     case passwordTooShort
     case passwordsDoNotMatch
@@ -21,6 +21,7 @@ enum AppError: LocalizedError {
     case selfInvite
     case alreadyFriends
     case inviteAlreadySent
+    case alreadyInCompetition
     
     var errorDescription: String? {
         switch self {
@@ -50,6 +51,8 @@ enum AppError: LocalizedError {
             return "Already friends."
         case .inviteAlreadySent:
             return "Invite already sent."
+        case .alreadyInCompetition:
+            return "User is already in a competition."
         }
     }
 }

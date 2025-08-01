@@ -19,6 +19,8 @@ struct AppUser: Identifiable, Codable {
     var history: [String: DailyProgress]
     
     var activeCompetitionWith: String?
+    var pendingCompetitionWith: String?
+    var competitionStatus = "none"
 }
 
 
