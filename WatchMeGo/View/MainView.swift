@@ -15,10 +15,6 @@ struct MainView: View {
     
     var body: some View {
         VStack {
-            PickDifficultyView(selectedDifficulty: $selectedDifficulty)
-            
-            Spacer()
-            
             if viewModel.isAuthorized {
                 ProgressBarView(label: "Calories", value: viewModel.calories, goal: selectedDifficulty.caloriesGoal, color: Color("ActivityMove"), iconName: "flame.fill")
                 ProgressBarView(label: "Exercise Minutes", value: viewModel.exerciseMinutes, goal: selectedDifficulty.exerciseGoal, color: Color("ActivityExercise"), iconName: "figure.run")
