@@ -9,17 +9,14 @@ import SwiftUI
 
 struct MainTabView: View {
     @Bindable var coordinator: Coordinator
-    
+    let user: AppUser
+
     var body: some View {
         TabView {
             MainView(coordinator: coordinator)
-                .tabItem {
-                    Label("Home", systemImage: "house.fill")
-                }
-            ManageView(coordinator: coordinator)
-                .tabItem {
-                    Label("Friends", systemImage: "person.2.fill")
-                }
+                .tabItem { Label("Home", systemImage: "house.fill") }
+            ManageView(coordinator: coordinator, user: user)
+                .tabItem { Label("Friends", systemImage: "person.2.fill") }
         }
     }
 }

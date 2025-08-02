@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AppRootView: View {
     @Bindable private var coordinator = Coordinator()
-
+    
     var body: some View {
         NavigationStack {
             Group {
@@ -19,10 +19,13 @@ struct AppRootView: View {
                 case .register:
                     RegisterView(coordinator: coordinator)
                 case .main:
-                    MainTabView(coordinator: coordinator)
+                    if let user = coordinator.currentUser {
+                        MainTabView(coordinator: coordinator, user: user)
+                    } else {
+                        LoginView(coordinator: coordinator)
+                    }
                 }
             }
-            .navigationBarTitleDisplayMode(.inline)
         }
     }
 }

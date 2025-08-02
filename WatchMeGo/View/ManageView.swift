@@ -14,9 +14,9 @@ struct ManageView: View {
     @State private var selectedFriend: AppUser?
     @State private var showCompetitionAlert = false
 
-    init(coordinator: Coordinator) {
+    init(coordinator: Coordinator, user: AppUser) {
         self.coordinator = coordinator
-        self.viewModel = ManageViewModel(currentUser: coordinator.currentUser!)
+        self.viewModel = ManageViewModel(currentUser: user)
     }
 
     var body: some View {
@@ -117,6 +117,24 @@ struct ManageView: View {
                 }
                 .padding(.top, 12)
             }
+            
+            Button {
+                viewModel.logout(coordinator: coordinator)
+            } label: {
+                HStack {
+                    Spacer()
+                    Image(systemName: "rectangle.portrait.and.arrow.right")
+                    Text("Log out")
+                    Spacer()
+                }
+                .foregroundColor(.red)
+                .font(.headline)
+                .padding()
+                .background(Color(.systemGray6))
+                .cornerRadius(12)
+                .padding(.vertical, 16)
+            }
+            .buttonStyle(.plain)
 
             Spacer()
         }
@@ -164,8 +182,4 @@ struct ManageView: View {
             }
         )
     }
-}
-
-#Preview {
-    ManageView(coordinator: Coordinator())
 }

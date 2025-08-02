@@ -149,4 +149,13 @@ final class ManageViewModel {
             }
         }
     }
+    
+    func logout(coordinator: Coordinator) {
+        do {
+            try UserService.logout()
+            coordinator.logout()
+        } catch {
+            ErrorHandler.shared.handle(error)
+        }
+    }
 }

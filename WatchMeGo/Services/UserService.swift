@@ -149,4 +149,8 @@ final class UserService {
             "competitionStatus": "none"
         ])
     }
+    
+    static func logout() throws {
+        try Auth.auth().signOut()
+    }
 }
