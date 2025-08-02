@@ -100,7 +100,7 @@ final class UserService {
         }
         
         try await usersRef.document(userID).updateData([
-            "pendhoingCompetitionWith": friendID,
+            "pendingCompetitionWith": friendID,
             "competitionStatus": "pending"
         ])
         try await usersRef.document(friendID).updateData([
@@ -133,6 +133,19 @@ final class UserService {
         ])
         try await usersRef.document(friendID).updateData([
             "pendingCompetitionWith": FieldValue.delete(),
+            "competitionStatus": "none"
+        ])
+    }
+    
+    static func endCompetition(userID: String, friendID: String) async throws {
+        let usersRef = users
+        
+        try await usersRef.document(userID).updateData([
+            "activeCompetitionWith": FieldValue.delete(),
+            "competitionStatus": "none"
+        ])
+        try await usersRef.document(friendID).updateData([
+            "activeCompetitionWith": FieldValue.delete(),
             "competitionStatus": "none"
         ])
     }

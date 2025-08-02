@@ -59,8 +59,9 @@ struct ManageView: View {
                                 selectedFriend = user
                                 showCompetitionAlert = true
                             }) {
-                                Image(systemName: viewModel.currentUser.activeCompetitionWith == user.name ? "flame.fill" : "flame")
-                                    .foregroundColor(viewModel.currentUser.activeCompetitionWith == user.name ? .red : .gray)
+                                Image(systemName: viewModel.isInCompetition(with: user) ? "flame.fill" : "flame")
+                                    .foregroundColor(viewModel.isInCompetition(with: user) ? .red : .gray)
+                                    .font(.system(size: viewModel.isInCompetition(with: user) ? 32 : 22))
                             }
                             .buttonStyle(.plain)
                         }
@@ -125,7 +126,7 @@ struct ManageView: View {
             await viewModel.loadData()
         }
         .alert(
-            viewModel.currentUser.activeCompetitionWith == selectedFriend?.name
+            (selectedFriend != nil && viewModel.isInCompetition(with: selectedFriend!))
             ? "Do you want to stop the competition with \(selectedFriend?.name ?? "")?"
             : "Do you want to start a competition with \(selectedFriend?.name ?? "")?",
             isPresented: $showCompetitionAlert
@@ -133,8 +134,8 @@ struct ManageView: View {
             Button("Yes", role: .destructive) {
                 if let friend = selectedFriend {
                     Task {
-                        if viewModel.currentUser.activeCompetitionWith == friend.name {
-                            await viewModel.toggleCompetition(with: friend)
+                        if viewModel.isInCompetition(with: friend) {
+                            viewModel.endCompetition(with: friend)
                         } else {
                             await viewModel.inviteToCompetition(friend: friend)
                         }

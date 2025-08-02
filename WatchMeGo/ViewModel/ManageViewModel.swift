@@ -84,7 +84,6 @@ final class ManageViewModel {
         await loadData()
     }
 
-    @MainActor
     func toggleCompetition(with friend: AppUser) async {
         if currentUser.activeCompetitionWith == friend.name {
             currentUser.activeCompetitionWith = nil
@@ -99,7 +98,6 @@ final class ManageViewModel {
         }
     }
 
-    @MainActor
     func inviteToCompetition(friend: AppUser) async {
         do {
             try await UserService.sendCompetitionInvite(from: currentUser.id, to: friend.id)
@@ -109,7 +107,6 @@ final class ManageViewModel {
         }
     }
 
-    @MainActor
     func acceptCompetitionInvite() async {
         guard let fromUserID = currentUser.pendingCompetitionWith else { return }
         do {
@@ -121,7 +118,6 @@ final class ManageViewModel {
         }
     }
 
-    @MainActor
     func declineCompetitionInvite() async {
         guard let fromUserID = currentUser.pendingCompetitionWith else { return }
         do {
@@ -130,6 +126,22 @@ final class ManageViewModel {
             try await refreshUserAndReload()
         } catch {
             ErrorHandler.shared.handle(error)
+        }
+    }
+    
+    func isInCompetition(with friend: AppUser) -> Bool {
+        currentUser.activeCompetitionWith == friend.id
+    }
+    
+    func endCompetition(with friend: AppUser) {
+        Task {
+            do {
+                try await UserService.endCompetition(userID: currentUser.id, friendID: friend.id)
+                
+                try await refreshUserAndReload()
+            } catch {
+                ErrorHandler.shared.handle(error)
+            }
         }
     }
 }
