@@ -61,7 +61,7 @@ struct ManageView: View {
                             }) {
                                 Image(systemName: viewModel.isInCompetition(with: user) ? "flame.fill" : "flame")
                                     .foregroundColor(viewModel.isInCompetition(with: user) ? .red : .gray)
-                                    .font(.system(size: viewModel.isInCompetition(with: user) ? 32 : 22))
+                                    .font(.system(size: viewModel.isInCompetition(with: user) ? 28 : 22))
                             }
                             .buttonStyle(.plain)
                         }
@@ -98,11 +98,10 @@ struct ManageView: View {
                 }
             }
 
-            if viewModel.hasPendingCompetitionInvite, let challenger = viewModel.pendingCompetitionFrom {
+            if viewModel.hasPendingCompetitionInvite, let challenger = viewModel.pendingCompetitionChallengerName {
                 VStack(alignment: .leading, spacing: 10) {
                     Text("\(challenger) invited you to a competition!")
                         .font(.headline)
-                        .foregroundColor(.red)
                     HStack {
                         Button("Accept") {
                             Task { await viewModel.acceptCompetitionInvite() }
