@@ -14,62 +14,64 @@ struct ProgressBarView: View {
     let color: Color
     let iconName: String
 
-    var progress: Double {
+    private var progress: Double {
         guard goal > 0 else { return 0 }
         return min(Double(value) / Double(goal), 1.0)
     }
 
     var body: some View {
-        VStack {
+        VStack(alignment: .leading, spacing: DesignSystem.Spacing.s) {
             HStack {
                 Image(systemName: iconName)
                     .foregroundColor(color)
                 Text(label)
-                    .font(.headline)
+                    .font(DesignSystem.Fonts.headline)
                     .foregroundColor(color)
                 Spacer()
                 Text("\(value)/\(goal)")
-                    .foregroundColor(.secondary)
+                    .font(DesignSystem.Fonts.footnote)
+                    .foregroundColor(DesignSystem.Colors.secondary)
             }
-            ZStack(alignment: .leading) {
-                Capsule()
-                    .fill(color.opacity(0.15))
-                    .frame(height: 18)
-                Capsule()
-                    .fill(color)
-                    .frame(width: CGFloat(progress) * UIScreen.main.bounds.width * 0.7, height: 20)
+            GeometryReader { geo in
+                ZStack(alignment: .leading) {
+                    Capsule()
+                        .fill(color.opacity(0.15))
+                    Capsule()
+                        .fill(color)
+                        .frame(width: geo.size.width * progress)
+                }
             }
-            .frame(maxWidth: .infinity)
+            .frame(height: 18)
         }
-        .padding(.vertical, 6)
+        .padding(.vertical, DesignSystem.Spacing.s)
         .frame(maxWidth: .infinity)
     }
 }
 
 #Preview {
-    VStack(spacing: 20) {
+    VStack(spacing: DesignSystem.Spacing.l) {
         ProgressBarView(
             label: "Calories",
             value: 320,
             goal: 500,
-            color: Color("ActivityMove"),
+            color: DesignSystem.Colors.move,
             iconName: "flame.fill"
         )
         ProgressBarView(
             label: "Exercise Minutes",
             value: 18,
             goal: 30,
-            color: Color("ActivityExercise"),
+            color: DesignSystem.Colors.exercise,
             iconName: "figure.run"
         )
         ProgressBarView(
             label: "Stand Hours",
             value: 9,
             goal: 12,
-            color: Color("ActivityStand"),
+            color: DesignSystem.Colors.stand,
             iconName: "clock"
         )
     }
-    .padding()
+    .padding(DesignSystem.Spacing.l)
     .frame(maxWidth: 500)
 }

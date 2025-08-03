@@ -15,31 +15,18 @@ struct RegisterView: View {
     @State private var username = ""
 
     var body: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: DesignSystem.Spacing.m) {
             Text("Register")
-                .font(.largeTitle.bold())
-                .padding(.bottom, 20)
+                .font(DesignSystem.Fonts.title)
+                .padding(.bottom, DesignSystem.Spacing.l)
 
-            TextField("Email", text: $email)
-                .textInputAutocapitalization(.never)
-                .autocorrectionDisabled()
-                .padding(12)
-                .background(Color("BackgroundPrimary"))
-                .cornerRadius(10)
+            StyledTextField(title: "Email", text: $email)
 
-            SecureField("Password", text: $password)
-                .padding(12)
-                .background(Color("BackgroundPrimary"))
-                .cornerRadius(10)
+            StyledTextField(title: "Password", text: $password, isSecure: true)
 
-            TextField("Username", text: $username)
-                .textInputAutocapitalization(.never)
-                .autocorrectionDisabled()
-                .padding(12)
-                .background(Color("BackgroundPrimary"))
-                .cornerRadius(10)
+            StyledTextField(title: "Username", text: $username)
 
-            Button(action: {
+            PrimaryButton(title: "Register") {
                 Task {
                     await viewModel.register(
                         email: email,
@@ -48,26 +35,23 @@ struct RegisterView: View {
                         coordinator: coordinator
                     )
                 }
-            }) {
-                Text("Register")
-                    .frame(maxWidth: .infinity)
             }
-            .buttonStyle(.borderedProminent)
-            .tint(Color("ButtonPrimary"))
             .disabled(email.isEmpty || password.isEmpty || username.isEmpty)
 
             Button("Already have an account? Sign In") {
                 coordinator.showLogin()
             }
-            .font(.footnote)
-            .tint(Color("ButtonPrimary"))
+            .font(DesignSystem.Fonts.footnote)
+            .tint(DesignSystem.Colors.accent)
 
             if let info = viewModel.infoMessage {
                 Text(info)
-                    .foregroundColor(.secondary)
+                    .font(DesignSystem.Fonts.footnote)
+                    .foregroundColor(DesignSystem.Colors.secondary)
             }
         }
-        .padding()
+        .padding(DesignSystem.Spacing.l)
+        .background(DesignSystem.Colors.background)
     }
 }
 

@@ -18,7 +18,7 @@ struct WatchMeGoApp: App {
     var body: some Scene {
         WindowGroup {
             AppRootView()
-                .preferredColorScheme(.dark)
+                .tint(DesignSystem.Colors.accent)
         }
     }
 }

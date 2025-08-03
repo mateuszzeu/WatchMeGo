@@ -20,47 +20,44 @@ struct ManageView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 24) {
-            HStack {
-                TextField("Invite...", text: $viewModel.usernameToInvite)
-                    .textFieldStyle(.roundedBorder)
-                    .autocorrectionDisabled()
-                    .textInputAutocapitalization(.never)
-                    .background(Color("BackgroundPrimary"))
-                    .foregroundColor(Color("TextPrimary"))
+        VStack(alignment: .leading, spacing: DesignSystem.Spacing.l) {
+            HStack(spacing: DesignSystem.Spacing.s) {
+                StyledTextField(title: "Invite...", text: $viewModel.usernameToInvite)
 
                 Button {
                     viewModel.sendInviteTapped()
                 } label: {
                     Image(systemName: "paperplane.fill")
-                        .foregroundColor(.white)
-                        .padding(10)
-                        .background(Color("ButtonPrimary"))
+                        .foregroundColor(DesignSystem.Colors.background)
+                        .padding(DesignSystem.Spacing.s)
+                        .background(DesignSystem.Colors.accent)
                         .clipShape(Circle())
                 }
                 .disabled(viewModel.usernameToInvite.isEmpty)
                 .opacity(viewModel.usernameToInvite.isEmpty ? 0.5 : 1)
             }
 
-            VStack(alignment: .leading, spacing: 6) {
+            VStack(alignment: .leading, spacing: DesignSystem.Spacing.s) {
                 Text("Friends")
-                    .font(.headline)
-                    .foregroundColor(Color("TextPrimary"))
+                    .font(DesignSystem.Fonts.headline)
+                    .foregroundColor(DesignSystem.Colors.primary)
 
                 if viewModel.friends.isEmpty {
                     Text("No friends yet")
-                        .foregroundColor(.gray)
+                        .font(DesignSystem.Fonts.footnote)
+                        .foregroundColor(DesignSystem.Colors.secondary)
                 } else {
                     ForEach(viewModel.friends) { user in
                         HStack {
                             Text(user.name)
+                                .font(DesignSystem.Fonts.body)
                             Spacer()
                             Button(action: {
                                 selectedFriend = user
                                 showCompetitionAlert = true
                             }) {
                                 Image(systemName: viewModel.isInCompetition(with: user) ? "flame.fill" : "flame")
-                                    .foregroundColor(viewModel.isInCompetition(with: user) ? .red : .gray)
+                                    .foregroundColor(viewModel.isInCompetition(with: user) ? DesignSystem.Colors.accent : DesignSystem.Colors.secondary)
                                     .font(.system(size: viewModel.isInCompetition(with: user) ? 28 : 22))
                             }
                             .buttonStyle(.plain)
@@ -69,76 +66,66 @@ struct ManageView: View {
                 }
             }
 
-            VStack(alignment: .leading, spacing: 6) {
+            VStack(alignment: .leading, spacing: DesignSystem.Spacing.s) {
                 Text("Pending Invites")
-                    .font(.headline)
-                    .foregroundColor(Color("TextPrimary"))
+                    .font(DesignSystem.Fonts.headline)
+                    .foregroundColor(DesignSystem.Colors.primary)
 
                 if viewModel.pendingUsers.isEmpty {
                     Text("No pending invites")
-                        .foregroundColor(.gray)
+                        .font(DesignSystem.Fonts.footnote)
+                        .foregroundColor(DesignSystem.Colors.secondary)
                 } else {
                     ForEach(viewModel.pendingUsers) { user in
-                        HStack(spacing: 5) {
+                        HStack(spacing: DesignSystem.Spacing.s) {
                             Text(user.name)
+                                .font(DesignSystem.Fonts.body)
                             Spacer()
                             Button("Accept") {
                                 viewModel.accept(user)
                             }
                             .buttonStyle(.bordered)
-                            .tint(.green)
+                            .tint(DesignSystem.Colors.accent)
 
                             Button("Decline") {
                                 viewModel.decline(user)
                             }
                             .buttonStyle(.bordered)
-                            .tint(.red)
+                            .tint(DesignSystem.Colors.error)
                         }
                     }
                 }
             }
 
             if viewModel.hasPendingCompetitionInvite, let challenger = viewModel.pendingCompetitionChallengerName {
-                VStack(alignment: .leading, spacing: 10) {
+                VStack(alignment: .leading, spacing: DesignSystem.Spacing.s) {
                     Text("\(challenger) invited you to a competition!")
-                        .font(.headline)
-                    HStack {
+                        .font(DesignSystem.Fonts.headline)
+                    HStack(spacing: DesignSystem.Spacing.s) {
                         Button("Accept") {
                             Task { await viewModel.acceptCompetitionInvite() }
                         }
                         .buttonStyle(.bordered)
-                        .tint(.green)
+                        .tint(DesignSystem.Colors.accent)
                         Button("Decline") {
                             Task { await viewModel.declineCompetitionInvite() }
                         }
                         .buttonStyle(.bordered)
-                        .tint(.red)
+                        .tint(DesignSystem.Colors.error)
                     }
                 }
-                .padding(.top, 12)
+                .padding(.top, DesignSystem.Spacing.m)
             }
-            
-            Button {
+
+            PrimaryButton(title: "Log out", color: DesignSystem.Colors.error) {
                 viewModel.logout(coordinator: coordinator)
-            } label: {
-                HStack {
-                    Spacer()
-                    Image(systemName: "rectangle.portrait.and.arrow.right")
-                    Text("Log out")
-                    Spacer()
-                }
-                .foregroundColor(.red)
-                .font(.headline)
-                .padding()
-                .background(Color(.systemGray6))
-                .cornerRadius(12)
-                .padding(.vertical, 16)
             }
-            .buttonStyle(.plain)
+            .padding(.vertical, DesignSystem.Spacing.m)
 
             Spacer()
         }
-        .padding()
+        .padding(DesignSystem.Spacing.l)
+        .background(DesignSystem.Colors.background)
         .task {
             await viewModel.loadData()
         }
@@ -167,14 +154,14 @@ struct ManageView: View {
                     VStack {
                         Spacer()
                         Text(msg)
-                            .font(.callout)
-                            .foregroundColor(.white)
-                            .padding(.horizontal, 24)
-                            .padding(.vertical, 12)
-                            .background(Color.red.opacity(0.9))
-                            .cornerRadius(20)
-                            .shadow(radius: 8)
-                            .padding(.bottom, 40)
+                            .font(DesignSystem.Fonts.footnote)
+                            .foregroundColor(DesignSystem.Colors.background)
+                            .padding(.horizontal, DesignSystem.Spacing.l)
+                            .padding(.vertical, DesignSystem.Spacing.s)
+                            .background(DesignSystem.Colors.error.opacity(0.9))
+                            .cornerRadius(DesignSystem.Radius.l)
+                            .shadow(radius: DesignSystem.Radius.s)
+                            .padding(.bottom, DesignSystem.Spacing.l * 2)
                             .transition(.move(edge: .bottom).combined(with: .opacity))
                     }
                     .animation(.easeInOut, value: ErrorHandler.shared.showError)
