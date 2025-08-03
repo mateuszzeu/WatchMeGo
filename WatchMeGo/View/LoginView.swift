@@ -41,7 +41,9 @@ struct LoginView: View {
             }
         }
         .padding(DesignSystem.Spacing.l)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(DesignSystem.Colors.background)
+        .ignoresSafeArea()
     }
 }
 

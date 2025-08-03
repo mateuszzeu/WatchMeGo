@@ -57,8 +57,8 @@ struct ManageView: View {
                                 showCompetitionAlert = true
                             }) {
                                 Image(systemName: viewModel.isInCompetition(with: user) ? "flame.fill" : "flame")
-                                    .foregroundColor(viewModel.isInCompetition(with: user) ? DesignSystem.Colors.accent : DesignSystem.Colors.secondary)
-                                    .font(.system(size: viewModel.isInCompetition(with: user) ? 28 : 22))
+                                    .foregroundColor(viewModel.isInCompetition(with: user) ? DesignSystem.Colors.error : DesignSystem.Colors.secondary)
+                                    .font(.system(size: viewModel.isInCompetition(with: user) ? 30 : 24))
                             }
                             .buttonStyle(.plain)
                         }
@@ -117,15 +117,17 @@ struct ManageView: View {
                 .padding(.top, DesignSystem.Spacing.m)
             }
 
+            Spacer()
+
             PrimaryButton(title: "Log out", color: DesignSystem.Colors.error) {
                 viewModel.logout(coordinator: coordinator)
             }
             .padding(.vertical, DesignSystem.Spacing.m)
-
-            Spacer()
         }
         .padding(DesignSystem.Spacing.l)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .background(DesignSystem.Colors.background)
+        .ignoresSafeArea()
         .task {
             await viewModel.loadData()
         }
