@@ -20,7 +20,7 @@ final class ManageViewModel {
     var pendingCompetitionChallengerName: String?
     
     var hasPendingCompetitionInvite: Bool {
-        currentUser.competitionStatus == "pending"
+        currentUser.competitionStatus == "pendingReceived"
         && currentUser.pendingCompetitionWith != nil
         && currentUser.activeCompetitionWith == nil
     }

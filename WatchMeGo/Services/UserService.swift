@@ -101,11 +101,11 @@ final class UserService {
         
         try await usersRef.document(userID).updateData([
             "pendingCompetitionWith": friendID,
-            "competitionStatus": "pending"
+            "competitionStatus": "pendingSent"
         ])
         try await usersRef.document(friendID).updateData([
             "pendingCompetitionWith": userID,
-            "competitionStatus": "pending"
+            "competitionStatus": "pendingReceived"
         ])
     }
     
