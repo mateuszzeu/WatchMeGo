@@ -15,6 +15,8 @@ final class MainViewModel {
     var exerciseMinutes = 0
     var standHours = 0
     
+    var competitiveUser: AppUser? = nil
+    
     func loadDataAndSave(for userID: String?) async {
         isAuthorized = await HealthKitService.shared.requestAuthorization()
         guard isAuthorized else {
@@ -31,6 +33,13 @@ final class MainViewModel {
         standHours = await hours
         
         await saveProgress(for: userID)
+        
+        if let userID, let user = try? await UserService.fetchUser(id: userID),
+           let competitiveID = user.activeCompetitionWith {
+            competitiveUser = try? await UserService.fetchUser(id: competitiveID)
+        } else {
+            competitiveUser = nil
+        }
     }
     
     private func saveProgress(for userID: String?) async {
