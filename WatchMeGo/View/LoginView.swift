@@ -14,45 +14,34 @@ struct LoginView: View {
     @State private var password = ""
 
     var body: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: DesignSystem.Spacing.m) {
             Text("Sign In")
-                .font(.largeTitle.bold())
-                .padding(.bottom, 20)
+                .font(DesignSystem.Fonts.title)
+                .padding(.bottom, DesignSystem.Spacing.l)
 
-            TextField("Email", text: $email)
-                .textInputAutocapitalization(.never)
-                .autocorrectionDisabled()
-                .padding(12)
-                .background(Color("BackgroundPrimary"))
-                .cornerRadius(10)
+            StyledTextField(title: "Email", text: $email)
 
-            SecureField("Password", text: $password)
-                .padding(12)
-                .background(Color("BackgroundPrimary"))
-                .cornerRadius(10)
+            StyledTextField(title: "Password", text: $password, isSecure: true)
 
-            Button(action: {
+            PrimaryButton(title: "Sign In") {
                 Task { await viewModel.login(email: email, password: password, coordinator: coordinator) }
-            }) {
-                Text("Sign In")
-                    .frame(maxWidth: .infinity)
             }
-            .buttonStyle(.borderedProminent)
-            .tint(Color("ButtonPrimary"))
             .disabled(email.isEmpty || password.isEmpty)
 
             Button("No account? Register") {
                 coordinator.showRegister()
             }
-            .font(.footnote)
-            .tint(Color("ButtonPrimary"))
+            .font(DesignSystem.Fonts.footnote)
+            .tint(DesignSystem.Colors.accent)
 
             if let info = viewModel.infoMessage {
                 Text(info)
-                    .foregroundColor(.secondary)
+                    .font(DesignSystem.Fonts.footnote)
+                    .foregroundColor(DesignSystem.Colors.secondary)
             }
         }
-        .padding()
+        .padding(DesignSystem.Spacing.l)
+        .background(DesignSystem.Colors.background)
     }
 }
 

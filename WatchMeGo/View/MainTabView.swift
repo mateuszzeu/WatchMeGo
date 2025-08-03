@@ -18,5 +18,6 @@ struct MainTabView: View {
             ManageView(coordinator: coordinator, user: user)
                 .tabItem { Label("Friends", systemImage: "person.2.fill") }
         }
+        .tint(DesignSystem.Colors.accent)
     }
 }
