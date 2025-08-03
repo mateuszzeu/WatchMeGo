@@ -9,13 +9,14 @@ struct PrimaryButton: View {
         Button(action: action) {
             Text(title)
                 .font(DesignSystem.Fonts.headline)
+                .foregroundColor(DesignSystem.Colors.background)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, DesignSystem.Spacing.s)
+                .background(color)
+                .cornerRadius(DesignSystem.Radius.m)
         }
         .buttonStyle(.plain)
-        .background(color)
-        .foregroundColor(DesignSystem.Colors.background)
-        .cornerRadius(DesignSystem.Radius.m)
+        .contentShape(Rectangle())
         .shadow(radius: DesignSystem.Radius.s, y: DesignSystem.Spacing.xs)
     }
 }

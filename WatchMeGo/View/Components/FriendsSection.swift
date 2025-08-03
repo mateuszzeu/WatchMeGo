@@ -29,9 +29,10 @@ struct FriendsSection: View {
                                     .foregroundColor(isInCompetition(user) ? DesignSystem.Colors.error : DesignSystem.Colors.secondary)
                                     .font(.system(size: isInCompetition(user) ? 30 : 24))
                             }
+                            .frame(maxWidth: .infinity)
                             .padding(.vertical, DesignSystem.Spacing.s)
                             .padding(.horizontal, DesignSystem.Spacing.m)
-                            .background(DesignSystem.Colors.surface)
+                            .background(.ultraThinMaterial)
                             .cornerRadius(DesignSystem.Radius.m)
                         }
                         .buttonStyle(.plain)

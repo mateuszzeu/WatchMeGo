@@ -7,10 +7,11 @@ struct CompetitionCouponView: View {
     @State private var appear = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spacing.m) {
+        VStack(spacing: DesignSystem.Spacing.m) {
             Text("\(challenger) invited you to a competition!")
                 .font(DesignSystem.Fonts.headline)
                 .foregroundColor(DesignSystem.Colors.primary)
+                .multilineTextAlignment(.center)
             HStack(spacing: DesignSystem.Spacing.m) {
                 Button("Accept", action: onAccept)
                     .buttonStyle(.borderedProminent)
@@ -19,16 +20,22 @@ struct CompetitionCouponView: View {
                     .buttonStyle(.bordered)
                     .tint(DesignSystem.Colors.error)
             }
+            .frame(maxWidth: .infinity)
         }
         .padding(DesignSystem.Spacing.m)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(DesignSystem.Colors.surface)
+        .frame(maxWidth: .infinity)
+        .background(.ultraThinMaterial)
         .cornerRadius(DesignSystem.Radius.l)
         .shadow(radius: DesignSystem.Radius.s)
         .overlay(
             RoundedRectangle(cornerRadius: DesignSystem.Radius.l)
-                .stroke(style: StrokeStyle(lineWidth: 2, dash: [10]))
-                .foregroundColor(DesignSystem.Colors.accent.opacity(0.5))
+                .stroke(
+                    LinearGradient(
+                        colors: [DesignSystem.Colors.accent, DesignSystem.Colors.error],
+                        startPoint: .leading,
+                        endPoint: .trailing
+                    ), lineWidth: 3
+                )
         )
         .scaleEffect(appear ? 1 : 0.95)
         .opacity(appear ? 1 : 0)

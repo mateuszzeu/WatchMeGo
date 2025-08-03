@@ -19,5 +19,6 @@ struct MainTabView: View {
                 .tabItem { Label("Friends", systemImage: "person.2.fill") }
         }
         .tint(DesignSystem.Colors.accent)
+        .overlay(ErrorBannerView())
     }
 }

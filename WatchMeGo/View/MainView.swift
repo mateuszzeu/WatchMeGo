@@ -15,7 +15,7 @@ struct MainView: View {
         VStack(spacing: DesignSystem.Spacing.l) {
             if viewModel.isAuthorized {
                 VStack(alignment: .leading, spacing: DesignSystem.Spacing.m) {
-                    Text("User Progress")
+                    Text("\(coordinator.currentUser?.name ?? "User") Progress")
                         .font(DesignSystem.Fonts.headline)
                         .foregroundColor(DesignSystem.Colors.primary)
                         .padding(.vertical, DesignSystem.Spacing.xs)
@@ -32,7 +32,7 @@ struct MainView: View {
 
                 if let competitive = viewModel.competitiveUser {
                     VStack(alignment: .leading, spacing: DesignSystem.Spacing.m) {
-                        Text("Friend Progress")
+                        Text("\(competitive.name) Progress")
                             .font(DesignSystem.Fonts.headline)
                             .foregroundColor(DesignSystem.Colors.primary)
                             .padding(.vertical, DesignSystem.Spacing.xs)
@@ -57,9 +57,7 @@ struct MainView: View {
         }
         .padding(DesignSystem.Spacing.l)
         .background(DesignSystem.Colors.background)
-        .task {
-            await viewModel.loadDataAndSave(for: coordinator.currentUser?.id)
-        }
+        .task { await viewModel.loadDataAndSave(for: coordinator.currentUser?.id) }
     }
 }
 

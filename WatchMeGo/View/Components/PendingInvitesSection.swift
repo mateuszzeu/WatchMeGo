@@ -29,9 +29,10 @@ struct PendingInvitesSection: View {
                                 .buttonStyle(.bordered)
                                 .tint(DesignSystem.Colors.error)
                         }
+                        .frame(maxWidth: .infinity)
                         .padding(.vertical, DesignSystem.Spacing.s)
                         .padding(.horizontal, DesignSystem.Spacing.m)
-                        .background(DesignSystem.Colors.surface)
+                        .background(.ultraThinMaterial)
                         .cornerRadius(DesignSystem.Radius.m)
                     }
                 }
