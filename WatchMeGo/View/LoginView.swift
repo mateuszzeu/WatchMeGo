@@ -44,6 +44,7 @@ struct LoginView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(DesignSystem.Colors.background)
         .ignoresSafeArea()
+        .overlay(ErrorBannerView())
     }
 }
 

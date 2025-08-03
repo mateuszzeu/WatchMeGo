@@ -37,6 +37,8 @@ struct ManageView: View {
                     .opacity(viewModel.usernameToInvite.isEmpty ? 0.5 : 1)
                 }
 
+                Divider()
+
                 FriendsSection(
                     friends: viewModel.friends,
                     isInCompetition: viewModel.isInCompetition(with:),
@@ -45,6 +47,8 @@ struct ManageView: View {
                         showCompetitionAlert = true
                     }
                 )
+
+                Divider()
 
                 PendingInvitesSection(
                     pendingUsers: viewModel.pendingUsers,
@@ -93,25 +97,5 @@ struct ManageView: View {
             }
             Button("No", role: .cancel) { }
         }
-        .overlay(
-            Group {
-                if ErrorHandler.shared.showError, let msg = ErrorHandler.shared.errorMessage {
-                    VStack {
-                        Spacer()
-                        Text(msg)
-                            .font(DesignSystem.Fonts.footnote)
-                            .foregroundColor(DesignSystem.Colors.background)
-                            .padding(.horizontal, DesignSystem.Spacing.l)
-                            .padding(.vertical, DesignSystem.Spacing.s)
-                            .background(DesignSystem.Colors.error.opacity(0.9))
-                            .cornerRadius(DesignSystem.Radius.l)
-                            .shadow(radius: DesignSystem.Radius.s)
-                            .padding(.bottom, DesignSystem.Spacing.l * 2)
-                            .transition(.move(edge: .bottom).combined(with: .opacity))
-                    }
-                    .animation(.easeInOut, value: ErrorHandler.shared.showError)
-                }
-            }
-        )
     }
 }
