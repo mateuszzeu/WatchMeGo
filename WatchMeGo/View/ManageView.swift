@@ -20,117 +20,60 @@ struct ManageView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spacing.l) {
-            HStack(spacing: DesignSystem.Spacing.s) {
-                StyledTextField(title: "Invite...", text: $viewModel.usernameToInvite)
+        ScrollView {
+            LazyVStack(alignment: .leading, spacing: DesignSystem.Spacing.l) {
+                ChallengeBannerView(username: viewModel.currentUser.name)
 
-                Button {
-                    viewModel.sendInviteTapped()
-                } label: {
-                    Image(systemName: "paperplane.fill")
-                        .foregroundColor(DesignSystem.Colors.background)
-                        .padding(DesignSystem.Spacing.s)
-                        .background(DesignSystem.Colors.accent)
-                        .clipShape(Circle())
-                }
-                .disabled(viewModel.usernameToInvite.isEmpty)
-                .opacity(viewModel.usernameToInvite.isEmpty ? 0.5 : 1)
-            }
-
-            VStack(alignment: .leading, spacing: DesignSystem.Spacing.s) {
-                Text("Friends")
-                    .font(DesignSystem.Fonts.headline)
-                    .foregroundColor(DesignSystem.Colors.primary)
-
-                if viewModel.friends.isEmpty {
-                    Text("No friends yet")
-                        .font(DesignSystem.Fonts.footnote)
-                        .foregroundColor(DesignSystem.Colors.secondary)
-                } else {
-                    ForEach(viewModel.friends) { user in
-                        HStack {
-                            Text(user.name)
-                                .font(DesignSystem.Fonts.body)
-                            Spacer()
-                            Button(action: {
-                                selectedFriend = user
-                                showCompetitionAlert = true
-                            }) {
-                                Image(systemName: viewModel.isInCompetition(with: user) ? "flame.fill" : "flame")
-                                    .foregroundColor(viewModel.isInCompetition(with: user) ? DesignSystem.Colors.error : DesignSystem.Colors.secondary)
-                                    .font(.system(size: viewModel.isInCompetition(with: user) ? 30 : 24))
-                            }
-                            .buttonStyle(.plain)
-                        }
+                HStack(spacing: DesignSystem.Spacing.s) {
+                    StyledTextField(title: "Invite...", text: $viewModel.usernameToInvite)
+                    Button { viewModel.sendInviteTapped() } label: {
+                        Image(systemName: "paperplane.fill")
+                            .foregroundColor(DesignSystem.Colors.background)
+                            .padding(DesignSystem.Spacing.s)
+                            .background(DesignSystem.Colors.accent)
+                            .clipShape(Circle())
                     }
+                    .disabled(viewModel.usernameToInvite.isEmpty)
+                    .opacity(viewModel.usernameToInvite.isEmpty ? 0.5 : 1)
                 }
-            }
 
-            VStack(alignment: .leading, spacing: DesignSystem.Spacing.s) {
-                Text("Pending Invites")
-                    .font(DesignSystem.Fonts.headline)
-                    .foregroundColor(DesignSystem.Colors.primary)
-
-                if viewModel.pendingUsers.isEmpty {
-                    Text("No pending invites")
-                        .font(DesignSystem.Fonts.footnote)
-                        .foregroundColor(DesignSystem.Colors.secondary)
-                } else {
-                    ForEach(viewModel.pendingUsers) { user in
-                        HStack(spacing: DesignSystem.Spacing.s) {
-                            Text(user.name)
-                                .font(DesignSystem.Fonts.body)
-                            Spacer()
-                            Button("Accept") {
-                                viewModel.accept(user)
-                            }
-                            .buttonStyle(.bordered)
-                            .tint(DesignSystem.Colors.accent)
-
-                            Button("Decline") {
-                                viewModel.decline(user)
-                            }
-                            .buttonStyle(.bordered)
-                            .tint(DesignSystem.Colors.error)
-                        }
+                FriendsSection(
+                    friends: viewModel.friends,
+                    isInCompetition: viewModel.isInCompetition(with:),
+                    onSelect: { user in
+                        selectedFriend = user
+                        showCompetitionAlert = true
                     }
+                )
+
+                PendingInvitesSection(
+                    pendingUsers: viewModel.pendingUsers,
+                    onAccept: { viewModel.accept($0) },
+                    onDecline: { viewModel.decline($0) }
+                )
+
+                if viewModel.hasPendingCompetitionInvite,
+                   let challenger = viewModel.pendingCompetitionChallengerName {
+                    CompetitionCouponView(
+                        challenger: challenger,
+                        onAccept: { Task { await viewModel.acceptCompetitionInvite() } },
+                        onDecline: { Task { await viewModel.declineCompetitionInvite() } }
+                    )
                 }
             }
-
-            if viewModel.hasPendingCompetitionInvite, let challenger = viewModel.pendingCompetitionChallengerName {
-                VStack(alignment: .leading, spacing: DesignSystem.Spacing.s) {
-                    Text("\(challenger) invited you to a competition!")
-                        .font(DesignSystem.Fonts.headline)
-                    HStack(spacing: DesignSystem.Spacing.s) {
-                        Button("Accept") {
-                            Task { await viewModel.acceptCompetitionInvite() }
-                        }
-                        .buttonStyle(.bordered)
-                        .tint(DesignSystem.Colors.accent)
-                        Button("Decline") {
-                            Task { await viewModel.declineCompetitionInvite() }
-                        }
-                        .buttonStyle(.bordered)
-                        .tint(DesignSystem.Colors.error)
-                    }
-                }
-                .padding(.top, DesignSystem.Spacing.m)
-            }
-
-            Spacer()
-
-            PrimaryButton(title: "Log out", color: DesignSystem.Colors.error) {
+            .padding(DesignSystem.Spacing.l)
+        }
+        .background(DesignSystem.Colors.background.ignoresSafeArea())
+        .safeAreaInset(edge: .bottom) {
+            PrimaryButton(title: "Log out") {
                 viewModel.logout(coordinator: coordinator)
             }
-            .padding(.vertical, DesignSystem.Spacing.m)
+            .padding(.horizontal, DesignSystem.Spacing.l)
+            .padding(.vertical, DesignSystem.Spacing.s)
+            .padding(.bottom, DesignSystem.Spacing.m)
+            .background(DesignSystem.Colors.background)
         }
-        .padding(DesignSystem.Spacing.l)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .background(DesignSystem.Colors.background)
-        .ignoresSafeArea()
-        .task {
-            await viewModel.loadData()
-        }
+        .task { await viewModel.loadData() }
         .alert(
             (selectedFriend != nil && viewModel.isInCompetition(with: selectedFriend!))
             ? "Do you want to stop the competition with \(selectedFriend?.name ?? "")?"
