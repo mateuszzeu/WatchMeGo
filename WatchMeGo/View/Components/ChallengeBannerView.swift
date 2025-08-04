@@ -1,10 +1,17 @@
+//
+//  ChallengeBannerView.swift
+//  WatchMeGo
+//
+//  Created by Liza on 03/08/2025.
+//
+
 import SwiftUI
 
 struct ChallengeBannerView: View {
     let username: String
 
     var body: some View {
-        Text("\(username), are you ready for challenge?")
+        Text("\(username), find your mate!")
             .font(DesignSystem.Fonts.headline)
             .foregroundColor(DesignSystem.Colors.background)
             .frame(maxWidth: .infinity)

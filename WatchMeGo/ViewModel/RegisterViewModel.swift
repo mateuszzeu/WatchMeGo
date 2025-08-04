@@ -29,8 +29,7 @@ final class RegisterViewModel {
                 history: [:],
                 activeCompetitionWith: nil
             )
-
-            try UserService.createUser(appUser)
+            try await UserService.createUser(appUser)
             coordinator.login(appUser)
             self.infoMessage = "Registered & Signed in!"
         } catch {

@@ -12,8 +12,8 @@ final class UserService {
     private static var db: Firestore { Firestore.firestore() }
     private static var users: CollectionReference { db.collection("users") }
     
-    static func createUser(_ user: AppUser) throws {
-        try users.document(user.id).setData(from: user)
+    static func createUser(_ user: AppUser) async throws {
+        try await users.document(user.id).setData(from: user)
     }
     
     static func fetchUser(id: String) async throws -> AppUser {
@@ -78,8 +78,8 @@ final class UserService {
         ])
     }
     
-    static func updateCompetition(userID: String, with friendName: String?) async throws {
-        let update: [String: Any] = ["activeCompetitionWith": friendName as Any]
+    static func updateCompetition(userID: String, friendID: String?) async throws {
+        let update: [String: Any] = ["activeCompetitionWith": friendID as Any]
         try await users.document(userID).updateData(update)
     }
     

@@ -1,3 +1,10 @@
+//
+//  PrimaryButton.swift
+//  WatchMeGo
+//
+//  Created by Liza on 03/08/2025.
+//
+
 import SwiftUI
 
 struct PrimaryButton: View {

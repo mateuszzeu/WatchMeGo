@@ -1,3 +1,10 @@
+//
+//  FriendsSection.swift
+//  WatchMeGo
+//
+//  Created by Liza on 03/08/2025.
+//
+
 import SwiftUI
 
 struct FriendsSection: View {

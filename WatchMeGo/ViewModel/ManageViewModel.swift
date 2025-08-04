@@ -90,13 +90,13 @@ final class ManageViewModel {
     }
     
     func toggleCompetition(with friend: AppUser) async {
-        if currentUser.activeCompetitionWith == friend.name {
+        if currentUser.activeCompetitionWith == friend.id {
             currentUser.activeCompetitionWith = nil
         } else {
-            currentUser.activeCompetitionWith = friend.name
+            currentUser.activeCompetitionWith = friend.id
         }
         do {
-            try await UserService.updateCompetition(userID: currentUser.id, with: currentUser.activeCompetitionWith)
+            try await UserService.updateCompetition(userID: currentUser.id, friendID: currentUser.activeCompetitionWith)
             await loadData()
         } catch {
             ErrorHandler.shared.handle(error)
@@ -115,8 +115,7 @@ final class ManageViewModel {
     func acceptCompetitionInvite() async {
         guard let fromUserID = currentUser.pendingCompetitionWith else { return }
         do {
-            let otherUser = try await UserService.fetchUser(id: fromUserID)
-            try await UserService.acceptCompetitionInvite(userID: currentUser.id, friendID: otherUser.id)
+            try await UserService.acceptCompetitionInvite(userID: currentUser.id, friendID: fromUserID)
             try await refreshUserAndReload()
         } catch {
             ErrorHandler.shared.handle(error)
@@ -126,8 +125,7 @@ final class ManageViewModel {
     func declineCompetitionInvite() async {
         guard let fromUserID = currentUser.pendingCompetitionWith else { return }
         do {
-            let otherUser = try await UserService.fetchUser(id: fromUserID)
-            try await UserService.declineCompetitionInvite(userID: currentUser.id, friendID: otherUser.id)
+            try await UserService.declineCompetitionInvite(userID: currentUser.id, friendID: fromUserID)
             try await refreshUserAndReload()
         } catch {
             ErrorHandler.shared.handle(error)
