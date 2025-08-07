@@ -18,7 +18,9 @@ final class UserService {
     
     static func fetchUser(id: String) async throws -> AppUser {
         let snapshot = try await users.document(id).getDocument()
-        guard let user = try? snapshot.data(as: AppUser.self) else {
+        //guard let user = try? snapshot.data(as: AppUser.self) else {
+        guard let data = snapshot.data(),
+              let user = try? Firestore.Decoder().decode(AppUser.self, from: data) else {
             throw AppError.userNotFound
         }
         return user
@@ -27,12 +29,19 @@ final class UserService {
     static func fetchUsers(usernames: [String]) async throws -> [AppUser] {
         guard !usernames.isEmpty else { return [] }
         let snap = try await users.whereField("name", in: usernames).getDocuments()
-        return snap.documents.compactMap { try? $0.data(as: AppUser.self) }
+        //return snap.documents.compactMap { try? $0.data(as: AppUser.self) }
+        let decoder = Firestore.Decoder()
+        return snap.documents.compactMap { try? decoder.decode(AppUser.self, from: $0.data()) }
     }
     
     static func saveProgress(for userID: String, progress: DailyProgress) async throws {
         let data = try Firestore.Encoder().encode(progress)
-        try await users.document(userID).setData(["currentProgress": data], merge: true)
+        //try await users.document(userID).setData(["currentProgress": data], merge: true)
+        let historyKey = "history.\(progress.date)"
+        try await users.document(userID).setData([
+            "currentProgress": data,
+            historyKey: data
+        ], merge: true)
     }
     
     static func sendInvite(from me: AppUser, toUsername: String) async throws {
