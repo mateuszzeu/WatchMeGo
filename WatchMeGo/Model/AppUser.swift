@@ -25,7 +25,6 @@ struct AppUser: Identifiable, Codable {
 
 
 struct DailyProgress: Codable {
-    var date: String
     var calories: Int
     var exerciseMinutes: Int
     var standHours: Int

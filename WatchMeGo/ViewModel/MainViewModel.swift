@@ -10,6 +10,12 @@ import Foundation
 @Observable
 final class MainViewModel {
     
+    private enum ActivityGoal {
+        static let calories = 500
+        static let exerciseMinutes = 80
+        static let standHours = 10
+    }
+    
     var isAuthorized = false
     var calories = 0
     var exerciseMinutes = 0
@@ -51,16 +57,21 @@ final class MainViewModel {
         let dateFormat = DateFormatter()
         dateFormat.dateFormat = "yyyy-MM-dd"
         
+        let dateString = dateFormat.string(from: Date())
+        
+        let challengeMet = calories >= ActivityGoal.calories &&
+            exerciseMinutes >= ActivityGoal.exerciseMinutes &&
+            standHours >= ActivityGoal.standHours
+        
         let progress = DailyProgress(
-            date: dateFormat.string(from: Date()),
             calories: calories,
             exerciseMinutes: exerciseMinutes,
             standHours: standHours,
-            challengeMet: false
+            challengeMet: challengeMet
         )
         
         do {
-            try await UserService.saveProgress(for: userID, progress: progress)
+            try await UserService.saveProgress(for: userID, date: dateString, progress: progress)
         } catch {
             ErrorHandler.shared.handle(error)
         }
