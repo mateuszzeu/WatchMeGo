@@ -16,6 +16,7 @@ final class ManageViewModel {
     var inviteStatus: String?
     var pendingUsers: [AppUser] = []
     var friends: [AppUser] = []
+    var pendingChallenges: [Challenge] = []
     
     var pendingCompetitionChallengerName: String?
     
@@ -49,6 +50,9 @@ final class ManageViewModel {
         do {
             pendingUsers = try await UserService.fetchUsers(usernames: pendingNames)
             friends = try await UserService.fetchUsers(usernames: friendNames)
+            
+            let challengeIDs = currentUser.pendingChallenges + currentUser.sentChallenges
+            pendingChallenges = try await ChallengeService.fetchChallenges(ids: challengeIDs)
             
             if let challengerID = currentUser.pendingCompetitionWith {
                 let challenger = try await UserService.fetchUser(id: challengerID)

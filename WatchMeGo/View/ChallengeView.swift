@@ -51,12 +51,15 @@ struct ChallengeView: View {
                 Stepper(value: $viewModel.duration, in: 1...7) {
                     Text("Duration: \(viewModel.duration) day\(viewModel.duration > 1 ? "s" : "")")
                 }
-
+                
                 StyledTextField(title: "Prize / Forfeit (optional)", text: $viewModel.prize)
-
-                PrimaryButton(title: "Send Challenge") { }
-                    .disabled(!viewModel.canSend)
-                    .opacity(viewModel.canSend ? 1 : 0.5)
+                
+                //PrimaryButton(title: "Send Challenge") { }
+                PrimaryButton(title: "Send Challenge") {
+                    viewModel.sendChallenge()
+                }
+                .disabled(!viewModel.canSend)
+                .opacity(viewModel.canSend ? 1 : 0.5)
             }
             .padding(DesignSystem.Spacing.l)
         }
@@ -74,6 +77,8 @@ struct ChallengeView: View {
             friends: ["Bob", "Carol"],
             pendingInvites: [],
             sentInvites: [],
+            pendingChallenges: [],
+            sentChallenges: [],
             currentProgress: nil,
             history: [:],
             activeCompetitionWith: nil,

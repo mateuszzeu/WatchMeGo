@@ -55,7 +55,12 @@ struct ManageView: View {
                     onAccept: { viewModel.accept($0) },
                     onDecline: { viewModel.decline($0) }
                 )
-
+                
+                PendingChallengesSection(
+                    challenges: viewModel.pendingChallenges,
+                    currentUserID: viewModel.currentUser.id
+                )
+                
                 if viewModel.hasPendingCompetitionInvite,
                    let challenger = viewModel.pendingCompetitionChallengerName {
                     CompetitionCouponView(

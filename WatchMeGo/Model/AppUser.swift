@@ -15,6 +15,9 @@ struct AppUser: Identifiable, Codable {
     var pendingInvites: [String]
     var sentInvites: [String]
     
+    var pendingChallenges: [String] = []
+    var sentChallenges: [String] = []
+    
     var currentProgress: DailyProgress?
     var history: [String: DailyProgress]
     

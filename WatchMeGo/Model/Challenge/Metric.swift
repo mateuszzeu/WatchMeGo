@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum Metric: String, CaseIterable, Identifiable {
+enum Metric: String, CaseIterable, Identifiable, Codable {
     case calories
     case exerciseMinutes
     case standHours

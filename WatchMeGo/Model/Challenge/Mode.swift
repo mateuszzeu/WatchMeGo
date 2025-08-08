@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum Mode: String, CaseIterable, Identifiable {
+enum Mode: String, CaseIterable, Identifiable, Codable {
     case coop = "COOP"
     case versus = "VERSUS"
 

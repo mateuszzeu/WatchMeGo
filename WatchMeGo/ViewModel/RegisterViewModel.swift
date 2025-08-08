@@ -25,6 +25,8 @@ final class RegisterViewModel {
                 friends: [],
                 pendingInvites: [],
                 sentInvites: [],
+                pendingChallenges: [],
+                sentChallenges: [],
                 currentProgress: nil,
                 history: [:],
                 activeCompetitionWith: nil
