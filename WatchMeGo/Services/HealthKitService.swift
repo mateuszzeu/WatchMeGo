@@ -60,8 +60,10 @@ final class HealthKitService {
             let predicate = HKQuery.predicateForSamples(withStart: startOfDay, end: now, options: .strictStartDate)
 
             let query = HKSampleQuery(sampleType: standHourType, predicate: predicate, limit: HKObjectQueryNoLimit, sortDescriptors: nil) { _, samples, _ in
-                let hours = samples?.count ?? 0
-                continuation.resume(returning: hours)
+                let stood = (samples as? [HKCategorySample])?
+                    .filter { $0.value == HKCategoryValueAppleStandHour.stood.rawValue }
+                    .count ?? 0
+                continuation.resume(returning: stood)
             }
 
             healthStore.execute(query)

@@ -90,10 +90,6 @@ final class UserService {
         ])
     }
     
-    static func updateCompetition(forUserID userID: String, activeFriendID: String?) async throws {
-        try await usersCollection.document(userID).updateData(["activeCompetitionWith": activeFriendID as Any])
-    }
-    
     static func sendCompetitionInvite(fromUserID userID: String, toFriendID friendID: String) async throws {
         let senderDocument = try await usersCollection.document(userID).getDocument()
         let recipientDocument = try await usersCollection.document(friendID).getDocument()
@@ -129,9 +125,6 @@ final class UserService {
             "pendingCompetitionWith": FieldValue.delete(),
             "competitionStatus": "active"
         ])
-        
-        let pairID = [userID, friendID].sorted().joined(separator: "_")
-        try await ChallengeService.markChallengeActive(pairID: pairID)
     }
     
     static func declineCompetitionInvite(userID: String, friendID: String) async throws {

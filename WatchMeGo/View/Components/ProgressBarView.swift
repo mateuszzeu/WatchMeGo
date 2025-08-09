@@ -35,8 +35,6 @@ struct ProgressBarView: View {
             }
 
             GeometryReader { geo in
-                // Rysujemy prostokąty i przycinamy całość do kapsuły,
-                // żeby przy bardzo małej szerokości nic nie "wystawało".
                 ZStack(alignment: .leading) {
                     Rectangle()
                         .fill(color.opacity(0.15))
@@ -62,14 +60,14 @@ struct ProgressBarView: View {
     VStack(spacing: DesignSystem.Spacing.l) {
         ProgressBarView(
             label: "Calories",
-            value: 1, // sprawdź minimalny
+            value: 1,
             goal: 500,
             color: DesignSystem.Colors.move,
             iconName: "flame.fill"
         )
         ProgressBarView(
             label: "Exercise Minutes",
-            value: 0, // sprawdź zero
+            value: 0,
             goal: 30,
             color: DesignSystem.Colors.exercise,
             iconName: "figure.run"
