@@ -10,7 +10,6 @@ import Foundation
 @MainActor
 @Observable
 final class ManageViewModel {
-
     private(set) var currentUser: AppUser
 
     var usernameToInvite = ""

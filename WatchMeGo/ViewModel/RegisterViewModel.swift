@@ -19,12 +19,12 @@ final class RegisterViewModel {
             guard try await isUsernameAvailable(username) else {
                 throw AppError.usernameTaken
             }
-            
+
             let result = try await Auth.auth().createUser(withEmail: email, password: password)
-            let user = result.user
+            let firebaseUser = result.user
 
             let appUser = AppUser(
-                id: user.uid,
+                id: firebaseUser.uid,
                 name: username,
                 createdAt: Date(),
                 friends: [],
@@ -44,12 +44,12 @@ final class RegisterViewModel {
         }
     }
 
-    private func isUsernameAvailable(_ name: String) async throws -> Bool {
-        let snap = try await Firestore.firestore()
+    private func isUsernameAvailable(_ username: String) async throws -> Bool {
+        let snapshot = try await Firestore.firestore()
             .collection("users")
-            .whereField("name", isEqualTo: name)
+            .whereField("name", isEqualTo: username)
             .limit(to: 1)
             .getDocuments()
-        return snap.documents.isEmpty
+        return snapshot.documents.isEmpty
     }
 }
