@@ -13,7 +13,8 @@ final class UserService {
     static var users: CollectionReference { db.collection("users") }
     
     static func createUser(_ user: AppUser) async throws {
-        try await users.document(user.id).setData(from: user)
+        let data = try Firestore.Encoder().encode(user)
+        try await users.document(user.id).setData(data)
     }
     
     static func fetchUser(id: String) async throws -> AppUser {
@@ -34,7 +35,7 @@ final class UserService {
     }
     
     static func fetchFriends(for user: AppUser) async throws -> [AppUser] {
-        return try await fetchUsers(usernames: user.friends)
+        try await fetchUsers(usernames: user.friends)
     }
     
     static func saveProgress(for userID: String, date: String, progress: DailyProgress) async throws {
@@ -90,8 +91,7 @@ final class UserService {
     }
     
     static func updateCompetition(userID: String, friendID: String?) async throws {
-        let update: [String: Any] = ["activeCompetitionWith": friendID as Any]
-        try await users.document(userID).updateData(update)
+        try await users.document(userID).updateData(["activeCompetitionWith": friendID as Any])
     }
     
     static func sendCompetitionInvite(from userID: String, to friendID: String) async throws {
@@ -122,14 +122,12 @@ final class UserService {
         try await users.document(userID).updateData([
             "activeCompetitionWith": friendID,
             "pendingCompetitionWith": FieldValue.delete(),
-            "competitionStatus": "active",
-            "pendingChallenges": FieldValue.arrayRemove([[String]]())
+            "competitionStatus": "active"
         ])
         try await users.document(friendID).updateData([
             "activeCompetitionWith": userID,
             "pendingCompetitionWith": FieldValue.delete(),
-            "competitionStatus": "active",
-            "sentChallenges": FieldValue.arrayRemove([[String]]())
+            "competitionStatus": "active"
         ])
         
         let pairID = [userID, friendID].sorted().joined(separator: "_")
@@ -182,4 +180,3 @@ final class UserService {
         return msg
     }
 }
-
