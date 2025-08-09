@@ -7,13 +7,14 @@
 
 import SwiftUI
 
+@MainActor
 @Observable
 final class ErrorHandler {
     static let shared = ErrorHandler()
-    
+
     var errorMessage: String?
-    var showError: Bool = false
-    
+    var showError = false
+
     func handle(_ error: Error) {
         if let appError = error as? AppError {
             errorMessage = appError.localizedDescription
@@ -21,11 +22,11 @@ final class ErrorHandler {
             errorMessage = "Unknown error: \(error.localizedDescription)"
         }
         showError = true
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
-            self?.showError = false
-            self?.errorMessage = nil
+
+        Task {
+            try? await Task.sleep(nanoseconds: 3_000_000_000)
+            showError = false
+            errorMessage = nil
         }
     }
 }
-

@@ -20,30 +20,30 @@ struct ChallengeView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: DesignSystem.Spacing.m) {
 
-                if let ch = viewModel.activeChallenge {
+                if let challenge = viewModel.activeChallenge {
                     Text("Active challenge")
                         .font(DesignSystem.Fonts.headline)
                         .foregroundColor(DesignSystem.Colors.primary)
 
                     VStack(spacing: DesignSystem.Spacing.s) {
-                        Text(ch.name)
+                        Text(challenge.name)
                             .font(DesignSystem.Fonts.body)
                             .foregroundColor(DesignSystem.Colors.primary)
                             .multilineTextAlignment(.center)
 
-                        if !ch.metrics.isEmpty {
-                            Text(ch.metrics.map { $0.metric.title }.joined(separator: " • "))
+                        if !challenge.metrics.isEmpty {
+                            Text(challenge.metrics.map { $0.metric.title }.joined(separator: " • "))
                                 .font(DesignSystem.Fonts.footnote)
                                 .foregroundColor(DesignSystem.Colors.secondary)
                                 .multilineTextAlignment(.center)
                         }
 
-                        Text("Duration: \(ch.duration) day\(ch.duration > 1 ? "s" : "")")
+                        Text("Duration: \(challenge.duration) day\(challenge.duration > 1 ? "s" : "")")
                             .font(DesignSystem.Fonts.footnote)
                             .foregroundColor(DesignSystem.Colors.secondary)
                             .multilineTextAlignment(.center)
 
-                        if let prize = ch.prize, !prize.isEmpty {
+                        if let prize = challenge.prize, !prize.isEmpty {
                             Text("Prize: \(prize)")
                                 .font(DesignSystem.Fonts.footnote)
                                 .foregroundColor(DesignSystem.Colors.secondary)
