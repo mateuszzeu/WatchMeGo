@@ -21,4 +21,12 @@ enum Metric: String, CaseIterable, Identifiable, Codable {
         case .standHours: return "Stand Hours"
         }
     }
+
+    var iconName: String {
+        switch self {
+        case .calories: return "flame.fill"
+        case .exerciseMinutes: return "figure.run"
+        case .standHours: return "clock"
+        }
+    }
 }

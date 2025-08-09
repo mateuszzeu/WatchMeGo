@@ -11,9 +11,6 @@ struct ManageView: View {
     @Bindable var coordinator: Coordinator
     @Bindable private var viewModel: ManageViewModel
 
-    @State private var selectedFriend: AppUser?
-    @State private var showCompetitionAlert = false
-
     init(coordinator: Coordinator, user: AppUser) {
         self.coordinator = coordinator
         self.viewModel = ManageViewModel(currentUser: user)
@@ -42,10 +39,7 @@ struct ManageView: View {
                 FriendsSection(
                     friends: viewModel.friends,
                     isInCompetition: viewModel.isInCompetition(with:),
-                    onSelect: { user in
-                        selectedFriend = user
-                        showCompetitionAlert = true
-                    }
+                    onSelect: { _ in }
                 )
 
                 Divider()
@@ -56,15 +50,11 @@ struct ManageView: View {
                     onDecline: { viewModel.decline($0) }
                 )
                 
-                PendingChallengesSection(
-                    challenges: viewModel.pendingChallenges,
-                    currentUserID: viewModel.currentUser.id
-                )
-                
                 if viewModel.hasPendingCompetitionInvite,
                    let challenger = viewModel.pendingCompetitionChallengerName {
                     CompetitionCouponView(
                         challenger: challenger,
+                        challenge: viewModel.couponChallenge,
                         onAccept: { Task { await viewModel.acceptCompetitionInvite() } },
                         onDecline: { Task { await viewModel.declineCompetitionInvite() } }
                     )
@@ -83,24 +73,5 @@ struct ManageView: View {
             .background(DesignSystem.Colors.background)
         }
         .task { await viewModel.loadData() }
-        .alert(
-            (selectedFriend != nil && viewModel.isInCompetition(with: selectedFriend!))
-            ? "Do you want to stop the competition with \(selectedFriend?.name ?? "")?"
-            : "Do you want to start a competition with \(selectedFriend?.name ?? "")?",
-            isPresented: $showCompetitionAlert
-        ) {
-            Button("Yes", role: .destructive) {
-                if let friend = selectedFriend {
-                    Task {
-                        if viewModel.isInCompetition(with: friend) {
-                            viewModel.endCompetition(with: friend)
-                        } else {
-                            await viewModel.inviteToCompetition(friend: friend)
-                        }
-                    }
-                }
-            }
-            Button("No", role: .cancel) { }
-        }
     }
 }

@@ -14,9 +14,9 @@ struct ProgressBarView: View {
     let color: Color
     let iconName: String
 
-    private var progress: Double {
+    private var progress: CGFloat {
         guard goal > 0 else { return 0 }
-        return min(Double(value) / Double(goal), 1.0)
+        return min(max(CGFloat(value) / CGFloat(goal), 0), 1)
     }
 
     var body: some View {
@@ -31,15 +31,25 @@ struct ProgressBarView: View {
                 Text("\(value)/\(goal)")
                     .font(DesignSystem.Fonts.footnote)
                     .foregroundColor(DesignSystem.Colors.secondary)
+                    .monospacedDigit()
             }
+
             GeometryReader { geo in
+                // Rysujemy prostokąty i przycinamy całość do kapsuły,
+                // żeby przy bardzo małej szerokości nic nie "wystawało".
                 ZStack(alignment: .leading) {
-                    Capsule()
+                    Rectangle()
                         .fill(color.opacity(0.15))
-                    Capsule()
+
+                    Rectangle()
                         .fill(color)
                         .frame(width: geo.size.width * progress)
+                        .animation(.easeInOut(duration: 0.25), value: progress)
                 }
+                .clipShape(Capsule())
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(Text(label))
+                .accessibilityValue(Text("\(value) of \(goal)"))
             }
             .frame(height: 18)
         }
@@ -52,14 +62,14 @@ struct ProgressBarView: View {
     VStack(spacing: DesignSystem.Spacing.l) {
         ProgressBarView(
             label: "Calories",
-            value: 320,
+            value: 1, // sprawdź minimalny
             goal: 500,
             color: DesignSystem.Colors.move,
             iconName: "flame.fill"
         )
         ProgressBarView(
             label: "Exercise Minutes",
-            value: 18,
+            value: 0, // sprawdź zero
             goal: 30,
             color: DesignSystem.Colors.exercise,
             iconName: "figure.run"

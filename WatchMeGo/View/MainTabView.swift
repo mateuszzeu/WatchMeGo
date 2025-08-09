@@ -15,8 +15,10 @@ struct MainTabView: View {
         TabView {
             MainView(coordinator: coordinator)
                 .tabItem { Label("Home", systemImage: "house.fill") }
+
             ManageView(coordinator: coordinator, user: user)
                 .tabItem { Label("Friends", systemImage: "person.2.fill") }
+
             ChallengeView(coordinator: coordinator, user: user)
                 .tabItem { Label("Challenge", systemImage: "flag.checkered") }
         }
@@ -24,3 +26,4 @@ struct MainTabView: View {
         .overlay(ErrorBannerView())
     }
 }
+

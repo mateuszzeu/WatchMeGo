@@ -9,6 +9,7 @@ import SwiftUI
 
 struct CompetitionCouponView: View {
     let challenger: String
+    let challenge: Challenge?
     let onAccept: () -> Void
     let onDecline: () -> Void
     @State private var appear = false
@@ -19,6 +20,32 @@ struct CompetitionCouponView: View {
                 .font(DesignSystem.Fonts.headline)
                 .foregroundColor(DesignSystem.Colors.primary)
                 .multilineTextAlignment(.center)
+
+            if let ch = challenge {
+                VStack(spacing: DesignSystem.Spacing.xs) {
+                    Text(ch.name)
+                        .font(DesignSystem.Fonts.body)
+                        .foregroundColor(DesignSystem.Colors.primary)
+
+                    if !ch.metrics.isEmpty {
+                        Text(ch.metrics.map { $0.metric.title }.joined(separator: " • "))
+                            .font(DesignSystem.Fonts.footnote)
+                            .foregroundColor(DesignSystem.Colors.secondary)
+                            .multilineTextAlignment(.center)
+                    }
+
+                    Text("Duration: \(ch.duration) day\(ch.duration > 1 ? "s" : "")")
+                        .font(DesignSystem.Fonts.footnote)
+                        .foregroundColor(DesignSystem.Colors.secondary)
+
+                    if let prize = ch.prize, !prize.isEmpty {
+                        Text("Prize: \(prize)")
+                            .font(DesignSystem.Fonts.footnote)
+                            .foregroundColor(DesignSystem.Colors.secondary)
+                    }
+                }
+            }
+
             HStack(spacing: DesignSystem.Spacing.m) {
                 Button("Accept", action: onAccept)
                     .buttonStyle(.borderedProminent)
@@ -52,7 +79,8 @@ struct CompetitionCouponView: View {
 }
 
 #Preview {
-    CompetitionCouponView(challenger: "Jane", onAccept: {}, onDecline: {})
+    CompetitionCouponView(challenger: "Jane", challenge: nil, onAccept: {}, onDecline: {})
         .padding()
         .background(DesignSystem.Colors.background)
 }
+

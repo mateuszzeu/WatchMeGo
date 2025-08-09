@@ -10,6 +10,5 @@ import Foundation
 struct MetricSelection: Identifiable {
     let metric: Metric
     var isSelected = false
-    var target = ""
     var id: Metric { metric }
 }

@@ -29,7 +29,7 @@ struct LoginView: View {
             .disabled(email.isEmpty || password.isEmpty)
 
             Button("No account? Register") {
-                coordinator.showRegister()
+                coordinator.navigate(to: .register)
             }
             .font(DesignSystem.Fonts.footnote)
             .tint(DesignSystem.Colors.accent)
@@ -51,4 +51,5 @@ struct LoginView: View {
 #Preview {
     LoginView(coordinator: Coordinator())
 }
+
 

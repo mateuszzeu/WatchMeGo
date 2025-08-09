@@ -7,8 +7,7 @@
 
 import Foundation
 
-enum Mode: String, CaseIterable, Identifiable, Codable {
-    case coop = "COOP"
+enum Mode: String, Identifiable, Codable {
     case versus = "VERSUS"
 
     var id: String { rawValue }

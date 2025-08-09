@@ -11,14 +11,12 @@ import Foundation
 @Observable
 final class ManageViewModel {
     private(set) var currentUser: AppUser
-    
     var usernameToInvite = ""
     var inviteStatus: String?
     var pendingUsers: [AppUser] = []
     var friends: [AppUser] = []
-    var pendingChallenges: [Challenge] = []
-    
     var pendingCompetitionChallengerName: String?
+    var couponChallenge: Challenge?
     
     var hasPendingCompetitionInvite: Bool {
         currentUser.competitionStatus == "pendingReceived"
@@ -50,19 +48,25 @@ final class ManageViewModel {
         do {
             pendingUsers = try await UserService.fetchUsers(usernames: pendingNames)
             friends = try await UserService.fetchUsers(usernames: friendNames)
-            
-            let challengeIDs = currentUser.pendingChallenges + currentUser.sentChallenges
-            pendingChallenges = try await ChallengeService.fetchChallenges(ids: challengeIDs)
-            
             if let challengerID = currentUser.pendingCompetitionWith {
                 let challenger = try await UserService.fetchUser(id: challengerID)
                 pendingCompetitionChallengerName = challenger.name
+                let pairID = [currentUser.id, challengerID].sorted().joined(separator: "_")
+                let challenges = try await ChallengeService.fetchByPair(pairID: pairID)
+                couponChallenge = challenges.first(where: { $0.status == .pending })
             } else {
                 pendingCompetitionChallengerName = nil
+                couponChallenge = nil
             }
         } catch {
             ErrorHandler.shared.handle(error)
         }
+    }
+    
+    private func refreshUserAndReload() async throws {
+        let updatedUser = try await UserService.fetchUser(id: currentUser.id)
+        currentUser = updatedUser
+        await loadData()
     }
     
     func accept(_ user: AppUser) {
@@ -87,39 +91,14 @@ final class ManageViewModel {
         }
     }
     
-    private func refreshUserAndReload() async throws {
-        let updatedUser = try await UserService.fetchUser(id: currentUser.id)
-        currentUser = updatedUser
-        await loadData()
-    }
-    
-    func toggleCompetition(with friend: AppUser) async {
-        if currentUser.activeCompetitionWith == friend.id {
-            currentUser.activeCompetitionWith = nil
-        } else {
-            currentUser.activeCompetitionWith = friend.id
-        }
-        do {
-            try await UserService.updateCompetition(userID: currentUser.id, friendID: currentUser.activeCompetitionWith)
-            await loadData()
-        } catch {
-            ErrorHandler.shared.handle(error)
-        }
-    }
-    
-    func inviteToCompetition(friend: AppUser) async {
-        do {
-            try await UserService.sendCompetitionInvite(from: currentUser.id, to: friend.id)
-            await loadData()
-        } catch {
-            ErrorHandler.shared.handle(error)
-        }
-    }
-    
     func acceptCompetitionInvite() async {
-        guard let fromUserID = currentUser.pendingCompetitionWith else { return }
+        guard
+            let fromUserID = currentUser.pendingCompetitionWith,
+            let challengeID = couponChallenge?.id
+        else { return }
         do {
             try await UserService.acceptCompetitionInvite(userID: currentUser.id, friendID: fromUserID)
+            try await ChallengeService.setStatus(challengeID: challengeID, to: Challenge.Status.active)
             try await refreshUserAndReload()
         } catch {
             ErrorHandler.shared.handle(error)
@@ -140,18 +119,6 @@ final class ManageViewModel {
         currentUser.activeCompetitionWith == friend.id
     }
     
-    func endCompetition(with friend: AppUser) {
-        Task {
-            do {
-                try await UserService.endCompetition(userID: currentUser.id, friendID: friend.id)
-                
-                try await refreshUserAndReload()
-            } catch {
-                ErrorHandler.shared.handle(error)
-            }
-        }
-    }
-    
     func logout(coordinator: Coordinator) {
         do {
             try UserService.logout()
@@ -161,3 +128,4 @@ final class ManageViewModel {
         }
     }
 }
+

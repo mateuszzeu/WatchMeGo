@@ -9,8 +9,8 @@ import FirebaseFirestore
 import FirebaseAuth
 
 final class UserService {
-    private static var db: Firestore { Firestore.firestore() }
-    private static var users: CollectionReference { db.collection("users") }
+    static var db: Firestore { Firestore.firestore() }
+    static var users: CollectionReference { db.collection("users") }
     
     static func createUser(_ user: AppUser) async throws {
         try await users.document(user.id).setData(from: user)
@@ -18,8 +18,9 @@ final class UserService {
     
     static func fetchUser(id: String) async throws -> AppUser {
         let snapshot = try await users.document(id).getDocument()
+        let decoder = Firestore.Decoder()
         guard let data = snapshot.data(),
-              let user = try? Firestore.Decoder().decode(AppUser.self, from: data) else {
+              let user = try? decoder.decode(AppUser.self, from: data) else {
             throw AppError.userNotFound
         }
         return user
@@ -30,6 +31,10 @@ final class UserService {
         let snap = try await users.whereField("name", in: usernames).getDocuments()
         let decoder = Firestore.Decoder()
         return snap.documents.compactMap { try? decoder.decode(AppUser.self, from: $0.data()) }
+    }
+    
+    static func fetchFriends(for user: AppUser) async throws -> [AppUser] {
+        return try await fetchUsers(usernames: user.friends)
     }
     
     static func saveProgress(for userID: String, date: String, progress: DailyProgress) async throws {
@@ -90,10 +95,8 @@ final class UserService {
     }
     
     static func sendCompetitionInvite(from userID: String, to friendID: String) async throws {
-        let usersRef = users
-        
-        let fromDoc = try await usersRef.document(userID).getDocument()
-        let toDoc = try await usersRef.document(friendID).getDocument()
+        let fromDoc = try await users.document(userID).getDocument()
+        let toDoc = try await users.document(friendID).getDocument()
         
         guard let fromData = fromDoc.data(), let toData = toDoc.data() else {
             throw AppError.userNotFound
@@ -105,52 +108,51 @@ final class UserService {
             throw AppError.alreadyInCompetition
         }
         
-        try await usersRef.document(userID).updateData([
+        try await users.document(userID).updateData([
             "pendingCompetitionWith": friendID,
             "competitionStatus": "pendingSent"
         ])
-        try await usersRef.document(friendID).updateData([
+        try await users.document(friendID).updateData([
             "pendingCompetitionWith": userID,
             "competitionStatus": "pendingReceived"
         ])
     }
     
     static func acceptCompetitionInvite(userID: String, friendID: String) async throws {
-        let usersRef = users
-
-        try await usersRef.document(userID).updateData([
+        try await users.document(userID).updateData([
             "activeCompetitionWith": friendID,
             "pendingCompetitionWith": FieldValue.delete(),
-            "competitionStatus": "active"
+            "competitionStatus": "active",
+            "pendingChallenges": FieldValue.arrayRemove([[String]]())
         ])
-        try await usersRef.document(friendID).updateData([
+        try await users.document(friendID).updateData([
             "activeCompetitionWith": userID,
             "pendingCompetitionWith": FieldValue.delete(),
-            "competitionStatus": "active"
+            "competitionStatus": "active",
+            "sentChallenges": FieldValue.arrayRemove([[String]]())
         ])
+        
+        let pairID = [userID, friendID].sorted().joined(separator: "_")
+        try await ChallengeService.markActive(pairID: pairID)
     }
-
+    
     static func declineCompetitionInvite(userID: String, friendID: String) async throws {
-        let usersRef = users
-
-        try await usersRef.document(userID).updateData([
+        try await users.document(userID).updateData([
             "pendingCompetitionWith": FieldValue.delete(),
             "competitionStatus": "none"
         ])
-        try await usersRef.document(friendID).updateData([
+        try await users.document(friendID).updateData([
             "pendingCompetitionWith": FieldValue.delete(),
             "competitionStatus": "none"
         ])
     }
     
     static func endCompetition(userID: String, friendID: String) async throws {
-        let usersRef = users
-        
-        try await usersRef.document(userID).updateData([
+        try await users.document(userID).updateData([
             "activeCompetitionWith": FieldValue.delete(),
             "competitionStatus": "none"
         ])
-        try await usersRef.document(friendID).updateData([
+        try await users.document(friendID).updateData([
             "activeCompetitionWith": FieldValue.delete(),
             "competitionStatus": "none"
         ])
@@ -159,4 +161,25 @@ final class UserService {
     static func logout() throws {
         try Auth.auth().signOut()
     }
+    
+    static func setResultMessage(userID: String, message: String) async throws {
+        try await users.document(userID).setData([
+            "lastChallengeResult": message,
+            "lastChallengeResultAt": FieldValue.serverTimestamp()
+        ], merge: true)
+    }
+
+    static func consumeResultMessage(userID: String) async throws -> String? {
+        let ref = users.document(userID)
+        let snap = try await ref.getDocument()
+        guard let data = snap.data(),
+              let msg = data["lastChallengeResult"] as? String,
+              !msg.isEmpty else { return nil }
+        try await ref.updateData([
+            "lastChallengeResult": FieldValue.delete(),
+            "lastChallengeResultAt": FieldValue.delete()
+        ])
+        return msg
+    }
 }
+

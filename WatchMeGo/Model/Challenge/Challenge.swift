@@ -21,6 +21,8 @@ struct Challenge: Identifiable, Codable {
     }
 
     let id: String
+    let pairID: String
+
     var name: String
     var senderID: String
     var senderName: String

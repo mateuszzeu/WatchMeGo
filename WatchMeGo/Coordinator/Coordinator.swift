@@ -9,30 +9,27 @@ import SwiftUI
 @MainActor
 @Observable
 final class Coordinator {
-    var screen: Screen = .login
-    var currentUser: AppUser?
-
+    
     enum Screen {
         case login
         case register
         case main
     }
-
+    
+    var screen: Screen = .login
+    var currentUser: AppUser?
+    
     func login(_ user: AppUser) {
         currentUser = user
         screen = .main
     }
-
+    
     func logout() {
         currentUser = nil
         screen = .login
     }
-
-    func showRegister() {
-        screen = .register
-    }
-
-    func showLogin() {
-        screen = .login
+    
+    func navigate(to screen: Screen) {
+        self.screen = screen
     }
 }

@@ -22,6 +22,7 @@ enum AppError: Error, LocalizedError {
     case alreadyFriends
     case inviteAlreadySent
     case alreadyInCompetition
+    case usernameTaken
     
     var errorDescription: String? {
         switch self {
@@ -43,7 +44,7 @@ enum AppError: Error, LocalizedError {
             return "Database connection error."
         case .unknownError:
             return "An unexpected error occurred."
-        case .userNotFound:        
+        case .userNotFound:
             return "User not found."
         case .selfInvite:
             return "You cannot invite yourself."
@@ -53,6 +54,8 @@ enum AppError: Error, LocalizedError {
             return "Invite already sent."
         case .alreadyInCompetition:
             return "User is already in a competition."
+        case .usernameTaken:
+            return "This username is already taken."
         }
     }
 }

@@ -19,50 +19,98 @@ struct ChallengeView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: DesignSystem.Spacing.m) {
-                Picker("Friend", selection: $viewModel.selectedFriend) {
-                    Text("Select Friend").tag("")
-                    ForEach(viewModel.availableFriends, id: \.self) { friend in
-                        Text(friend).tag(friend)
-                    }
-                }
-                .pickerStyle(.menu)
 
-                StyledTextField(title: "Challenge Name", text: $viewModel.name)
+                if let ch = viewModel.activeChallenge {
+                    Text("Active challenge")
+                        .font(DesignSystem.Fonts.headline)
+                        .foregroundColor(DesignSystem.Colors.primary)
 
-                Picker("Mode", selection: $viewModel.mode) {
-                    ForEach(Mode.allCases) { mode in
-                        Text(mode.title).tag(mode)
-                    }
-                }
-                .pickerStyle(.segmented)
+                    VStack(spacing: DesignSystem.Spacing.s) {
+                        Text(ch.name)
+                            .font(DesignSystem.Fonts.body)
+                            .foregroundColor(DesignSystem.Colors.primary)
+                            .multilineTextAlignment(.center)
 
-                VStack(alignment: .leading, spacing: DesignSystem.Spacing.s) {
-                    ForEach($viewModel.metrics) { $metric in
-                        Toggle(metric.metric.title, isOn: $metric.isSelected)
-                            .disabled(!metric.isSelected && viewModel.metrics.filter { $0.isSelected }.count >= 3)
-                        if viewModel.mode == .coop && metric.isSelected {
-                            StyledTextField(title: "\(metric.metric.title) Target", text: $metric.target)
-                                .keyboardType(.numberPad)
+                        if !ch.metrics.isEmpty {
+                            Text(ch.metrics.map { $0.metric.title }.joined(separator: " • "))
+                                .font(DesignSystem.Fonts.footnote)
+                                .foregroundColor(DesignSystem.Colors.secondary)
+                                .multilineTextAlignment(.center)
+                        }
+
+                        Text("Duration: \(ch.duration) day\(ch.duration > 1 ? "s" : "")")
+                            .font(DesignSystem.Fonts.footnote)
+                            .foregroundColor(DesignSystem.Colors.secondary)
+                            .multilineTextAlignment(.center)
+
+                        if let prize = ch.prize, !prize.isEmpty {
+                            Text("Prize: \(prize)")
+                                .font(DesignSystem.Fonts.footnote)
+                                .foregroundColor(DesignSystem.Colors.secondary)
+                                .multilineTextAlignment(.center)
                         }
                     }
-                }
-                .padding(.vertical, DesignSystem.Spacing.s)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(.ultraThinMaterial)
+                    .cornerRadius(DesignSystem.Radius.m)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: DesignSystem.Radius.m)
+                            .stroke(Color.white.opacity(0.15), lineWidth: 1)
+                    )
 
-                Stepper(value: $viewModel.duration, in: 1...7) {
-                    Text("Duration: \(viewModel.duration) day\(viewModel.duration > 1 ? "s" : "")")
+                    PrimaryButton(title: "Abort challenge") {
+                        viewModel.abortActiveChallenge()
+                    }
+
+                } else {
+                    // === ZAMIENNIK PICKERA BEZ STRZAŁKI I BEZ WCIĘCIA ===
+                    Menu {
+                        ForEach(viewModel.availableFriends, id: \.self) { friend in
+                            Button(friend) { viewModel.selectedFriend = friend }
+                        }
+                    } label: {
+                        HStack {
+                            Text(viewModel.selectedFriend.isEmpty ? "Select Friend" : viewModel.selectedFriend)
+                                .foregroundColor(DesignSystem.Colors.primary)
+                            Spacer(minLength: 0)
+                        }
+                        .padding(.vertical, DesignSystem.Spacing.xs)
+                        .padding(.horizontal, DesignSystem.Spacing.m)
+                        .background(.ultraThinMaterial)
+                        .cornerRadius(DesignSystem.Radius.s)
+                    }
+                    // ================================================
+
+                    StyledTextField(title: "Challenge Name", text: $viewModel.name)
+
+                    VStack(alignment: .leading, spacing: DesignSystem.Spacing.s) {
+                        ForEach($viewModel.metrics) { $metric in
+                            Toggle(metric.metric.title, isOn: $metric.isSelected)
+                                .disabled(!metric.isSelected && viewModel.metrics.filter { $0.isSelected }.count >= 3)
+                        }
+                    }
+                    .padding(.vertical, DesignSystem.Spacing.s)
+
+                    Stepper(value: $viewModel.duration, in: 1...7) {
+                        Text("Duration: \(viewModel.duration) day\(viewModel.duration > 1 ? "s" : "")")
+                    }
+
+                    StyledTextField(title: "Prize / Forfeit (optional)", text: $viewModel.prize)
+
+                    PrimaryButton(title: "Send Challenge") {
+                        viewModel.sendChallenge()
+                    }
+                    .disabled(!viewModel.canSend)
+                    .opacity(viewModel.canSend ? 1 : 0.5)
                 }
-                
-                StyledTextField(title: "Prize / Forfeit (optional)", text: $viewModel.prize)
-                
-                //PrimaryButton(title: "Send Challenge") { }
-                PrimaryButton(title: "Send Challenge") {
-                    viewModel.sendChallenge()
-                }
-                .disabled(!viewModel.canSend)
-                .opacity(viewModel.canSend ? 1 : 0.5)
             }
-            .padding(DesignSystem.Spacing.l)
+            // brak systemowego wcięcia po lewej
+            .padding(.horizontal, DesignSystem.Spacing.l)
+            .padding(.vertical, DesignSystem.Spacing.l)
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
+        .task { await viewModel.refreshUser() }
         .background(DesignSystem.Colors.background.ignoresSafeArea())
     }
 }
@@ -74,11 +122,9 @@ struct ChallengeView: View {
             id: "1",
             name: "Alice",
             createdAt: Date(),
-            friends: ["Bob", "Carol"],
+            friends: ["Bob", "Carol", "Dave"],
             pendingInvites: [],
             sentInvites: [],
-            pendingChallenges: [],
-            sentChallenges: [],
             currentProgress: nil,
             history: [:],
             activeCompetitionWith: nil,
@@ -87,4 +133,3 @@ struct ChallengeView: View {
         )
     )
 }
-

@@ -39,7 +39,7 @@ struct RegisterView: View {
             .disabled(email.isEmpty || password.isEmpty || username.isEmpty)
 
             Button("Already have an account? Sign In") {
-                coordinator.showLogin()
+                coordinator.navigate(to: .login)
             }
             .font(DesignSystem.Fonts.footnote)
             .tint(DesignSystem.Colors.accent)
@@ -61,5 +61,6 @@ struct RegisterView: View {
 #Preview {
     RegisterView(coordinator: Coordinator())
 }
+
 
 
