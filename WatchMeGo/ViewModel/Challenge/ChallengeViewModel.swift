@@ -13,8 +13,6 @@ import SwiftUI
 final class ChallengeViewModel {
     private(set) var currentUser: AppUser
 
-    var onUserRefreshed: ((AppUser) -> Void)?
-
     var selectedFriend = ""
     var name = ""
     var metrics: [MetricSelection] = Metric.allCases.map { MetricSelection(metric: $0) }
@@ -23,9 +21,7 @@ final class ChallengeViewModel {
 
     var activeChallenge: Challenge?
 
-    var availableFriends: [String] {
-        currentUser.friends
-    }
+    var availableFriends: [String] { currentUser.friends }
 
     init(currentUser: AppUser) {
         self.currentUser = currentUser
@@ -81,8 +77,7 @@ final class ChallengeViewModel {
 
     func refreshUser() async {
         do {
-            let updated = try await UserService.fetchUser(id: currentUser.id)
-            currentUser = updated
+            currentUser = try await UserService.fetchUser(id: currentUser.id)
             await loadActiveChallengeIfAny()
         } catch {
             ErrorHandler.shared.handle(error)
