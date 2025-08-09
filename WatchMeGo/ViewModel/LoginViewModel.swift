@@ -18,7 +18,7 @@ final class LoginViewModel {
             let result = try await Auth.auth().signIn(withEmail: email, password: password)
             let user = result.user
 
-            let appUser = try await UserService.fetchUser(id: user.uid)
+            let appUser = try await UserService.fetchUser(byID: user.uid)
             coordinator.login(appUser)
             infoMessage = "Signed in!"
         } catch {
@@ -26,7 +26,3 @@ final class LoginViewModel {
         }
     }
 }
-
-
-
-

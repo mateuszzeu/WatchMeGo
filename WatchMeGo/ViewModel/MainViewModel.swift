@@ -28,33 +28,30 @@ final class MainViewModel {
     var exerciseMinutes = 0
     var standHours = 0
 
-    var competitiveUser: AppUser? = nil
-    var activeChallenge: Challenge? = nil
+    var competitiveUser: AppUser?
+    var activeChallenge: Challenge?
 
-    var resultMessage: String? = nil
+    var popupMessage: String?
+
     private var didFinalize = false
-
-    var popupMessage: String? = nil
 
     func loadDataAndSave(for userID: String?) async {
         isAuthorized = await HealthKitService.shared.requestAuthorization()
         guard isAuthorized else { return }
 
-        async let cals = HealthKitService.shared.fetchTodayBurnedCalories()
-        async let mins = HealthKitService.shared.fetchTodayExerciseMinutes()
-        async let hours = HealthKitService.shared.fetchTodayStandHours()
+        async let caloriesValue = HealthKitService.shared.fetchTodayBurnedCalories()
+        async let exerciseMinutesValue = HealthKitService.shared.fetchTodayExerciseMinutes()
+        async let standHoursValue = HealthKitService.shared.fetchTodayStandHours()
 
-        calories = await cals
-        exerciseMinutes = await mins
-        standHours = await hours
+        calories = await caloriesValue
+        exerciseMinutes = await exerciseMinutesValue
+        standHours = await standHoursValue
 
         await saveProgress(for: userID)
 
-        if let userID,
-           let user = try? await UserService.fetchUser(id: userID) {
-
+        if let userID, let user = try? await UserService.fetchUser(byID: userID) {
             if let competitiveID = user.activeCompetitionWith {
-                competitiveUser = try? await UserService.fetchUser(id: competitiveID)
+                competitiveUser = try? await UserService.fetchUser(byID: competitiveID)
                 await loadActiveChallenge(for: user.id, and: competitiveID)
             } else {
                 competitiveUser = nil
@@ -67,8 +64,8 @@ final class MainViewModel {
     }
 
     func handleTick(now: Date) async {
-        guard let ch = activeChallenge, !didFinalize else { return }
-        if remainingSeconds(from: ch.createdAt, days: ch.duration, now: now) == 0 {
+        guard let challenge = activeChallenge, !didFinalize else { return }
+        if remainingSeconds(from: challenge.createdAt, days: challenge.duration, now: now) == 0 {
             await finalizeChallenge()
         }
     }
@@ -83,11 +80,7 @@ final class MainViewModel {
     }
 
     var displayedMetrics: [Metric] {
-        if let activeChallenge {
-            return activeChallenge.metrics.map { $0.metric }
-        } else {
-            return Metric.allCases
-        }
+        activeChallenge?.metrics.map { $0.metric } ?? Metric.allCases
     }
 
     func defaultGoal(for metric: Metric) -> Int {
@@ -108,18 +101,31 @@ final class MainViewModel {
     }
 
     func remainingString(from start: Date, days: Int, now: Date) -> String {
-        let seconds = remainingSeconds(from: start, days: days, now: now)
-        let d = seconds / 86_400
-        let h = (seconds % 86_400) / 3_600
-        let m = (seconds % 3_600) / 60
-        let s = seconds % 60
-        if d > 0 { return "\(d)d \(h)h \(m)m \(s)s" }
-        return String(format: "%02d:%02d:%02d", h, m, s)
+        let secondsRemaining = remainingSeconds(from: start, days: days, now: now)
+        let daysRemaining = secondsRemaining / 86_400
+        let hoursRemaining = (secondsRemaining % 86_400) / 3_600
+        let minutesRemaining = (secondsRemaining % 3_600) / 60
+        let secondsLeft = secondsRemaining % 60
+        if daysRemaining > 0 {
+            return "\(daysRemaining)d \(hoursRemaining)h \(minutesRemaining)m \(secondsLeft)s"
+        }
+        return String(format: "%02d:%02d:%02d", hoursRemaining, minutesRemaining, secondsLeft)
+    }
+
+    func checkResult(for userID: String?) async {
+        guard let userID else { return }
+        do {
+            if let message = try await UserService.consumeResultMessage(forUserID: userID) {
+                popupMessage = message
+            }
+        } catch {
+            ErrorHandler.shared.handle(error)
+        }
     }
 
     private func remainingSeconds(from start: Date, days: Int, now: Date) -> Int {
-        let end = Calendar.current.date(byAdding: .day, value: days, to: start) ?? start
-        return max(0, Int(end.timeIntervalSince(now)))
+        let endDate = Calendar.current.date(byAdding: .day, value: days, to: start) ?? start
+        return max(0, Int(endDate.timeIntervalSince(now)))
     }
 
     private func localValue(for metric: Metric) -> Int {
@@ -131,10 +137,10 @@ final class MainViewModel {
     }
 
     private static let dayFormatter: DateFormatter = {
-        let df = DateFormatter()
-        df.dateFormat = "yyyy-MM-dd"
-        df.timeZone = .current
-        return df
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.timeZone = .current
+        return formatter
     }()
 
     private func saveProgress(for userID: String?) async {
@@ -142,7 +148,8 @@ final class MainViewModel {
 
         let dateString = Self.dayFormatter.string(from: Date())
 
-        let challengeMet = calories >= ActivityGoal.calories &&
+        let challengeMet =
+            calories >= ActivityGoal.calories &&
             exerciseMinutes >= ActivityGoal.exerciseMinutes &&
             standHours >= ActivityGoal.standHours
 
@@ -154,16 +161,16 @@ final class MainViewModel {
         )
 
         do {
-            try await UserService.saveProgress(for: userID, date: dateString, progress: progress)
+            try await UserService.saveProgress(forUserID: userID, date: dateString, progress: progress)
         } catch {
             ErrorHandler.shared.handle(error)
         }
     }
 
-    private func loadActiveChallenge(for meID: String, and rivalID: String) async {
+    private func loadActiveChallenge(for myUserID: String, and rivalID: String) async {
         do {
-            let pairID = [meID, rivalID].sorted().joined(separator: "_")
-            let challenges = try await ChallengeService.fetchByPair(pairID: pairID)
+            let pairID = [myUserID, rivalID].sorted().joined(separator: "_")
+            let challenges = try await ChallengeService.fetchChallengesByPair(pairID: pairID)
             activeChallenge = challenges.first { $0.status == .active }
         } catch {
             ErrorHandler.shared.handle(error)
@@ -171,34 +178,34 @@ final class MainViewModel {
     }
 
     private func finalizeChallenge() async {
-        guard let ch = activeChallenge else { return }
+        guard let challenge = activeChallenge else { return }
         didFinalize = true
         do {
-            let me = try await UserService.fetchUser(id: ch.senderID == competitiveUser?.id ? ch.receiverID : ch.senderID)
-            let rivalID = (me.id == ch.senderID) ? ch.receiverID : ch.senderID
-            let rival = try await UserService.fetchUser(id: rivalID)
+            let me = try await UserService.fetchUser(byID: challenge.senderID == competitiveUser?.id ? challenge.receiverID : challenge.senderID)
+            let rivalID = (me.id == challenge.senderID) ? challenge.receiverID : challenge.senderID
+            let rival = try await UserService.fetchUser(byID: rivalID)
 
-            let days = datesRangeStrings(from: ch.createdAt, durationDays: ch.duration)
+            let dayKeys = datesRangeStrings(from: challenge.createdAt, durationDays: challenge.duration)
 
             var myWins = 0, theirWins = 0, ties = 0
             for metric in displayedMetrics {
-                let mySum = sum(metric, in: days, from: me.history)
-                let theirSum = sum(metric, in: days, from: rival.history)
+                let mySum = sum(metric, in: dayKeys, from: me.history)
+                let theirSum = sum(metric, in: dayKeys, from: rival.history)
                 if mySum > theirSum { myWins += 1 }
                 else if mySum < theirSum { theirWins += 1 }
                 else { ties += 1 }
             }
 
             let short: String
-            if myWins > theirWins { short = "Challenge ended — winner: You! 🎉" }
-            else if myWins < theirWins { short = "Challenge ended — winner: \(rival.name)! 🎉" }
-            else { short = "Challenge ended — tie 🤝" }
+            if myWins > theirWins { short = "Challenge ended - winner: You! 🎉" }
+            else if myWins < theirWins { short = "Challenge ended - winner: \(rival.name)! 🎉" }
+            else { short = "Challenge ended - tie 🤝" }
 
-            try await UserService.setResultMessage(userID: me.id, message: short)
-            try await UserService.setResultMessage(userID: rival.id, message: short)
+            try await UserService.setResultMessage(forUserID: me.id, message: short)
+            try await UserService.setResultMessage(forUserID: rival.id, message: short)
             popupMessage = short
 
-            try await ChallengeService.deleteChallenge(challengeID: ch.id)
+            try await ChallengeService.deleteChallenge(challengeID: challenge.id)
             try await UserService.endCompetition(userID: me.id, friendID: rival.id)
 
             activeChallenge = nil
@@ -209,35 +216,23 @@ final class MainViewModel {
     }
 
     private func datesRangeStrings(from start: Date, durationDays: Int) -> [String] {
-        var arr: [String] = []
-        for i in 0..<durationDays {
-            if let d = Calendar.current.date(byAdding: .day, value: i, to: Calendar.current.startOfDay(for: start)) {
-                arr.append(Self.dayFormatter.string(from: d))
+        var dateStrings: [String] = []
+        for dayOffset in 0..<durationDays {
+            if let date = Calendar.current.date(byAdding: .day, value: dayOffset, to: Calendar.current.startOfDay(for: start)) {
+                dateStrings.append(Self.dayFormatter.string(from: date))
             }
         }
-        return arr
+        return dateStrings
     }
 
     private func sum(_ metric: Metric, in days: [String], from history: [String: DailyProgress]) -> Int {
-        days.reduce(0) { acc, key in
-            guard let dp = history[key] else { return acc }
+        days.reduce(0) { total, key in
+            guard let dp = history[key] else { return total }
             switch metric {
-            case .calories: return acc + dp.calories
-            case .exerciseMinutes: return acc + dp.exerciseMinutes
-            case .standHours: return acc + dp.standHours
+            case .calories: return total + dp.calories
+            case .exerciseMinutes: return total + dp.exerciseMinutes
+            case .standHours: return total + dp.standHours
             }
-        }
-    }
-
-    func checkResult(for userID: String?) async {
-        guard let userID else { return }
-        do {
-            if let msg = try await UserService.consumeResultMessage(userID: userID) {
-                popupMessage = msg
-            }
-        } catch {
-            ErrorHandler.shared.handle(error)
         }
     }
 }
-

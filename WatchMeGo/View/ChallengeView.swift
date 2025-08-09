@@ -13,37 +13,37 @@ struct ChallengeView: View {
 
     init(coordinator: Coordinator, user: AppUser) {
         self.coordinator = coordinator
-        self.viewModel = ChallengeViewModel(currentUser: user)
+        self.viewModel = ChallengeViewModel(loggedInUser: user)
     }
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: DesignSystem.Spacing.m) {
 
-                if let ch = viewModel.activeChallenge {
+                if let challenge = viewModel.activeChallenge {
                     Text("Active challenge")
                         .font(DesignSystem.Fonts.headline)
                         .foregroundColor(DesignSystem.Colors.primary)
 
                     VStack(spacing: DesignSystem.Spacing.s) {
-                        Text(ch.name)
+                        Text(challenge.name)
                             .font(DesignSystem.Fonts.body)
                             .foregroundColor(DesignSystem.Colors.primary)
                             .multilineTextAlignment(.center)
 
-                        if !ch.metrics.isEmpty {
-                            Text(ch.metrics.map { $0.metric.title }.joined(separator: " • "))
+                        if !challenge.metrics.isEmpty {
+                            Text(challenge.metrics.map { $0.metric.title }.joined(separator: " • "))
                                 .font(DesignSystem.Fonts.footnote)
                                 .foregroundColor(DesignSystem.Colors.secondary)
                                 .multilineTextAlignment(.center)
                         }
 
-                        Text("Duration: \(ch.duration) day\(ch.duration > 1 ? "s" : "")")
+                        Text("Duration: \(challenge.duration) day\(challenge.duration > 1 ? "s" : "")")
                             .font(DesignSystem.Fonts.footnote)
                             .foregroundColor(DesignSystem.Colors.secondary)
                             .multilineTextAlignment(.center)
 
-                        if let prize = ch.prize, !prize.isEmpty {
+                        if let prize = challenge.prize, !prize.isEmpty {
                             Text("Prize: \(prize)")
                                 .font(DesignSystem.Fonts.footnote)
                                 .foregroundColor(DesignSystem.Colors.secondary)
@@ -64,14 +64,14 @@ struct ChallengeView: View {
                     }
 
                 } else {
-                   
+
                     Menu {
-                        ForEach(viewModel.availableFriends, id: \.self) { friend in
-                            Button(friend) { viewModel.selectedFriend = friend }
+                        ForEach(viewModel.friendUsernames, id: \.self) { friend in
+                            Button(friend) { viewModel.selectedFriendUsername = friend }
                         }
                     } label: {
                         HStack {
-                            Text(viewModel.selectedFriend.isEmpty ? "Select Friend" : viewModel.selectedFriend)
+                            Text(viewModel.selectedFriendUsername.isEmpty ? "Select Friend" : viewModel.selectedFriendUsername)
                                 .foregroundColor(DesignSystem.Colors.primary)
                             Spacer(minLength: 0)
                         }
@@ -80,28 +80,28 @@ struct ChallengeView: View {
                         .background(.ultraThinMaterial)
                         .cornerRadius(DesignSystem.Radius.s)
                     }
-                   
-                    StyledTextField(title: "Challenge Name", text: $viewModel.name)
+
+                    StyledTextField(title: "Challenge Name", text: $viewModel.challengeName)
 
                     VStack(alignment: .leading, spacing: DesignSystem.Spacing.s) {
-                        ForEach($viewModel.metrics) { $metric in
+                        ForEach($viewModel.metricSelections) { $metric in
                             Toggle(metric.metric.title, isOn: $metric.isSelected)
-                                .disabled(!metric.isSelected && viewModel.metrics.filter { $0.isSelected }.count >= 3)
+                                .disabled(!metric.isSelected && viewModel.metricSelections.filter { $0.isSelected }.count >= 3)
                         }
                     }
                     .padding(.vertical, DesignSystem.Spacing.s)
 
-                    Stepper(value: $viewModel.duration, in: 1...7) {
-                        Text("Duration: \(viewModel.duration) day\(viewModel.duration > 1 ? "s" : "")")
+                    Stepper(value: $viewModel.challengeDurationDays, in: 1...7) {
+                        Text("Duration: \(viewModel.challengeDurationDays) day\(viewModel.challengeDurationDays > 1 ? "s" : "")")
                     }
 
-                    StyledTextField(title: "Prize / Forfeit (optional)", text: $viewModel.prize)
+                    StyledTextField(title: "Prize / Forfeit (optional)", text: $viewModel.challengePrize)
 
                     PrimaryButton(title: "Send Challenge") {
                         viewModel.sendChallenge()
                     }
-                    .disabled(!viewModel.canSend)
-                    .opacity(viewModel.canSend ? 1 : 0.5)
+                    .disabled(!viewModel.isReadyToSend)
+                    .opacity(viewModel.isReadyToSend ? 1 : 0.5)
                 }
             }
             .padding(.horizontal, DesignSystem.Spacing.l)

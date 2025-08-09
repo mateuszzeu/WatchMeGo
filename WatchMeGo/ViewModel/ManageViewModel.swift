@@ -48,13 +48,13 @@ final class ManageViewModel {
 
     func loadData() async {
         do {
-            currentUser = try await UserService.fetchUser(id: currentUser.id)
+            currentUser = try await UserService.fetchUser(byID: currentUser.id)
 
             let pendingNames = currentUser.pendingInvites
             let friendNames = currentUser.friends
 
-            pendingUsers = try await UserService.fetchUsers(usernames: pendingNames)
-            friends = try await UserService.fetchUsers(usernames: friendNames)
+            pendingUsers = try await UserService.fetchUsers(byUsernames: pendingNames)
+            friends = try await UserService.fetchUsers(byUsernames: friendNames)
 
             try await loadCompetitionCoupon()
         } catch {
@@ -92,7 +92,7 @@ final class ManageViewModel {
 
         do {
             try await UserService.acceptCompetitionInvite(userID: currentUser.id, friendID: fromUserID)
-            try await ChallengeService.setStatus(challengeID: challengeID, to: .active)
+            try await ChallengeService.setChallengeStatus(challengeID: challengeID, to: .active)
             try await reloadUserAndData()
         } catch {
             ErrorHandler.shared.handle(error)
@@ -129,16 +129,16 @@ final class ManageViewModel {
             return
         }
 
-        let challenger = try await UserService.fetchUser(id: challengerID)
+        let challenger = try await UserService.fetchUser(byID: challengerID)
         pendingCompetitionChallengerName = challenger.name
 
         let pairID = [currentUser.id, challengerID].sorted().joined(separator: "_")
-        let challenges = try await ChallengeService.fetchByPair(pairID: pairID)
+        let challenges = try await ChallengeService.fetchChallengesByPair(pairID: pairID)
         couponChallenge = challenges.first(where: { $0.status == .pending })
     }
 
     private func reloadUserAndData() async throws {
-        currentUser = try await UserService.fetchUser(id: currentUser.id)
+        currentUser = try await UserService.fetchUser(byID: currentUser.id)
         await loadData()
     }
 }

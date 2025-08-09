@@ -11,63 +11,63 @@ import SwiftUI
 @MainActor
 @Observable
 final class ChallengeViewModel {
-    private(set) var currentUser: AppUser
+    private(set) var loggedInUser: AppUser
 
-    var selectedFriend = ""
-    var name = ""
-    var metrics: [MetricSelection] = Metric.allCases.map { MetricSelection(metric: $0) }
-    var duration = 1
-    var prize = ""
+    var selectedFriendUsername = ""
+    var challengeName = ""
+    var metricSelections: [MetricSelection] = Metric.allCases.map { MetricSelection(metric: $0) }
+    var challengeDurationDays = 1
+    var challengePrize = ""
 
     var activeChallenge: Challenge?
 
-    var availableFriends: [String] { currentUser.friends }
+    var friendUsernames: [String] { loggedInUser.friends }
 
-    init(currentUser: AppUser) {
-        self.currentUser = currentUser
+    init(loggedInUser: AppUser) {
+        self.loggedInUser = loggedInUser
     }
 
-    var canSend: Bool {
-        guard !selectedFriend.isEmpty,
-              !name.isEmpty,
-              metrics.contains(where: { $0.isSelected }),
-              (1...7).contains(duration) else { return false }
+    var isReadyToSend: Bool {
+        guard !selectedFriendUsername.isEmpty,
+              !challengeName.isEmpty,
+              metricSelections.contains(where: { $0.isSelected }),
+              (1...7).contains(challengeDurationDays) else { return false }
         return true
     }
 
     func sendChallenge() {
-        guard canSend else { return }
+        guard isReadyToSend else { return }
         Task {
             do {
                 guard let friend = try await UserService
-                    .fetchUsers(usernames: [selectedFriend])
+                    .fetchUsers(byUsernames: [selectedFriendUsername])
                     .first else { throw AppError.userNotFound }
 
-                let pairID = [currentUser.id, friend.id].sorted().joined(separator: "_")
+                let pairID = [loggedInUser.id, friend.id].sorted().joined(separator: "_")
                 let challengeID = UUID().uuidString
 
-                let selectedMetrics = metrics
+                let selectedMetrics = metricSelections
                     .filter { $0.isSelected }
                     .map { Challenge.MetricInfo(metric: $0.metric, target: nil) }
 
-                let challenge = Challenge(
+                let newChallenge = Challenge(
                     id: challengeID,
                     pairID: pairID,
-                    name: name,
-                    senderID: currentUser.id,
-                    senderName: currentUser.name,
+                    name: challengeName,
+                    senderID: loggedInUser.id,
+                    senderName: loggedInUser.name,
                     receiverID: friend.id,
                     receiverName: friend.name,
                     mode: .versus,
                     metrics: selectedMetrics,
-                    duration: duration,
-                    prize: prize.isEmpty ? nil : prize,
+                    duration: challengeDurationDays,
+                    prize: challengePrize.isEmpty ? nil : challengePrize,
                     status: .pending,
                     createdAt: Date()
                 )
 
-                try await UserService.sendCompetitionInvite(from: currentUser.id, to: friend.id)
-                try await ChallengeService.createChallenge(challenge)
+                try await UserService.sendCompetitionInvite(fromUserID: loggedInUser.id, toFriendID: friend.id)
+                try await ChallengeService.createChallenge(newChallenge)
                 resetForm()
             } catch {
                 ErrorHandler.shared.handle(error)
@@ -77,21 +77,21 @@ final class ChallengeViewModel {
 
     func refreshUser() async {
         do {
-            currentUser = try await UserService.fetchUser(id: currentUser.id)
-            await loadActiveChallengeIfAny()
+            loggedInUser = try await UserService.fetchUser(byID: loggedInUser.id)
+            await loadActiveChallengeIfExists()
         } catch {
             ErrorHandler.shared.handle(error)
         }
     }
 
-    func loadActiveChallengeIfAny() async {
-        guard let opponentID = currentUser.activeCompetitionWith else {
+    func loadActiveChallengeIfExists() async {
+        guard let opponentID = loggedInUser.activeCompetitionWith else {
             activeChallenge = nil
             return
         }
         do {
-            let pairID = [currentUser.id, opponentID].sorted().joined(separator: "_")
-            let challenges = try await ChallengeService.fetchByPair(pairID: pairID)
+            let pairID = [loggedInUser.id, opponentID].sorted().joined(separator: "_")
+            let challenges = try await ChallengeService.fetchChallengesByPair(pairID: pairID)
             activeChallenge = challenges.first(where: { $0.status == .active })
         } catch {
             ErrorHandler.shared.handle(error)
@@ -99,16 +99,16 @@ final class ChallengeViewModel {
     }
 
     func abortActiveChallenge() {
-        guard let ch = activeChallenge else { return }
+        guard let challenge = activeChallenge else { return }
         Task {
             do {
-                try await ChallengeService.deleteChallenge(challengeID: ch.id)
-                if let opponent = currentUser.activeCompetitionWith {
-                    try await UserService.endCompetition(userID: currentUser.id, friendID: opponent)
+                try await ChallengeService.deleteChallenge(challengeID: challenge.id)
+                if let opponentID = loggedInUser.activeCompetitionWith {
+                    try await UserService.endCompetition(userID: loggedInUser.id, friendID: opponentID)
                 }
                 activeChallenge = nil
-                currentUser.activeCompetitionWith = nil
-                currentUser.competitionStatus = "none"
+                loggedInUser.activeCompetitionWith = nil
+                loggedInUser.competitionStatus = "none"
             } catch {
                 ErrorHandler.shared.handle(error)
             }
@@ -116,10 +116,10 @@ final class ChallengeViewModel {
     }
 
     private func resetForm() {
-        selectedFriend = ""
-        name = ""
-        metrics = Metric.allCases.map { MetricSelection(metric: $0) }
-        duration = 1
-        prize = ""
+        selectedFriendUsername = ""
+        challengeName = ""
+        metricSelections = Metric.allCases.map { MetricSelection(metric: $0) }
+        challengeDurationDays = 1
+        challengePrize = ""
     }
 }
