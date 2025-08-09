@@ -64,7 +64,7 @@ struct ChallengeView: View {
                     }
 
                 } else {
-                    // === ZAMIENNIK PICKERA BEZ STRZAŁKI I BEZ WCIĘCIA ===
+                   
                     Menu {
                         ForEach(viewModel.availableFriends, id: \.self) { friend in
                             Button(friend) { viewModel.selectedFriend = friend }
@@ -80,8 +80,7 @@ struct ChallengeView: View {
                         .background(.ultraThinMaterial)
                         .cornerRadius(DesignSystem.Radius.s)
                     }
-                    // ================================================
-
+                   
                     StyledTextField(title: "Challenge Name", text: $viewModel.name)
 
                     VStack(alignment: .leading, spacing: DesignSystem.Spacing.s) {
@@ -105,7 +104,6 @@ struct ChallengeView: View {
                     .opacity(viewModel.canSend ? 1 : 0.5)
                 }
             }
-            // brak systemowego wcięcia po lewej
             .padding(.horizontal, DesignSystem.Spacing.l)
             .padding(.vertical, DesignSystem.Spacing.l)
             .frame(maxWidth: .infinity, alignment: .leading)

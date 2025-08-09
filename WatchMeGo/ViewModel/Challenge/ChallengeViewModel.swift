@@ -83,7 +83,6 @@ final class ChallengeViewModel {
         do {
             let updated = try await UserService.fetchUser(id: currentUser.id)
             currentUser = updated
-            onUserRefreshed?(updated)
             await loadActiveChallengeIfAny()
         } catch {
             ErrorHandler.shared.handle(error)
@@ -112,7 +111,9 @@ final class ChallengeViewModel {
                 if let opponent = currentUser.activeCompetitionWith {
                     try await UserService.endCompetition(userID: currentUser.id, friendID: opponent)
                 }
-                await refreshUser() // zaktualizuje Coordinator przez onUserRefreshed
+                activeChallenge = nil
+                currentUser.activeCompetitionWith = nil
+                currentUser.competitionStatus = "none"
             } catch {
                 ErrorHandler.shared.handle(error)
             }

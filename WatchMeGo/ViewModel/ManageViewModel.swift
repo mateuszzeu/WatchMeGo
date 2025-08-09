@@ -11,23 +11,25 @@ import Foundation
 @Observable
 final class ManageViewModel {
     private(set) var currentUser: AppUser
+
     var usernameToInvite = ""
     var inviteStatus: String?
     var pendingUsers: [AppUser] = []
     var friends: [AppUser] = []
+
     var pendingCompetitionChallengerName: String?
     var couponChallenge: Challenge?
-    
+
     var hasPendingCompetitionInvite: Bool {
         currentUser.competitionStatus == "pendingReceived"
         && currentUser.pendingCompetitionWith != nil
         && currentUser.activeCompetitionWith == nil
     }
-    
+
     init(currentUser: AppUser) {
         self.currentUser = currentUser
     }
-    
+
     func sendInviteTapped() {
         Task {
             do {
@@ -41,13 +43,17 @@ final class ManageViewModel {
             }
         }
     }
-    
+
     func loadData() async {
-        let pendingNames = currentUser.pendingInvites
-        let friendNames = currentUser.friends
         do {
+            currentUser = try await UserService.fetchUser(id: currentUser.id)
+
+            let pendingNames = currentUser.pendingInvites
+            let friendNames = currentUser.friends
+
             pendingUsers = try await UserService.fetchUsers(usernames: pendingNames)
             friends = try await UserService.fetchUsers(usernames: friendNames)
+
             if let challengerID = currentUser.pendingCompetitionWith {
                 let challenger = try await UserService.fetchUser(id: challengerID)
                 pendingCompetitionChallengerName = challenger.name
@@ -62,13 +68,13 @@ final class ManageViewModel {
             ErrorHandler.shared.handle(error)
         }
     }
-    
+
     private func refreshUserAndReload() async throws {
         let updatedUser = try await UserService.fetchUser(id: currentUser.id)
         currentUser = updatedUser
         await loadData()
     }
-    
+
     func accept(_ user: AppUser) {
         Task {
             do {
@@ -79,7 +85,7 @@ final class ManageViewModel {
             }
         }
     }
-    
+
     func decline(_ user: AppUser) {
         Task {
             do {
@@ -90,7 +96,7 @@ final class ManageViewModel {
             }
         }
     }
-    
+
     func acceptCompetitionInvite() async {
         guard
             let fromUserID = currentUser.pendingCompetitionWith,
@@ -98,13 +104,13 @@ final class ManageViewModel {
         else { return }
         do {
             try await UserService.acceptCompetitionInvite(userID: currentUser.id, friendID: fromUserID)
-            try await ChallengeService.setStatus(challengeID: challengeID, to: Challenge.Status.active)
+            try await ChallengeService.setStatus(challengeID: challengeID, to: .active)
             try await refreshUserAndReload()
         } catch {
             ErrorHandler.shared.handle(error)
         }
     }
-    
+
     func declineCompetitionInvite() async {
         guard let fromUserID = currentUser.pendingCompetitionWith else { return }
         do {
@@ -114,11 +120,11 @@ final class ManageViewModel {
             ErrorHandler.shared.handle(error)
         }
     }
-    
+
     func isInCompetition(with friend: AppUser) -> Bool {
         currentUser.activeCompetitionWith == friend.id
     }
-    
+
     func logout(coordinator: Coordinator) {
         do {
             try UserService.logout()
@@ -128,4 +134,3 @@ final class ManageViewModel {
         }
     }
 }
-
