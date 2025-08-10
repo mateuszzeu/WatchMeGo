@@ -21,24 +21,24 @@ struct CompetitionCouponView: View {
                 .foregroundColor(DesignSystem.Colors.primary)
                 .multilineTextAlignment(.center)
 
-            if let ch = challenge {
+            if let challengeData = challenge {
                 VStack(spacing: DesignSystem.Spacing.xs) {
-                    Text(ch.name)
+                    Text(challengeData.name)
                         .font(DesignSystem.Fonts.body)
                         .foregroundColor(DesignSystem.Colors.primary)
 
-                    if !ch.metrics.isEmpty {
-                        Text(ch.metrics.map { $0.metric.title }.joined(separator: " • "))
+                    if !challengeData.metrics.isEmpty {
+                        Text(challengeData.metrics.map { $0.metric.title }.joined(separator: " • "))
                             .font(DesignSystem.Fonts.footnote)
                             .foregroundColor(DesignSystem.Colors.secondary)
                             .multilineTextAlignment(.center)
                     }
 
-                    Text("Duration: \(ch.duration) day\(ch.duration > 1 ? "s" : "")")
+                    Text("Duration: \(challengeData.duration) day\(challengeData.duration > 1 ? "s" : "")")
                         .font(DesignSystem.Fonts.footnote)
                         .foregroundColor(DesignSystem.Colors.secondary)
 
-                    if let prize = ch.prize, !prize.isEmpty {
+                    if let prize = challengeData.prize, !prize.isEmpty {
                         Text("Prize: \(prize)")
                             .font(DesignSystem.Fonts.footnote)
                             .foregroundColor(DesignSystem.Colors.secondary)

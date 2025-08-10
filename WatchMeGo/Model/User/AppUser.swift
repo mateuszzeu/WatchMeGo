@@ -23,11 +23,3 @@ struct AppUser: Identifiable, Codable {
     var competitionStatus = "none"
 }
 
-
-struct DailyProgress: Codable {
-    var calories: Int
-    var exerciseMinutes: Int
-    var standHours: Int
-    var challengeMet: Bool
-}
-

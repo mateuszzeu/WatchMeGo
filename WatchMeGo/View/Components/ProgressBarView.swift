@@ -34,22 +34,21 @@ struct ProgressBarView: View {
                     .monospacedDigit()
             }
 
-            GeometryReader { geo in
-                ZStack(alignment: .leading) {
-                    Rectangle()
-                        .fill(color.opacity(0.15))
+            ZStack(alignment: .leading) {
+                Rectangle()
+                    .fill(color.opacity(0.15))
 
-                    Rectangle()
-                        .fill(color)
-                        .frame(width: geo.size.width * progress)
-                        .animation(.easeInOut(duration: 0.25), value: progress)
-                }
-                .clipShape(Capsule())
-                .accessibilityElement(children: .ignore)
-                .accessibilityLabel(Text(label))
-                .accessibilityValue(Text("\(value) of \(goal)"))
+                Rectangle()
+                    .fill(color)
+                    .scaleEffect(x: progress, y: 1, anchor: .leading)
+                    .animation(.easeInOut(duration: 0.25), value: progress)
             }
+            .clipShape(Capsule())
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(Text(label))
+            .accessibilityValue(Text("\(value) of \(goal)"))
             .frame(height: 18)
+            .frame(maxWidth: .infinity)
         }
         .padding(.vertical, DesignSystem.Spacing.s)
         .frame(maxWidth: .infinity)

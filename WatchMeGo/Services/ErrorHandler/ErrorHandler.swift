@@ -24,7 +24,7 @@ final class ErrorHandler {
         showError = true
 
         Task {
-            try? await Task.sleep(nanoseconds: 3_000_000_000)
+            try? await Task.sleep(nanoseconds: 3000000000)
             showError = false
             errorMessage = nil
         }

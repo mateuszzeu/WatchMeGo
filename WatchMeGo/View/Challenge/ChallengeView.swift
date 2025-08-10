@@ -60,7 +60,7 @@ struct ChallengeView: View {
                     )
 
                     PrimaryButton(title: "Abort challenge") {
-                        viewModel.abortActiveChallenge()
+                        Task { await viewModel.abortActiveChallenge() }
                     }
 
                 } else {
@@ -98,7 +98,7 @@ struct ChallengeView: View {
                     StyledTextField(title: "Prize / Forfeit (optional)", text: $viewModel.challengePrize)
 
                     PrimaryButton(title: "Send Challenge") {
-                        viewModel.sendChallenge()
+                        Task { await viewModel.sendChallenge() }
                     }
                     .disabled(!viewModel.isReadyToSend)
                     .opacity(viewModel.isReadyToSend ? 1 : 0.5)

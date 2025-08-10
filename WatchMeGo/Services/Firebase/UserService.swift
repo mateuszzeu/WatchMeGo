@@ -34,21 +34,21 @@ final class UserService {
         return snapshot.documents.compactMap { try? decoder.decode(AppUser.self, from: $0.data()) }
     }
     
-    static func fetchFriends(for user: AppUser) async throws -> [AppUser] {
-        try await fetchUsers(byUsernames: user.friends)
-    }
-    
     static func saveProgress(forUserID userID: String, date: String, progress: DailyProgress) async throws {
-        let encodedProgressData = try Firestore.Encoder().encode(progress)
-        let historyKey = "history.\(date)"
+        let encoded = try Firestore.Encoder().encode(progress)
+
         try await usersCollection.document(userID).setData([
-            "currentProgress": encodedProgressData,
-            historyKey: encodedProgressData
+            "currentProgress": encoded
         ], merge: true)
+
+        try await usersCollection.document(userID).updateData([
+            "history.\(date)": encoded
+        ])
     }
     
     static func sendInvite(from sender: AppUser, toUsername recipientUsername: String) async throws {
         if recipientUsername == sender.name { throw AppError.selfInvite }
+        
         if sender.friends.contains(recipientUsername) { throw AppError.alreadyFriends }
         if sender.sentInvites.contains(recipientUsername) { throw AppError.inviteAlreadySent }
         
@@ -163,13 +163,16 @@ final class UserService {
     static func consumeResultMessage(forUserID userID: String) async throws -> String? {
         let userReference = usersCollection.document(userID)
         let snapshot = try await userReference.getDocument()
+        
         guard let data = snapshot.data(),
               let message = data["lastChallengeResult"] as? String,
               !message.isEmpty else { return nil }
+        
         try await userReference.updateData([
             "lastChallengeResult": FieldValue.delete(),
             "lastChallengeResultAt": FieldValue.delete()
         ])
+        
         return message
     }
 }
