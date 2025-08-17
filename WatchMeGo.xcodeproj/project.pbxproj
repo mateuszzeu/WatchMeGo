@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6E7051BA2E2AAC1C0056896B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6E7051B92E2AAC1C0056896B /* GoogleService-Info.plist */; };
+		4938E3822E51DFDD00814038 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4938E3812E51DFDD00814038 /* GoogleService-Info.plist */; };
 		6ED6535D2E475E770068C760 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 6ED6535C2E475E770068C760 /* FirebaseAuth */; };
 		6ED6535F2E475E770068C760 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 6ED6535E2E475E770068C760 /* FirebaseCore */; };
 		6ED653612E475E770068C760 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 6ED653602E475E770068C760 /* FirebaseFirestore */; };
@@ -31,10 +31,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4938E3812E51DFDD00814038 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		6E70513E2E2AA83D0056896B /* WatchMeGo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WatchMeGo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6E70514B2E2AA83E0056896B /* WatchMeGoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WatchMeGoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6E7051552E2AA83E0056896B /* WatchMeGoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WatchMeGoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		6E7051B92E2AAC1C0056896B /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -87,10 +87,10 @@
 			isa = PBXGroup;
 			children = (
 				6E7051402E2AA83D0056896B /* WatchMeGo */,
+				4938E3812E51DFDD00814038 /* GoogleService-Info.plist */,
 				6E70514E2E2AA83E0056896B /* WatchMeGoTests */,
 				6E7051582E2AA83E0056896B /* WatchMeGoUITests */,
 				6E70513F2E2AA83D0056896B /* Products */,
-				6E7051B92E2AAC1C0056896B /* GoogleService-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -230,7 +230,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6E7051BA2E2AAC1C0056896B /* GoogleService-Info.plist in Resources */,
+				4938E3822E51DFDD00814038 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

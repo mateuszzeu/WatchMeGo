@@ -64,10 +64,17 @@ struct ManageView: View {
         }
         .background(DesignSystem.Colors.background.ignoresSafeArea())
         .safeAreaInset(edge: .bottom) {
-            PrimaryButton(title: "Log out") {
-                viewModel.logout(coordinator: coordinator)
+            VStack(spacing: DesignSystem.Spacing.s) {
+                PrimaryButton(title: "Reset Password") {
+                    Task { await viewModel.resetPassword() }
+                }
+                .padding(.horizontal, DesignSystem.Spacing.l)
+                
+                PrimaryButton(title: "Log out") {
+                    viewModel.logout(coordinator: coordinator)
+                }
+                .padding(.horizontal, DesignSystem.Spacing.l)
             }
-            .padding(.horizontal, DesignSystem.Spacing.l)
             .padding(.vertical, DesignSystem.Spacing.s)
             .padding(.bottom, DesignSystem.Spacing.m)
             .background(DesignSystem.Colors.background)
