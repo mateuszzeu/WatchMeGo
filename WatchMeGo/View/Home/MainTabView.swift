@@ -26,7 +26,7 @@ struct MainTabView: View {
                 .tabItem { Label("Settings", systemImage: "gearshape.fill") }
         }
         .tint(DesignSystem.Colors.accent)
-        .overlay(ErrorBannerView())
+        .overlay(InfoBannerView())
     }
 }
 

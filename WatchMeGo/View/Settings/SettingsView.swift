@@ -42,7 +42,7 @@ struct SettingsView: View {
                         .font(DesignSystem.Fonts.headline)
                         .foregroundColor(DesignSystem.Colors.primary)
 
-                    PrimaryButton(title: "Reset password", action: {})
+                    PrimaryButton(title: "Reset password", action: {}) // TO DO ADD RESET FUNC
 
                     PrimaryButton(title: "Log out") {
                         viewModel.logout(coordinator: coordinator)

@@ -40,7 +40,7 @@ final class RegisterViewModel {
             coordinator.login(appUser)
             infoMessage = "Registered & Signed in!"
         } catch {
-            ErrorHandler.shared.handle(error)
+            MessageHandler.shared.showError(error)
         }
     }
 

@@ -21,7 +21,7 @@ final class SettingsViewModel {
             try UserService.logout()
             coordinator.logout()
         } catch {
-            ErrorHandler.shared.handle(error)
+            MessageHandler.shared.showError(error)
         }
     }
 }

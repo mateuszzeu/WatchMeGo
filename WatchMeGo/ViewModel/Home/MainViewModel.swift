@@ -119,7 +119,7 @@ final class MainViewModel {
                 popupMessage = PopupMessage(text: message)
             }
         } catch {
-            ErrorHandler.shared.handle(error)
+            MessageHandler.shared.showError(error)
         }
     }
     
@@ -163,7 +163,7 @@ final class MainViewModel {
         do {
             try await UserService.saveProgress(forUserID: userID, date: dateString, progress: progress)
         } catch {
-            ErrorHandler.shared.handle(error)
+            MessageHandler.shared.showError(error)
         }
     }
     
@@ -173,7 +173,7 @@ final class MainViewModel {
             let challenges = try await ChallengeService.fetchChallengesByPair(pairID: pairID)
             activeChallenge = challenges.first { $0.status == .active }
         } catch {
-            ErrorHandler.shared.handle(error)
+            MessageHandler.shared.showError(error)
         }
     }
     
@@ -212,7 +212,7 @@ final class MainViewModel {
             activeChallenge = nil
             competitiveUser = nil
         } catch {
-            ErrorHandler.shared.handle(error)
+            MessageHandler.shared.showError(error)
         }
     }
     

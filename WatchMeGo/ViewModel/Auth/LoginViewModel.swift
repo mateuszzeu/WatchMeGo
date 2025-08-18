@@ -22,7 +22,7 @@ final class LoginViewModel {
             coordinator.login(appUser)
             infoMessage = "Signed in!"
         } catch {
-            ErrorHandler.shared.handle(error)
+            MessageHandler.shared.showError(error)
         }
     }
 }

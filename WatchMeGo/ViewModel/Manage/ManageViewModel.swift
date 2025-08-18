@@ -39,7 +39,7 @@ final class ManageViewModel {
                 usernameToInvite = ""
                 try await reloadUserAndData()
             } catch {
-                ErrorHandler.shared.handle(error)
+                MessageHandler.shared.showError(error)
                 inviteStatus = nil
             }
         }
@@ -57,7 +57,7 @@ final class ManageViewModel {
 
             try await loadCompetitionCoupon()
         } catch {
-            ErrorHandler.shared.handle(error)
+            MessageHandler.shared.showError(error)
         }
     }
 
@@ -67,7 +67,7 @@ final class ManageViewModel {
                 try await UserService.acceptInvite(my: currentUser, from: user)
                 try await reloadUserAndData()
             } catch {
-                ErrorHandler.shared.handle(error)
+                MessageHandler.shared.showError(error)
             }
         }
     }
@@ -78,7 +78,7 @@ final class ManageViewModel {
                 try await UserService.declineInvite(my: currentUser, from: user)
                 try await reloadUserAndData()
             } catch {
-                ErrorHandler.shared.handle(error)
+                MessageHandler.shared.showError(error)
             }
         }
     }
@@ -94,7 +94,7 @@ final class ManageViewModel {
             try await ChallengeService.setChallengeStatus(challengeID: challengeID, to: .active)
             try await reloadUserAndData()
         } catch {
-            ErrorHandler.shared.handle(error)
+            MessageHandler.shared.showError(error)
         }
     }
 
@@ -104,7 +104,7 @@ final class ManageViewModel {
             try await UserService.declineCompetitionInvite(userID: currentUser.id, friendID: fromUserID)
             try await reloadUserAndData()
         } catch {
-            ErrorHandler.shared.handle(error)
+            MessageHandler.shared.showError(error)
         }
     }
 
@@ -117,7 +117,7 @@ final class ManageViewModel {
             try UserService.logout()
             coordinator.logout()
         } catch {
-            ErrorHandler.shared.handle(error)
+            MessageHandler.shared.showError(error)
         }
     }
 

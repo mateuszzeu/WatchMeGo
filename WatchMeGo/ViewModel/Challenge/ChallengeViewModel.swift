@@ -69,7 +69,7 @@ final class ChallengeViewModel {
             try await ChallengeService.createChallenge(newChallenge)
             resetForm()
         } catch {
-            ErrorHandler.shared.handle(error)
+            MessageHandler.shared.showError(error)
         }
     }
     
@@ -78,7 +78,7 @@ final class ChallengeViewModel {
             loggedInUser = try await UserService.fetchUser(byID: loggedInUser.id)
             await loadActiveChallengeIfExists()
         } catch {
-            ErrorHandler.shared.handle(error)
+            MessageHandler.shared.showError(error)
         }
     }
     
@@ -92,7 +92,7 @@ final class ChallengeViewModel {
             let challenges = try await ChallengeService.fetchChallengesByPair(pairID: pairID)
             activeChallenge = challenges.first(where: { $0.status == .active })
         } catch {
-            ErrorHandler.shared.handle(error)
+            MessageHandler.shared.showError(error)
         }
     }
     
@@ -107,7 +107,7 @@ final class ChallengeViewModel {
             loggedInUser.activeCompetitionWith = nil
             loggedInUser.competitionStatus = "none"
         } catch {
-            ErrorHandler.shared.handle(error)
+            MessageHandler.shared.showError(error)
         }
     }
     
