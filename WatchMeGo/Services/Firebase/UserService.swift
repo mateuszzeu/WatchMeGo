@@ -24,19 +24,6 @@ final class UserService {
               let decodedUser = try? decoder.decode(AppUser.self, from: data) else {
             throw AppError.userNotFound
         }
-        
-        // If the user doesn't have an email stored, try to get it from Firebase Auth
-        if decodedUser.email.isEmpty {
-            if let firebaseUser = Auth.auth().currentUser, firebaseUser.uid == userID {
-                // Create updated user with email from Firebase Auth
-                var updatedUser = decodedUser
-                updatedUser.email = firebaseUser.email ?? ""
-                // Update the stored user with email
-                try await createUser(updatedUser)
-                return updatedUser
-            }
-        }
-        
         return decodedUser
     }
     
@@ -164,10 +151,6 @@ final class UserService {
     
     static func logout() throws {
         try Auth.auth().signOut()
-    }
-    
-    static func resetPassword(email: String) async throws {
-        try await Auth.auth().sendPasswordReset(withEmail: email)
     }
     
     static func setResultMessage(forUserID userID: String, message: String) async throws {

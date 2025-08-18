@@ -119,7 +119,6 @@ struct ChallengeView: View {
         user: AppUser(
             id: "1",
             name: "Alice",
-            email: "alice@example.com",
             createdAt: Date(),
             friends: ["Bob", "Carol", "Dave"],
             pendingInvites: [],

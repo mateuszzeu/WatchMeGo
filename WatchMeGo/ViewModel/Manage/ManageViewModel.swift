@@ -120,15 +120,6 @@ final class ManageViewModel {
             ErrorHandler.shared.handle(error)
         }
     }
-    
-    func resetPassword() async {
-        do {
-            try await UserService.resetPassword(email: currentUser.email)
-            // Note: Firebase will send the reset email automatically
-        } catch {
-            ErrorHandler.shared.handle(error)
-        }
-    }
 
     private func loadCompetitionCoupon() async throws {
         guard let challengerID = currentUser.pendingCompetitionWith else {

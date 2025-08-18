@@ -9,7 +9,6 @@ import Foundation
 struct AppUser: Identifiable, Codable {
     let id: String
     var name: String
-    var email: String
     var createdAt: Date
     
     var friends: [String]
