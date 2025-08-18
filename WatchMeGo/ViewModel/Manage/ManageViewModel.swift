@@ -13,7 +13,6 @@ final class ManageViewModel {
     private(set) var currentUser: AppUser
 
     var usernameToInvite = ""
-    var inviteStatus: String?
 
     var pendingUsers: [AppUser] = []
     var friends: [AppUser] = []
@@ -35,12 +34,11 @@ final class ManageViewModel {
         Task {
             do {
                 try await UserService.sendInvite(from: currentUser, toUsername: usernameToInvite)
-                inviteStatus = "Invite sent!"
+                MessageHandler.shared.showSuccess("Invitation sent to \(usernameToInvite)!")
                 usernameToInvite = ""
                 try await reloadUserAndData()
             } catch {
                 MessageHandler.shared.showError(error)
-                inviteStatus = nil
             }
         }
     }
@@ -65,6 +63,7 @@ final class ManageViewModel {
         Task {
             do {
                 try await UserService.acceptInvite(my: currentUser, from: user)
+                MessageHandler.shared.showSuccess("You are now friends with \(user.name)!")
                 try await reloadUserAndData()
             } catch {
                 MessageHandler.shared.showError(error)
@@ -76,6 +75,7 @@ final class ManageViewModel {
         Task {
             do {
                 try await UserService.declineInvite(my: currentUser, from: user)
+                MessageHandler.shared.showSuccess("Invitation declined")
                 try await reloadUserAndData()
             } catch {
                 MessageHandler.shared.showError(error)

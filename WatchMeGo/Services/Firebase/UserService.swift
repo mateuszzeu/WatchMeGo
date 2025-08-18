@@ -17,6 +17,13 @@ final class UserService {
         try await usersCollection.document(user.id).setData(encodedUserData)
     }
     
+    static func resetPassword() async throws {
+        guard let user = Auth.auth().currentUser, let email = user.email else {
+            throw AppError.userNotFound
+        }
+        try await Auth.auth().sendPasswordReset(withEmail: email)
+    }
+    
     static func fetchUser(byID userID: String) async throws -> AppUser {
         let snapshot = try await usersCollection.document(userID).getDocument()
         let decoder = Firestore.Decoder()
