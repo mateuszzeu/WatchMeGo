@@ -63,15 +63,6 @@ struct ManageView: View {
             .padding(DesignSystem.Spacing.l)
         }
         .background(DesignSystem.Colors.background.ignoresSafeArea())
-        .safeAreaInset(edge: .bottom) {
-            PrimaryButton(title: "Log out") {
-                viewModel.logout(coordinator: coordinator)
-            }
-            .padding(.horizontal, DesignSystem.Spacing.l)
-            .padding(.vertical, DesignSystem.Spacing.s)
-            .padding(.bottom, DesignSystem.Spacing.m)
-            .background(DesignSystem.Colors.background)
-        }
         .task { await viewModel.loadData() }
     }
 }

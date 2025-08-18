@@ -21,6 +21,9 @@ struct MainTabView: View {
 
             ChallengeView(coordinator: coordinator, user: user)
                 .tabItem { Label("Challenge", systemImage: "flag.checkered") }
+
+            SettingsView(coordinator: coordinator, user: user)
+                .tabItem { Label("Settings", systemImage: "gearshape.fill") }
         }
         .tint(DesignSystem.Colors.accent)
         .overlay(ErrorBannerView())
