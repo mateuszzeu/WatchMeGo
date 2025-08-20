@@ -10,6 +10,7 @@ import SwiftUI
 struct SettingsView: View {
     @Bindable var coordinator: Coordinator
     @Bindable private var viewModel: SettingsViewModel
+    @AppStorage("isDarkMode") private var isDarkMode = false
 
     init(coordinator: Coordinator, user: AppUser) {
         self.coordinator = coordinator
@@ -19,18 +20,31 @@ struct SettingsView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: DesignSystem.Spacing.l) {
+
                 VStack(alignment: .leading, spacing: DesignSystem.Spacing.m) {
                     HStack(spacing: DesignSystem.Spacing.m) {
                         Image(systemName: "person.crop.circle.fill")
                             .font(.system(size: 56))
                             .foregroundColor(DesignSystem.Colors.accent)
-                        
+
                         Text(viewModel.currentUser.name)
                             .font(DesignSystem.Fonts.title)
                             .foregroundColor(DesignSystem.Colors.primary)
-                        
+
                         Spacer()
                     }
+                }
+                .padding(DesignSystem.Spacing.l)
+                .background(DesignSystem.Colors.surface)
+                .cornerRadius(DesignSystem.Radius.l)
+                .shadow(radius: DesignSystem.Radius.s, y: DesignSystem.Spacing.xs)
+
+                VStack(alignment: .leading, spacing: DesignSystem.Spacing.m) {
+                    Text("Appearance")
+                        .font(DesignSystem.Fonts.headline)
+                        .foregroundColor(DesignSystem.Colors.primary)
+
+                    Toggle("Dark Mode", isOn: $isDarkMode)
                 }
                 .padding(DesignSystem.Spacing.l)
                 .background(DesignSystem.Colors.surface)
@@ -43,9 +57,8 @@ struct SettingsView: View {
                         .foregroundColor(DesignSystem.Colors.primary)
 
                     PrimaryButton(title: "Reset password") { viewModel.resetPassword() }
-
-                    PrimaryButton(title: "Log out") { viewModel.logout(coordinator: coordinator) }
                     
+                    PrimaryButton(title: "Log out") { viewModel.logout(coordinator: coordinator) }
                 }
                 .padding(DesignSystem.Spacing.l)
                 .background(DesignSystem.Colors.surface)
@@ -60,22 +73,20 @@ struct SettingsView: View {
 }
 
 #Preview {
-	SettingsView(
-		coordinator: Coordinator(),
-		user: AppUser(
-			id: "test",
-			name: "Test",
-			createdAt: Date(),
-			friends: [],
-			pendingInvites: [],
-			sentInvites: [],
-			currentProgress: nil,
-			history: [:],
-			activeCompetitionWith: nil,
-			pendingCompetitionWith: nil,
-			competitionStatus: "none"
-		)
-	)
+    SettingsView(
+        coordinator: Coordinator(),
+        user: AppUser(
+            id: "test",
+            name: "Test",
+            createdAt: Date(),
+            friends: [],
+            pendingInvites: [],
+            sentInvites: [],
+            currentProgress: nil,
+            history: [:],
+            activeCompetitionWith: nil,
+            pendingCompetitionWith: nil,
+            competitionStatus: "none"
+        )
+    )
 }
-
-

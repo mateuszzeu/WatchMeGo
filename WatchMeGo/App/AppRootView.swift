@@ -8,6 +8,7 @@ import SwiftUI
 
 struct AppRootView: View {
     @Bindable private var coordinator = Coordinator()
+    @AppStorage("isDarkMode") private var isDarkMode = false
 
     var body: some View {
         NavigationStack {
@@ -20,6 +21,8 @@ struct AppRootView: View {
                 MainContentView(coordinator: coordinator)
             }
         }
+        .animation(.easeInOut(duration: 0.5), value: coordinator.screen)
+        .preferredColorScheme(isDarkMode ? .dark : .light)
     }
 }
 
