@@ -10,39 +10,38 @@ import SwiftUI
 struct ChallengeView: View {
     @Bindable var coordinator: Coordinator
     @Bindable private var viewModel: ChallengeViewModel
-
+    
     init(coordinator: Coordinator, user: AppUser) {
         self.coordinator = coordinator
         self.viewModel = ChallengeViewModel(loggedInUser: user)
     }
-
+    
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: DesignSystem.Spacing.m) {
-
-                if let challenge = viewModel.activeChallenge {
-                    Text("Active challenge")
+        VStack(spacing: DesignSystem.Spacing.l) {
+            if let challenge = viewModel.activeChallenge {
+                VStack(alignment: .leading, spacing: DesignSystem.Spacing.l) {
+                    Text("Active Challenge")
                         .font(DesignSystem.Fonts.headline)
                         .foregroundColor(DesignSystem.Colors.primary)
-
-                    VStack(spacing: DesignSystem.Spacing.s) {
+                    
+                    VStack(spacing: DesignSystem.Spacing.m) {
                         Text(challenge.name)
                             .font(DesignSystem.Fonts.body)
                             .foregroundColor(DesignSystem.Colors.primary)
                             .multilineTextAlignment(.center)
-
+                        
                         if !challenge.metrics.isEmpty {
                             Text(challenge.metrics.map { $0.metric.title }.joined(separator: " • "))
                                 .font(DesignSystem.Fonts.footnote)
                                 .foregroundColor(DesignSystem.Colors.secondary)
                                 .multilineTextAlignment(.center)
                         }
-
+                        
                         Text("Duration: \(challenge.duration) day\(challenge.duration > 1 ? "s" : "")")
                             .font(DesignSystem.Fonts.footnote)
                             .foregroundColor(DesignSystem.Colors.secondary)
                             .multilineTextAlignment(.center)
-
+                        
                         if let prize = challenge.prize, !prize.isEmpty {
                             Text("Prize: \(prize)")
                                 .font(DesignSystem.Fonts.footnote)
@@ -51,65 +50,117 @@ struct ChallengeView: View {
                         }
                     }
                     .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(.ultraThinMaterial)
-                    .cornerRadius(DesignSystem.Radius.m)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: DesignSystem.Radius.m)
-                            .stroke(Color.white.opacity(0.15), lineWidth: 1)
-                    )
-
-                    PrimaryButton(title: "Abort challenge") {
+                    .padding(DesignSystem.Spacing.s)
+                    .background(DesignSystem.Colors.surface)
+                    .cornerRadius(DesignSystem.Radius.l)
+                    
+                    PrimaryButton(title: "Abort Challenge") {
                         Task { await viewModel.abortActiveChallenge() }
                     }
-
-                } else {
-
-                    Menu {
-                        ForEach(viewModel.friendUsernames, id: \.self) { friend in
-                            Button(friend) { viewModel.selectedFriendUsername = friend }
-                        }
-                    } label: {
-                        HStack {
-                            Text(viewModel.selectedFriendUsername.isEmpty ? "Select Friend" : viewModel.selectedFriendUsername)
-                                .foregroundColor(DesignSystem.Colors.primary)
-                            Spacer(minLength: 0)
-                        }
-                        .padding(.vertical, DesignSystem.Spacing.xs)
-                        .padding(.horizontal, DesignSystem.Spacing.m)
-                        .background(.ultraThinMaterial)
-                        .cornerRadius(DesignSystem.Radius.s)
-                    }
-
-                    StyledTextField(title: "Challenge Name", text: $viewModel.challengeName)
-
-                    VStack(alignment: .leading, spacing: DesignSystem.Spacing.s) {
-                        ForEach($viewModel.metricSelections) { $metric in
-                            Toggle(metric.metric.title, isOn: $metric.isSelected)
-                                .disabled(!metric.isSelected && viewModel.metricSelections.filter { $0.isSelected }.count >= 3)
-                        }
-                    }
-                    .padding(.vertical, DesignSystem.Spacing.s)
-
-                    Stepper(value: $viewModel.challengeDurationDays, in: 1...7) {
-                        Text("Duration: \(viewModel.challengeDurationDays) day\(viewModel.challengeDurationDays > 1 ? "s" : "")")
-                    }
-
-                    StyledTextField(title: "Prize / Forfeit (optional)", text: $viewModel.challengePrize)
-
-                    PrimaryButton(title: "Send Challenge") {
-                        Task { await viewModel.sendChallenge() }
-                    }
-                    .disabled(!viewModel.isReadyToSend)
-                    .opacity(viewModel.isReadyToSend ? 1 : 0.5)
                 }
+                .padding(DesignSystem.Spacing.m)
+                .background(DesignSystem.Colors.surface)
+                .cornerRadius(DesignSystem.Radius.l)
+                .shadow(radius: DesignSystem.Radius.s, y: DesignSystem.Spacing.xs)
+                
+            } else {
+                VStack(spacing: DesignSystem.Spacing.l) {
+                    Text("Create Challenge")
+                        .font(.title2.bold())
+                        .foregroundColor(DesignSystem.Colors.primary)
+                        .padding(.bottom, DesignSystem.Spacing.s)
+                    
+                    VStack(alignment: .leading, spacing: DesignSystem.Spacing.l) {
+                        VStack(spacing: DesignSystem.Spacing.s) {
+                            Text("Select Friend")
+                                .font(DesignSystem.Fonts.body.weight(.semibold))
+                                .foregroundColor(DesignSystem.Colors.primary)
+                            
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                HStack(spacing: DesignSystem.Spacing.s) {
+                                    ForEach(viewModel.friendUsernames, id: \.self) { friend in
+                                        let isSelected = (viewModel.selectedFriendUsername == friend)
+                                        Text(friend)
+                                            .font(.callout.weight(isSelected ? .semibold : .regular))
+                                            .padding(.vertical, 10)
+                                            .padding(.horizontal, 14)
+                                            .background(
+                                                Capsule()
+                                                    .fill(isSelected ? DesignSystem.Colors.primary : DesignSystem.Colors.surface)
+                                            )
+                                            .overlay(
+                                                Capsule().stroke(DesignSystem.Colors.primary.opacity(isSelected ? 0 : 0.25), lineWidth: 1)
+                                            )
+                                            .foregroundColor(isSelected ? .white : DesignSystem.Colors.primary)
+                                            .onTapGesture {
+                                                viewModel.selectedFriendUsername = friend
+                                            }
+                                    }
+                                }
+                                .padding(.horizontal, DesignSystem.Spacing.s)
+                                .padding(.vertical, DesignSystem.Spacing.xs)
+                            }
+                        }
+                        .padding(DesignSystem.Spacing.s)
+                        .background(DesignSystem.Colors.surface)
+                        .cornerRadius(DesignSystem.Radius.m)
+                        .onAppear {
+                            if viewModel.selectedFriendUsername.isEmpty, let first = viewModel.friendUsernames.first {
+                                viewModel.selectedFriendUsername = first
+                            }
+                        }
+                        
+                        StyledTextField(title: "Challenge Name", text: $viewModel.challengeName)
+                        
+                        VStack(spacing: DesignSystem.Spacing.s) {
+                            Text("Select Metrics")
+                                .font(DesignSystem.Fonts.body.weight(.semibold))
+                                .foregroundColor(DesignSystem.Colors.primary)
+                            
+                            ForEach($viewModel.metricSelections) { $metric in
+                                Toggle(isOn: $metric.isSelected) {
+                                    Text(metric.metric.title)
+                                        .font(.callout)
+                                }
+                                .disabled(!metric.isSelected && viewModel.metricSelections.filter { $0.isSelected }.count >= 3)
+                            }
+                        }
+                        .padding(DesignSystem.Spacing.s)
+                        .background(DesignSystem.Colors.surface)
+                        .cornerRadius(DesignSystem.Radius.m)
+                        
+                        VStack(spacing: DesignSystem.Spacing.s) {
+                            Text("Challenge Duration")
+                                .font(DesignSystem.Fonts.body.weight(.semibold))
+                                .foregroundColor(DesignSystem.Colors.primary)
+                            
+                            Stepper(value: $viewModel.challengeDurationDays, in: 1...7) {
+                                Text("\(viewModel.challengeDurationDays) day\(viewModel.challengeDurationDays > 1 ? "s" : "")")
+                                    .foregroundColor(DesignSystem.Colors.secondary)
+                            }
+                        }
+                        .padding(DesignSystem.Spacing.s)
+                        .background(DesignSystem.Colors.surface)
+                        .cornerRadius(DesignSystem.Radius.m)
+                        
+                        StyledTextField(title: "Prize (optional)", text: $viewModel.challengePrize)
+                        
+                        PrimaryButton(title: "Send Challenge") {
+                            Task { await viewModel.sendChallenge() }
+                        }
+                        .disabled(!viewModel.isReadyToSend)
+                    }
+                }
+                .padding(DesignSystem.Spacing.s)
+                .background(DesignSystem.Colors.surface)
+                .cornerRadius(DesignSystem.Radius.l)
+                .shadow(radius: DesignSystem.Radius.s, y: DesignSystem.Spacing.xs)
             }
-            .padding(.horizontal, DesignSystem.Spacing.l)
-            .padding(.vertical, DesignSystem.Spacing.l)
-            .frame(maxWidth: .infinity, alignment: .leading)
         }
+        .padding(DesignSystem.Spacing.l)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(DesignSystem.Colors.background)
         .task { await viewModel.refreshUser() }
-        .background(DesignSystem.Colors.background.ignoresSafeArea())
     }
 }
 
