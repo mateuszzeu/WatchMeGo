@@ -13,32 +13,45 @@ struct FriendsSection: View {
     let onSelect: (AppUser) -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spacing.s) {
+        VStack(spacing: DesignSystem.Spacing.s) {
             Text("Friends")
                 .font(DesignSystem.Fonts.headline)
                 .foregroundColor(DesignSystem.Colors.primary)
+
             if friends.isEmpty {
-                Text("No friends yet")
-                    .font(DesignSystem.Fonts.footnote)
-                    .foregroundColor(DesignSystem.Colors.secondary)
+                PlaceholderCardContent(
+                    systemImage: "person.2.slash",
+                    title: "No friends yet",
+                    subtitle: "Invite someone and start your first competition."
+                )
             } else {
-                LazyVStack(spacing: DesignSystem.Spacing.s) {
+                LazyVStack {
                     ForEach(friends) { user in
                         Button {
                             onSelect(user)
                         } label: {
-                            HStack {
+                            HStack(spacing: DesignSystem.Spacing.s) {
+                                Circle()
+                                    .fill(DesignSystem.Colors.accent.opacity(0.18))
+                                    .frame(width: 36, height: 36)
+                                    .overlay(
+                                        Text(String(user.name.prefix(1)))
+                                            .font(.callout.weight(.bold))
+                                            .foregroundColor(DesignSystem.Colors.accent)
+                                    )
+
                                 Text(user.name)
                                     .font(DesignSystem.Fonts.body)
                                     .foregroundColor(DesignSystem.Colors.primary)
+
                                 Spacer()
+
                                 Image(systemName: isInCompetition(user) ? "flame.fill" : "flame")
                                     .foregroundColor(isInCompetition(user) ? DesignSystem.Colors.error : DesignSystem.Colors.secondary)
-                                    .font(.system(size: isInCompetition(user) ? 30 : 24))
+                                    .font(.system(size: 26))
                             }
+                            .padding(DesignSystem.Spacing.s)
                             .frame(maxWidth: .infinity)
-                            .padding(.vertical, DesignSystem.Spacing.s)
-                            .padding(.horizontal, DesignSystem.Spacing.m)
                             .background(.ultraThinMaterial)
                             .cornerRadius(DesignSystem.Radius.m)
                         }
@@ -48,8 +61,11 @@ struct FriendsSection: View {
                 }
             }
         }
+        .frame(maxWidth: .infinity)
     }
 }
+
+
 
 #Preview {
     FriendsSection(friends: [], isInCompetition: { _ in false }, onSelect: { _ in })

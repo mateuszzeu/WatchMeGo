@@ -18,38 +18,47 @@ struct ManageView: View {
 
     var body: some View {
         ScrollView {
-            LazyVStack(alignment: .leading, spacing: DesignSystem.Spacing.l) {
-                ChallengeBannerView(username: viewModel.currentUser.name)
-
-                HStack(spacing: DesignSystem.Spacing.s) {
-                    StyledTextField(title: "Invite...", text: $viewModel.usernameToInvite)
-                    Button { viewModel.sendInviteTapped() } label: {
-                        Image(systemName: "paperplane.fill")
-                            .foregroundColor(DesignSystem.Colors.background)
-                            .padding(DesignSystem.Spacing.s)
-                            .background(DesignSystem.Colors.accent)
-                            .clipShape(Circle())
-                    }
-                    .disabled(viewModel.usernameToInvite.isEmpty)
-                    .opacity(viewModel.usernameToInvite.isEmpty ? 0.5 : 1)
+            VStack(spacing: DesignSystem.Spacing.l) {
+                VStack(spacing: DesignSystem.Spacing.xs) {
+                    Text("Manage Friends & Invites")
+                        .font(DesignSystem.Fonts.headline)
+                        .foregroundColor(DesignSystem.Colors.primary)
+                        .multilineTextAlignment(.center)
+                    Text("Invite friends, review requests, and start competitions.")
+                        .font(DesignSystem.Fonts.footnote)
+                        .foregroundColor(DesignSystem.Colors.secondary)
+                        .multilineTextAlignment(.center)
                 }
+                .cardStyle()
 
-                Divider()
+                VStack(spacing: DesignSystem.Spacing.m) {
+                    Text("Invite a Friend")
+                        .font(DesignSystem.Fonts.headline)
+                        .foregroundColor(DesignSystem.Colors.primary)
+                        .multilineTextAlignment(.center)
+
+                    InviteField(text: $viewModel.usernameToInvite) {
+                        viewModel.sendInviteTapped()
+                    }
+                }
+                .cardStyle()
 
                 FriendsSection(
                     friends: viewModel.friends,
                     isInCompetition: viewModel.isInCompetition(with:),
                     onSelect: { _ in }
                 )
-
-                Divider()
+                .frame(minHeight: 120)
+                .cardStyle()
 
                 PendingInvitesSection(
                     pendingUsers: viewModel.pendingUsers,
                     onAccept: { viewModel.accept($0) },
                     onDecline: { viewModel.decline($0) }
                 )
-                
+                .frame(minHeight: 76)
+                .cardStyle()
+
                 if viewModel.hasPendingCompetitionInvite,
                    let challenger = viewModel.pendingCompetitionChallengerName {
                     CompetitionCouponView(
@@ -62,7 +71,8 @@ struct ManageView: View {
             }
             .padding(DesignSystem.Spacing.l)
         }
-        .background(DesignSystem.Colors.background.ignoresSafeArea())
+        .background(DesignSystem.Colors.background)
+        .hideKeyboardOnTap()
         .task { await viewModel.loadData() }
     }
 }

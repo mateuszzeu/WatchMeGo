@@ -67,7 +67,7 @@ struct SettingsView: View {
             }
             .padding(DesignSystem.Spacing.l)
         }
-        .background(DesignSystem.Colors.background.ignoresSafeArea())
+        .background(DesignSystem.Colors.background)
         .navigationTitle("Settings")
     }
 }

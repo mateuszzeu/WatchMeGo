@@ -13,16 +13,19 @@ struct PendingInvitesSection: View {
     let onDecline: (AppUser) -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spacing.s) {
+        VStack(spacing: DesignSystem.Spacing.s) {
             Text("Pending Invites")
                 .font(DesignSystem.Fonts.headline)
                 .foregroundColor(DesignSystem.Colors.primary)
+
             if pendingUsers.isEmpty {
-                Text("No pending invites")
-                    .font(DesignSystem.Fonts.footnote)
-                    .foregroundColor(DesignSystem.Colors.secondary)
+                PlaceholderCardContent(
+                    systemImage: "envelope.badge",
+                    title: "No pending invites",
+                    subtitle: "When someone invites you, it will appear here."
+                )
             } else {
-                LazyVStack(spacing: DesignSystem.Spacing.s) {
+                LazyVStack(spacing: DesignSystem.Spacing.xs) {
                     ForEach(pendingUsers) { user in
                         HStack {
                             Text(user.name)
@@ -32,13 +35,13 @@ struct PendingInvitesSection: View {
                             Button("Accept") { onAccept(user) }
                                 .buttonStyle(.borderedProminent)
                                 .tint(DesignSystem.Colors.accent)
+                                .controlSize(.small)
                             Button("Decline") { onDecline(user) }
                                 .buttonStyle(.bordered)
                                 .tint(DesignSystem.Colors.error)
+                                .controlSize(.small)
                         }
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, DesignSystem.Spacing.s)
-                        .padding(.horizontal, DesignSystem.Spacing.m)
+                        .padding(DesignSystem.Spacing.m)
                         .background(.ultraThinMaterial)
                         .cornerRadius(DesignSystem.Radius.m)
                     }
@@ -47,6 +50,8 @@ struct PendingInvitesSection: View {
         }
     }
 }
+
+
 
 #Preview {
     PendingInvitesSection(pendingUsers: [], onAccept: { _ in }, onDecline: { _ in })
