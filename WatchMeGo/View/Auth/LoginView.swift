@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import LocalAuthentication
 
 struct LoginView: View {
     @Bindable var coordinator: Coordinator
@@ -55,6 +56,47 @@ struct LoginView: View {
                     .opacity(isAnimating ? 1.0 : 0.0)
                     .animation(.easeIn(duration: 0.8).delay(0.5), value: isAnimating)
                 
+                if let lastUser = viewModel.lastLoggedInUser {
+                    VStack(spacing: DesignSystem.Spacing.s) {
+                        HStack(spacing: DesignSystem.Spacing.s) {
+                            Image(systemName: "faceid")
+                                .font(.title2)
+                                .foregroundColor(DesignSystem.Colors.accent)
+                            
+                            Text("Quick Login")
+                                .font(DesignSystem.Fonts.headline)
+                                .foregroundColor(DesignSystem.Colors.primary)
+                        }
+                        
+                        Text(lastUser.name)
+                            .font(DesignSystem.Fonts.body)
+                            .foregroundColor(DesignSystem.Colors.secondary)
+                        
+                        Button("Face ID Login") {
+                            Task { 
+                                await viewModel.quickLoginWithFaceID(coordinator: coordinator) 
+                            }
+                        }
+                        .foregroundColor(DesignSystem.Colors.background)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, DesignSystem.Spacing.s)
+                        .background(DesignSystem.Colors.accent)
+                        .cornerRadius(DesignSystem.Radius.m)
+                        .buttonStyle(.plain)
+                        .shadow(radius: DesignSystem.Radius.s, y: DesignSystem.Spacing.xs)
+                        .scaleEffect(isAnimating ? 1.0 : 0.8)
+                        .opacity(isAnimating ? 1.0 : 0.0)
+                        .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.6), value: isAnimating)
+                    }
+                    .padding(DesignSystem.Spacing.m)
+                    .background(DesignSystem.Colors.surface.opacity(0.5))
+                    .cornerRadius(DesignSystem.Radius.l)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: DesignSystem.Radius.l)
+                            .stroke(DesignSystem.Colors.accent.opacity(0.3), lineWidth: 1)
+                    )
+                }
+                
                 VStack(spacing: DesignSystem.Spacing.m) {
                     StyledTextField(title: "Email", text: $email)
                         .offset(x: isAnimating ? 0 : -50)
@@ -96,7 +138,10 @@ struct LoginView: View {
             .padding(DesignSystem.Spacing.l)
         }
         .overlay(InfoBannerView())
-        .onAppear { isAnimating = true }
+        .onAppear { 
+            isAnimating = true
+            viewModel.loadLastLoggedInUser()
+        }
     }
 }
 

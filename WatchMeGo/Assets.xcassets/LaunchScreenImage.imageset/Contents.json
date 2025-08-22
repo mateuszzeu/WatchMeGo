@@ -1,0 +1,21 @@
+{
+  "images" : [
+    {
+      "filename" : "20250822_1307_Logo na czarnym tle_remix_01k38q9kqhexmvrb2r9cswjecb (1).png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "3x"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

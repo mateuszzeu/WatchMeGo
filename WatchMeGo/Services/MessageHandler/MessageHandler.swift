@@ -47,6 +47,11 @@ final class MessageHandler {
         showMessage = true
         scheduleHide()
     }
+
+    func clearMessage() {
+        showMessage = false
+        message = nil
+    }
     
     private func scheduleHide() {
         Task {
