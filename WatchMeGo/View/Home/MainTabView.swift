@@ -14,16 +14,16 @@ struct MainTabView: View {
     var body: some View {
         TabView {
             MainView(coordinator: coordinator)
-                .tabItem { Label("Home", systemImage: "house.fill") }
+                .tabItem { Label("Dashboard", systemImage: "chart.bar.fill") }
 
             ManageView(coordinator: coordinator, user: user)
-                .tabItem { Label("Friends", systemImage: "person.2.fill") }
+                .tabItem { Label("Social", systemImage: "person.3.fill") }
 
             ChallengeView(coordinator: coordinator, user: user)
-                .tabItem { Label("Challenge", systemImage: "flag.checkered") }
+                .tabItem { Label("Competitions", systemImage: "trophy.fill") }
 
             SettingsView(coordinator: coordinator, user: user)
-                .tabItem { Label("Settings", systemImage: "gearshape.fill") }
+                .tabItem { Label("Profile", systemImage: "person.circle.fill") }
         }
         .tint(DesignSystem.Colors.accent)
         .overlay(InfoBannerView())

@@ -20,24 +20,18 @@ struct SettingsView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: DesignSystem.Spacing.l) {
+                HStack(spacing: DesignSystem.Spacing.m) {
+                    Image(systemName: "person.crop.circle.fill")
+                        .font(.system(size: 56))
+                        .foregroundColor(DesignSystem.Colors.accent)
 
-                VStack(alignment: .leading, spacing: DesignSystem.Spacing.m) {
-                    HStack(spacing: DesignSystem.Spacing.m) {
-                        Image(systemName: "person.crop.circle.fill")
-                            .font(.system(size: 56))
-                            .foregroundColor(DesignSystem.Colors.accent)
+                    Text(viewModel.currentUser.name)
+                        .font(DesignSystem.Fonts.title)
+                        .foregroundColor(DesignSystem.Colors.primary)
 
-                        Text(viewModel.currentUser.name)
-                            .font(DesignSystem.Fonts.title)
-                            .foregroundColor(DesignSystem.Colors.primary)
-
-                        Spacer()
-                    }
+                    Spacer()
                 }
-                .padding(DesignSystem.Spacing.l)
-                .background(DesignSystem.Colors.surface)
-                .cornerRadius(DesignSystem.Radius.l)
-                .shadow(radius: DesignSystem.Radius.s, y: DesignSystem.Spacing.xs)
+                .cardStyle()
 
                 VStack(alignment: .leading, spacing: DesignSystem.Spacing.m) {
                     Text("Appearance")
@@ -46,10 +40,7 @@ struct SettingsView: View {
 
                     Toggle("Dark Mode", isOn: $isDarkMode)
                 }
-                .padding(DesignSystem.Spacing.l)
-                .background(DesignSystem.Colors.surface)
-                .cornerRadius(DesignSystem.Radius.l)
-                .shadow(radius: DesignSystem.Radius.s, y: DesignSystem.Spacing.xs)
+                .cardStyle()
 
                 VStack(alignment: .leading, spacing: DesignSystem.Spacing.m) {
                     Text("Account options")
@@ -60,10 +51,7 @@ struct SettingsView: View {
                     
                     PrimaryButton(title: "Log out") { viewModel.logout(coordinator: coordinator) }
                 }
-                .padding(DesignSystem.Spacing.l)
-                .background(DesignSystem.Colors.surface)
-                .cornerRadius(DesignSystem.Radius.l)
-                .shadow(radius: DesignSystem.Radius.s, y: DesignSystem.Spacing.xs)
+                .cardStyle()
             }
             .padding(DesignSystem.Spacing.l)
         }

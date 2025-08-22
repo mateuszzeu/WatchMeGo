@@ -13,6 +13,5 @@ extension View {
             .frame(maxWidth: .infinity)
             .background(DesignSystem.Colors.surface)
             .cornerRadius(DesignSystem.Radius.l)
-            .shadow(radius: DesignSystem.Radius.s, y: DesignSystem.Spacing.xs)
     }
 }
