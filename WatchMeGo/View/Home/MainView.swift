@@ -12,14 +12,14 @@ struct MainView: View {
     @Bindable var coordinator: Coordinator
     
     @State private var now = Date()
-    private let ticker = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    @State private var ticker = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
     var body: some View {
         ScrollView {
-            if viewModel.isAuthorized {
-                VStack(spacing: DesignSystem.Spacing.s) {
+            VStack(spacing: DesignSystem.Spacing.l) {
+                if viewModel.isAuthorized {
                     if let challenge = viewModel.activeChallenge {
-                        VStack(spacing: 4) {
+                        VStack(spacing: DesignSystem.Spacing.s) {
                             Text("Time left")
                                 .font(DesignSystem.Fonts.footnote)
                                 .foregroundColor(DesignSystem.Colors.secondary)
@@ -38,85 +38,81 @@ struct MainView: View {
                         }
                     }
                     
-                    Text("\(coordinator.currentUser?.name ?? "You") - today")
-                        .font(DesignSystem.Fonts.headline)
-                        .foregroundColor(DesignSystem.Colors.primary)
-                        .multilineTextAlignment(.center)
-                        .cardStyle()
-                    
-                    ForEach(viewModel.displayedMetrics) { metric in
-                        ProgressBarView(
-                            label: metric.title,
-                            value: viewModel.value(for: metric, of: nil),
-                            goal: {
-                                if viewModel.activeChallenge != nil {
-                                    return viewModel.challengeGoal(for: metric)
-                                } else {
-                                    return viewModel.defaultGoal(for: metric)
-                                }
-                            }(),
-                            color: {
-                                switch metric {
-                                case .calories: return DesignSystem.Colors.move
-                                case .exerciseMinutes: return DesignSystem.Colors.exercise
-                                case .standHours: return DesignSystem.Colors.stand
-                                }
-                            }(),
-                            iconName: metric.iconName
-                        )
-                        .cardStyle()
-                    }
-                }
-                
-                if let rival = viewModel.competitiveUser {
-                    Divider()
-                        .frame(height: 1)
-                        .background(DesignSystem.Colors.secondary)
-                        .padding(.vertical, DesignSystem.Spacing.m)
-                    
                     VStack(spacing: DesignSystem.Spacing.s) {
-                        Text("\(rival.name) - today")
+                        Text("\(coordinator.currentUser?.name ?? "You") - today")
                             .font(DesignSystem.Fonts.headline)
                             .foregroundColor(DesignSystem.Colors.primary)
                             .multilineTextAlignment(.center)
-                            .cardStyle()
                         
-                        ForEach(viewModel.displayedMetrics) { metric in
-                            ProgressBarView(
-                                label: metric.title,
-                                value: viewModel.value(for: metric, of: rival),
-                                goal: {
-                                    if viewModel.activeChallenge != nil {
-                                        return viewModel.challengeGoal(for: metric)
-                                    } else {
-                                        return viewModel.defaultGoal(for: metric)
-                                    }
-                                }(),
-                                color: {
-                                    switch metric {
-                                    case .calories: return DesignSystem.Colors.move.darker()
-                                    case .exerciseMinutes: return DesignSystem.Colors.exercise.darker()
-                                    case .standHours: return DesignSystem.Colors.stand.darker()
-                                    }
-                                }(),
-                                iconName: metric.iconName
-                            )
-                            .cardStyle()
+                        VStack(spacing: DesignSystem.Spacing.m) {
+                            ForEach(viewModel.displayedMetrics) { metric in
+                                ProgressBarView(
+                                    label: metric.title,
+                                    value: viewModel.value(for: metric, of: nil),
+                                    goal: {
+                                        if viewModel.activeChallenge != nil {
+                                            return viewModel.challengeGoal(for: metric)
+                                        } else {
+                                            return viewModel.defaultGoal(for: metric)
+                                        }
+                                    }(),
+                                    color: {
+                                        switch metric {
+                                        case .calories: return DesignSystem.Colors.move
+                                        case .exerciseMinutes: return DesignSystem.Colors.exercise
+                                        case .standHours: return DesignSystem.Colors.stand
+                                        }
+                                    }(),
+                                    iconName: metric.iconName
+                                )
+                            }
                         }
                     }
-                }
-                
-            } else {
-                Text("HealthKit access required or denied.")
-                    .font(DesignSystem.Fonts.body)
-                    .foregroundColor(DesignSystem.Colors.primary)
                     .cardStyle()
+                    
+                    if let rival = viewModel.competitiveUser {
+                        VStack(spacing: DesignSystem.Spacing.s) {
+                            Text("\(rival.name) - today")
+                                .font(DesignSystem.Fonts.headline)
+                                .foregroundColor(DesignSystem.Colors.primary)
+                                .multilineTextAlignment(.center)
+                            
+                            VStack(spacing: DesignSystem.Spacing.m) {
+                                ForEach(viewModel.displayedMetrics) { metric in
+                                    ProgressBarView(
+                                        label: metric.title,
+                                        value: viewModel.value(for: metric, of: rival),
+                                        goal: {
+                                            if viewModel.activeChallenge != nil {
+                                                return viewModel.challengeGoal(for: metric)
+                                            } else {
+                                                return viewModel.defaultGoal(for: metric)
+                                            }
+                                        }(),
+                                        color: {
+                                            switch metric {
+                                            case .calories: return DesignSystem.Colors.move.darker()
+                                            case .exerciseMinutes: return DesignSystem.Colors.exercise.darker()
+                                            case .standHours: return DesignSystem.Colors.stand.darker()
+                                            }
+                                        }(),
+                                        iconName: metric.iconName
+                                    )
+                                }
+                            }
+                        }
+                        .cardStyle()
+                    }
+                    
+                } else {
+                    Text("HealthKit access required or denied.")
+                        .font(DesignSystem.Fonts.body)
+                        .foregroundColor(DesignSystem.Colors.primary)
+                        .cardStyle()
+                }
             }
-            
-            Spacer()
+            .padding(DesignSystem.Spacing.l)
         }
-        .padding(DesignSystem.Spacing.l)
-        //.frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(DesignSystem.Colors.background)
         .task {
             await viewModel.loadDataAndSave(for: coordinator.currentUser?.id)
