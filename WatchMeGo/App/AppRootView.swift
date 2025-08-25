@@ -9,10 +9,16 @@ import SwiftUI
 struct AppRootView: View {
     @Bindable private var coordinator = Coordinator()
     @AppStorage("isDarkMode") private var isDarkMode = false
-
+    
     var body: some View {
         NavigationStack {
             switch coordinator.screen {
+            case .splash:
+                SplashView()
+                    .task {
+                        try? await Task.sleep(for: .seconds(1.6))
+                        coordinator.navigate(to: .login)
+                    }
             case .login:
                 LoginView(coordinator: coordinator)
             case .register:
@@ -28,7 +34,7 @@ struct AppRootView: View {
 
 private struct MainContentView: View {
     @Bindable var coordinator: Coordinator
-
+    
     var body: some View {
         if let user = coordinator.currentUser {
             MainTabView(coordinator: coordinator, user: user)

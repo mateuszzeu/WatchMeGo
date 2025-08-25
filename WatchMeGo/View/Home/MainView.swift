@@ -17,7 +17,7 @@ struct MainView: View {
     var body: some View {
         ScrollView {
             if viewModel.isAuthorized {
-                VStack(spacing: DesignSystem.Spacing.l) {
+                VStack(spacing: DesignSystem.Spacing.s) {
                     if let challenge = viewModel.activeChallenge {
                         VStack(spacing: 4) {
                             Text("Time left")
@@ -74,7 +74,7 @@ struct MainView: View {
                         .background(DesignSystem.Colors.secondary)
                         .padding(.vertical, DesignSystem.Spacing.m)
                     
-                    VStack(spacing: DesignSystem.Spacing.l) {
+                    VStack(spacing: DesignSystem.Spacing.s) {
                         Text("\(rival.name) - today")
                             .font(DesignSystem.Fonts.headline)
                             .foregroundColor(DesignSystem.Colors.primary)
@@ -116,6 +116,7 @@ struct MainView: View {
             Spacer()
         }
         .padding(DesignSystem.Spacing.l)
+        //.frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(DesignSystem.Colors.background)
         .task {
             await viewModel.loadDataAndSave(for: coordinator.currentUser?.id)

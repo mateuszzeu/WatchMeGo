@@ -11,12 +11,13 @@ import SwiftUI
 final class Coordinator {
     
     enum Screen {
+        case splash
         case login
         case register
         case main
     }
     
-    var screen: Screen = .login
+    var screen: Screen = .splash
     var currentUser: AppUser?
     
     func login(_ user: AppUser) {
