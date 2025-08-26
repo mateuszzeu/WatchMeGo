@@ -76,15 +76,6 @@ final class ManageViewModel {
         currentUser.activeCompetitionWith == friend.id
     }
 
-    func logout(coordinator: Coordinator) {
-        do {
-            try UserService.logout()
-            coordinator.logout()
-        } catch {
-            MessageHandler.shared.showError(error)
-        }
-    }
-
     private func reloadUserAndData() async throws {
         currentUser = try await UserService.fetchUser(byID: currentUser.id)
         await loadData()

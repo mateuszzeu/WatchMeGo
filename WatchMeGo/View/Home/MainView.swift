@@ -130,6 +130,7 @@ struct MainView: View {
         }
         .background(DesignSystem.Colors.background)
         .task {
+            guard coordinator.currentUser != nil else { return }
             await viewModel.loadDataAndSave()
             await viewModel.checkResult(for: coordinator.currentUser?.id)
         }
