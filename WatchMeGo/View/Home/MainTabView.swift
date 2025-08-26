@@ -13,7 +13,7 @@ struct MainTabView: View {
 
     var body: some View {
         TabView {
-            MainView(coordinator: coordinator)
+            MainView(coordinator: coordinator, user: user)
                 .tabItem {
                     Label("Dashboard", systemImage: "chart.bar.fill")
                         .environment(\.symbolVariants, .fill)

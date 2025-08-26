@@ -17,15 +17,6 @@ final class ManageViewModel {
     var pendingUsers: [AppUser] = []
     var friends: [AppUser] = []
 
-    var pendingCompetitionChallengerName: String?
-    var couponChallenge: Challenge?
-
-    var hasPendingCompetitionInvite: Bool {
-        currentUser.competitionStatus == "pendingReceived"
-        && currentUser.pendingCompetitionWith != nil
-        && currentUser.activeCompetitionWith == nil
-    }
-
     init(currentUser: AppUser) {
         self.currentUser = currentUser
     }
@@ -52,8 +43,6 @@ final class ManageViewModel {
 
             pendingUsers = try await UserService.fetchUsers(byUsernames: pendingNames)
             friends = try await UserService.fetchUsers(byUsernames: friendNames)
-
-            try await loadCompetitionCoupon()
         } catch {
             MessageHandler.shared.showError(error)
         }
@@ -83,31 +72,6 @@ final class ManageViewModel {
         }
     }
 
-    func acceptCompetitionInvite() async {
-        guard
-            let fromUserID = currentUser.pendingCompetitionWith,
-            let challengeID = couponChallenge?.id
-        else { return }
-
-        do {
-            try await UserService.acceptCompetitionInvite(userID: currentUser.id, friendID: fromUserID)
-            try await ChallengeService.setChallengeStatus(challengeID: challengeID, to: .active)
-            try await reloadUserAndData()
-        } catch {
-            MessageHandler.shared.showError(error)
-        }
-    }
-
-    func declineCompetitionInvite() async {
-        guard let fromUserID = currentUser.pendingCompetitionWith else { return }
-        do {
-            try await UserService.declineCompetitionInvite(userID: currentUser.id, friendID: fromUserID)
-            try await reloadUserAndData()
-        } catch {
-            MessageHandler.shared.showError(error)
-        }
-    }
-
     func isInCompetition(with friend: AppUser) -> Bool {
         currentUser.activeCompetitionWith == friend.id
     }
@@ -119,21 +83,6 @@ final class ManageViewModel {
         } catch {
             MessageHandler.shared.showError(error)
         }
-    }
-
-    private func loadCompetitionCoupon() async throws {
-        guard let challengerID = currentUser.pendingCompetitionWith else {
-            pendingCompetitionChallengerName = nil
-            couponChallenge = nil
-            return
-        }
-
-        let challenger = try await UserService.fetchUser(byID: challengerID)
-        pendingCompetitionChallengerName = challenger.name
-
-        let pairID = [currentUser.id, challengerID].sorted().joined(separator: "_")
-        let challenges = try await ChallengeService.fetchChallengesByPair(pairID: pairID)
-        couponChallenge = challenges.first(where: { $0.status == .pending })
     }
 
     private func reloadUserAndData() async throws {

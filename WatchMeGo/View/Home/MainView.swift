@@ -8,11 +8,16 @@
 import SwiftUI
 
 struct MainView: View {
-    @Bindable private var viewModel = MainViewModel()
+    @Bindable private var viewModel: MainViewModel
     @Bindable var coordinator: Coordinator
     
     @State private var now = Date()
     @State private var ticker = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    
+    init(coordinator: Coordinator, user: AppUser) {
+        self.coordinator = coordinator
+        self.viewModel = MainViewModel(currentUser: user)
+    }
     
     var body: some View {
         ScrollView {
@@ -36,6 +41,16 @@ struct MainView: View {
                             now = currentTime
                             Task { await viewModel.handleTick(now: currentTime) }
                         }
+                    }
+                    
+                    if viewModel.hasPendingCompetitionInvite,
+                       let challenger = viewModel.pendingCompetitionChallengerName {
+                        CompetitionCouponView(
+                            challenger: challenger,
+                            challenge: viewModel.couponChallenge,
+                            onAccept: { Task { await viewModel.acceptCompetitionInvite() } },
+                            onDecline: { Task { await viewModel.declineCompetitionInvite() } }
+                        )
                     }
                     
                     VStack(spacing: DesignSystem.Spacing.s) {
@@ -115,7 +130,7 @@ struct MainView: View {
         }
         .background(DesignSystem.Colors.background)
         .task {
-            await viewModel.loadDataAndSave(for: coordinator.currentUser?.id)
+            await viewModel.loadDataAndSave()
             await viewModel.checkResult(for: coordinator.currentUser?.id)
         }
         .alert(item: $viewModel.popupMessage) { item in
@@ -129,5 +144,19 @@ struct MainView: View {
 }
 
 #Preview {
-    MainView(coordinator: Coordinator())
+    MainView(
+        coordinator: Coordinator(),
+        user: AppUser(
+            id: "1",
+            name: "Alice",
+            createdAt: Date(),
+            friends: ["Bob", "Carol", "Dave"],
+            pendingInvites: [],
+            sentInvites: [],
+            currentProgress: nil,
+            history: [:],
+            activeCompetitionWith: nil,
+            pendingCompetitionWith: nil
+        )
+    )
 }

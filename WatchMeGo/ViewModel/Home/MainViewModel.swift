@@ -30,14 +30,35 @@ final class MainViewModel {
     var exerciseMinutes = 0
     var standHours = 0
     
+    var pendingCompetitionChallengerName: String?
+    var couponChallenge: Challenge?
+    
     var competitiveUser: AppUser?
     var activeChallenge: Challenge?
     
     private var didFinalize = false
+    private(set) var currentUser: AppUser
     
-    func loadDataAndSave(for userID: String?) async {
+    var hasPendingCompetitionInvite: Bool {
+        currentUser.competitionStatus == "pendingReceived"
+        && currentUser.pendingCompetitionWith != nil
+        && currentUser.activeCompetitionWith == nil
+    }
+    
+    init(currentUser: AppUser) {
+        self.currentUser = currentUser
+    }
+    
+    func loadDataAndSave() async {
         isAuthorized = await HealthKitService.shared.requestAuthorization()
         guard isAuthorized else { return }
+        
+        do {
+            currentUser = try await UserService.fetchUser(byID: currentUser.id)
+        } catch {
+            MessageHandler.shared.showError(error)
+            return
+        }
         
         async let caloriesValue = HealthKitService.shared.fetchTodayBurnedCalories()
         async let exerciseMinutesValue = HealthKitService.shared.fetchTodayExerciseMinutes()
@@ -47,20 +68,66 @@ final class MainViewModel {
         exerciseMinutes = await exerciseMinutesValue
         standHours = await standHoursValue
         
-        await saveProgress(for: userID)
+        await saveProgress()
         
-        if let userID, let user = try? await UserService.fetchUser(byID: userID) {
-            if let competitiveID = user.activeCompetitionWith {
-                competitiveUser = try? await UserService.fetchUser(byID: competitiveID)
-                await loadActiveChallenge(for: user.id, and: competitiveID)
-            } else {
-                competitiveUser = nil
-                activeChallenge = nil
-            }
+        if let competitiveID = currentUser.activeCompetitionWith {
+            competitiveUser = try? await UserService.fetchUser(byID: competitiveID)
+            await loadActiveChallenge(for: currentUser.id, and: competitiveID)
         } else {
             competitiveUser = nil
             activeChallenge = nil
         }
+        
+        await loadCompetitionCoupon()
+    }
+    
+    func acceptCompetitionInvite() async {
+        guard
+            let fromUserID = currentUser.pendingCompetitionWith,
+            let challengeID = couponChallenge?.id
+        else { return }
+        
+        do {
+            try await UserService.acceptCompetitionInvite(userID: currentUser.id, friendID: fromUserID)
+            try await ChallengeService.setChallengeStatus(challengeID: challengeID, to: .active)
+            try await reloadUserAndData()
+        } catch {
+            MessageHandler.shared.showError(error)
+        }
+    }
+    
+    func declineCompetitionInvite() async {
+        guard let fromUserID = currentUser.pendingCompetitionWith else { return }
+        do {
+            try await UserService.declineCompetitionInvite(userID: currentUser.id, friendID: fromUserID)
+            try await reloadUserAndData()
+        } catch {
+            MessageHandler.shared.showError(error)
+        }
+    }
+    
+    private func loadCompetitionCoupon() async {
+        guard let challengerID = currentUser.pendingCompetitionWith else {
+            pendingCompetitionChallengerName = nil
+            couponChallenge = nil
+            return
+        }
+        
+        do {
+            let challenger = try await UserService.fetchUser(byID: challengerID)
+            pendingCompetitionChallengerName = challenger.name
+            
+            let pairID = [currentUser.id, challengerID].sorted().joined(separator: "_")
+            let challenges = try await ChallengeService.fetchChallengesByPair(pairID: pairID)
+            couponChallenge = challenges.first(where: { $0.status == .pending })
+        } catch {
+            MessageHandler.shared.showError(error)
+        }
+    }
+    
+    private func reloadUserAndData() async throws {
+        currentUser = try await UserService.fetchUser(byID: currentUser.id)
+        await loadDataAndSave()
     }
     
     func handleTick(now: Date) async {
@@ -143,9 +210,7 @@ final class MainViewModel {
         return formatter
     }()
     
-    private func saveProgress(for userID: String?) async {
-        guard let userID else { return }
-        
+    private func saveProgress() async {
         let dateString = Self.dayFormatter.string(from: Date())
         
         let challengeMet =
@@ -161,7 +226,7 @@ final class MainViewModel {
         )
         
         do {
-            try await UserService.saveProgress(forUserID: userID, date: dateString, progress: progress)
+            try await UserService.saveProgress(forUserID: currentUser.id, date: dateString, progress: progress)
         } catch {
             MessageHandler.shared.showError(error)
         }

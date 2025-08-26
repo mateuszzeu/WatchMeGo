@@ -58,16 +58,6 @@ struct ManageView: View {
                 )
                 .frame(minHeight: 76)
                 .cardStyle()
-
-                if viewModel.hasPendingCompetitionInvite,
-                   let challenger = viewModel.pendingCompetitionChallengerName {
-                    CompetitionCouponView(
-                        challenger: challenger,
-                        challenge: viewModel.couponChallenge,
-                        onAccept: { Task { await viewModel.acceptCompetitionInvite() } },
-                        onDecline: { Task { await viewModel.declineCompetitionInvite() } }
-                    )
-                }
             }
             .padding(DesignSystem.Spacing.l)
         }

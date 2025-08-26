@@ -104,8 +104,7 @@ final class ChallengeViewModel {
                 try await UserService.endCompetition(userID: loggedInUser.id, friendID: opponentID)
             }
             activeChallenge = nil
-            loggedInUser.activeCompetitionWith = nil
-            loggedInUser.competitionStatus = "none"
+            await refreshUser()
         } catch {
             MessageHandler.shared.showError(error)
         }
