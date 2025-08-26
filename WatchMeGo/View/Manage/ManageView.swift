@@ -73,6 +73,7 @@ struct ManageView: View {
         }
         .background(DesignSystem.Colors.background)
         .hideKeyboardOnTap()
+        .overlay(InfoBannerView())
         .task { await viewModel.loadData() }
     }
 }

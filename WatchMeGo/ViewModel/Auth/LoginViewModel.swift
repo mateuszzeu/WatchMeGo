@@ -13,39 +13,48 @@ import LocalAuthentication
 @Observable
 final class LoginViewModel {
     var infoMessage: String?
-    var lastLoggedInUser: AppUser?
     var faceIDError: String?
-
+    var lastLoggedInUser: AppUser?
+    var isQuickLoginAvailable = false
+    
     init() {
-        loadLastLoggedInUser()
+        checkQuickLoginAvailability()
     }
-
+    
+    private func checkQuickLoginAvailability() {
+        if let currentUser = Auth.auth().currentUser {
+            Task {
+                do {
+                    let appUser = try await UserService.fetchUser(byID: currentUser.uid)
+                    lastLoggedInUser = appUser
+                    isQuickLoginAvailable = true
+                } catch {
+                    isQuickLoginAvailable = false
+                }
+            }
+        } else {
+            isQuickLoginAvailable = false
+        }
+    }
+    
     func login(email: String, password: String, coordinator: Coordinator) async {
         do {
             MessageHandler.shared.clearMessage()
             
             let result = try await Auth.auth().signIn(withEmail: email, password: password)
             let user = result.user
-
+            
             let appUser = try await UserService.fetchUser(byID: user.uid)
             coordinator.login(appUser)
             infoMessage = "Signed in!"
-
-            if let userData = try? JSONEncoder().encode(appUser) {
-                UserDefaults.standard.set(userData, forKey: "lastLoggedInUser")
-            }
+            
+            lastLoggedInUser = appUser
+            isQuickLoginAvailable = true
         } catch {
             MessageHandler.shared.showError(error)
         }
     }
-
-    func loadLastLoggedInUser() {
-        if let userData = UserDefaults.standard.data(forKey: "lastLoggedInUser"),
-           let user = try? JSONDecoder().decode(AppUser.self, from: userData) {
-            lastLoggedInUser = user
-        }
-    }
-
+    
     func authenticateWithFaceID() async -> Bool {
         let context = LAContext()
         let reason = "Log in to WatchMeGo"
@@ -58,23 +67,32 @@ final class LoginViewModel {
             return false
         }
     }
-
+    
     func quickLoginWithFaceID(coordinator: Coordinator) async {
-        guard let user = lastLoggedInUser else { 
+        guard let user = lastLoggedInUser else {
             faceIDError = "No saved user found"
-            return 
+            return
         }
-        
+
         faceIDError = nil
         MessageHandler.shared.clearMessage()
-        
-        let success = await authenticateWithFaceID()
-        if success {
-            MessageHandler.shared.clearMessage()
-            infoMessage = nil
-            
+
+        guard await authenticateWithFaceID() else { return }
+
+        guard Auth.auth().currentUser?.uid == user.id else {
+            lastLoggedInUser = nil
+            isQuickLoginAvailable = false
+            faceIDError = "User session expired"
+            return
+        }
+
+        do {
+            _ = try await UserService.fetchUser(byID: user.id)
             coordinator.login(user)
-            UserDefaults.standard.set(Date(), forKey: "lastLoginTime")
+        } catch {
+            lastLoggedInUser = nil
+            isQuickLoginAvailable = false
+            faceIDError = "User account no longer exists"
         }
     }
 }

@@ -56,7 +56,7 @@ struct LoginView: View {
                     .opacity(isAnimating ? 1.0 : 0.0)
                     .animation(.easeIn(duration: 0.8).delay(0.5), value: isAnimating)
                 
-                if let lastUser = viewModel.lastLoggedInUser {
+                if viewModel.isQuickLoginAvailable {
                     VStack(spacing: DesignSystem.Spacing.s) {
                         HStack(spacing: DesignSystem.Spacing.s) {
                             Image(systemName: "faceid")
@@ -68,7 +68,7 @@ struct LoginView: View {
                                 .foregroundColor(DesignSystem.Colors.primary)
                         }
                         
-                        Text(lastUser.name)
+                        Text("Use Face ID to sign in")
                             .font(DesignSystem.Fonts.body)
                             .foregroundColor(DesignSystem.Colors.secondary)
                         
@@ -140,7 +140,6 @@ struct LoginView: View {
         .overlay(InfoBannerView())
         .onAppear { 
             isAnimating = true
-            viewModel.loadLastLoggedInUser()
         }
     }
 }

@@ -160,6 +160,8 @@ struct ChallengeView: View {
         .padding(DesignSystem.Spacing.l)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(DesignSystem.Colors.background)
+        .hideKeyboardOnTap()
+        .overlay(InfoBannerView())
         .task { await viewModel.refreshUser() }
     }
 }
