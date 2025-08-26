@@ -68,13 +68,15 @@ struct LoginView: View {
                                 .foregroundColor(DesignSystem.Colors.primary)
                         }
                         
-                        Text("Use Face ID to sign in")
-                            .font(DesignSystem.Fonts.body)
-                            .foregroundColor(DesignSystem.Colors.secondary)
+                        if let userName = viewModel.lastLoggedInUser?.name {
+                            Text("Sign in as \(userName)")
+                                .font(DesignSystem.Fonts.footnote)
+                                .foregroundColor(DesignSystem.Colors.primary)
+                        }
                         
                         Button("Face ID Login") {
-                            Task { 
-                                await viewModel.quickLoginWithFaceID(coordinator: coordinator) 
+                            Task {
+                                await viewModel.quickLoginWithFaceID(coordinator: coordinator)
                             }
                         }
                         .foregroundColor(DesignSystem.Colors.background)
@@ -138,7 +140,7 @@ struct LoginView: View {
             .padding(DesignSystem.Spacing.l)
         }
         .overlay(InfoBannerView())
-        .onAppear { 
+        .onAppear {
             isAnimating = true
         }
     }
