@@ -2,7 +2,7 @@
 //  SettingsViewModel.swift
 //  WatchMeGo
 //
-//  Created by Cursor on 2025-08-18.
+//  Created by Liza on 2025-08-18.
 //
 
 import Foundation
@@ -30,6 +30,18 @@ final class SettingsViewModel {
             do {
                 try await UserService.resetPassword()
                 MessageHandler.shared.showSuccess("Password reset email sent! Check your inbox.")
+            } catch {
+                MessageHandler.shared.showError(error)
+            }
+        }
+    }
+    
+    func deleteAccount(coordinator: Coordinator) {
+        Task {
+            do {
+                try await UserService.deleteAccount()
+                coordinator.logout()
+                MessageHandler.shared.showSuccess("Account deleted successfully.")
             } catch {
                 MessageHandler.shared.showError(error)
             }

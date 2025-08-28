@@ -24,6 +24,39 @@ final class UserService {
         try await Auth.auth().sendPasswordReset(withEmail: email)
     }
     
+    static func deleteAccount() async throws {
+        guard let user = Auth.auth().currentUser else {
+            throw AppError.userNotFound
+        }
+        
+        let userData = try await fetchUser(byID: user.uid)
+        
+        if let opponentID = userData.activeCompetitionWith {
+            
+            let pairID = [user.uid, opponentID].sorted().joined(separator: "_")
+            
+            if let challenges = try? await ChallengeService.fetchChallengesByPair(pairID: pairID),
+               let activeChallenge = challenges.first(where: { $0.status == .active }) {
+                
+                try await ChallengeService.deleteChallenge(challengeID: activeChallenge.id)
+            }
+            try await endCompetition(userID: user.uid, friendID: opponentID)
+        }
+        
+        for friendName in userData.friends {
+            if let friendUsers = try? await fetchUsers(byUsernames: [friendName]),
+               let friend = friendUsers.first {
+                
+                try await usersCollection.document(friend.id).updateData([
+                    "friends": FieldValue.arrayRemove([userData.name])
+                ])
+            }
+        }
+        
+        try await usersCollection.document(user.uid).delete()
+        try await user.delete()
+    }
+    
     static func fetchUser(byID userID: String) async throws -> AppUser {
         let snapshot = try await usersCollection.document(userID).getDocument()
         let decoder = Firestore.Decoder()
@@ -43,11 +76,11 @@ final class UserService {
     
     static func saveProgress(forUserID userID: String, date: String, progress: DailyProgress) async throws {
         let encoded = try Firestore.Encoder().encode(progress)
-
+        
         try await usersCollection.document(userID).setData([
             "currentProgress": encoded
         ], merge: true)
-
+        
         try await usersCollection.document(userID).updateData([
             "history.\(date)": encoded
         ])
@@ -166,7 +199,7 @@ final class UserService {
             "lastChallengeResultAt": FieldValue.serverTimestamp()
         ], merge: true)
     }
-
+    
     static func consumeResultMessage(forUserID userID: String) async throws -> String? {
         let userReference = usersCollection.document(userID)
         let snapshot = try await userReference.getDocument()

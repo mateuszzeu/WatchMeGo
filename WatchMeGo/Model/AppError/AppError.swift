@@ -15,6 +15,7 @@ enum AppError: Error, LocalizedError {
     case inviteAlreadySent
     case alreadyInCompetition
     case usernameTaken
+    case accountDeletionFailed
     
     var errorDescription: String? {
         switch self {
@@ -32,6 +33,8 @@ enum AppError: Error, LocalizedError {
             return "User is already in a competition."
         case .usernameTaken:
             return "This username is already taken."
+        case .accountDeletionFailed:
+            return "Failed to delete account. Please try again."
         }
     }
 }
