@@ -150,6 +150,7 @@ struct MainView: View {
         user: AppUser(
             id: "1",
             name: "Alice",
+            email: "mail@example.com",
             createdAt: Date(),
             friends: ["Bob", "Carol", "Dave"],
             pendingInvites: [],

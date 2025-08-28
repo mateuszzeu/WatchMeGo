@@ -76,6 +76,7 @@ struct SettingsView: View {
         user: AppUser(
             id: "test",
             name: "Test",
+            email: "mail@example.com",
             createdAt: Date(),
             friends: [],
             pendingInvites: [],

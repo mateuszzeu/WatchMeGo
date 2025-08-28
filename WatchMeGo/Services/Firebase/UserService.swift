@@ -215,4 +215,21 @@ final class UserService {
         
         return message
     }
+    
+    static func fetchUserByUsername(_ username: String) async throws -> AppUser {
+        let snapshot = try await usersCollection.whereField("name", isEqualTo: username).limit(to: 1).getDocuments()
+        guard let document = snapshot.documents.first else {
+            throw AppError.userNotFound
+        }
+        let decoder = Firestore.Decoder()
+        guard let decodedUser = try? decoder.decode(AppUser.self, from: document.data()) else {
+            throw AppError.userNotFound
+        }
+        return decodedUser
+    }
+    
+    static func getEmailByUsername(_ username: String) async throws -> String {
+        let user = try await fetchUserByUsername(username)
+        return user.email
+    }
 }

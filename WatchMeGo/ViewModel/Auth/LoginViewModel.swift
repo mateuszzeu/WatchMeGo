@@ -37,9 +37,11 @@ final class LoginViewModel {
         }
     }
     
-    func login(email: String, password: String, coordinator: Coordinator) async {
+    func login(username: String, password: String, coordinator: Coordinator) async {
         do {
             MessageHandler.shared.clearMessage()
+            
+            let email = try await UserService.getEmailByUsername(username)
             
             let result = try await Auth.auth().signIn(withEmail: email, password: password)
             let user = result.user

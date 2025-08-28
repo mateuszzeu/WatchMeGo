@@ -26,6 +26,7 @@ final class RegisterViewModel {
             let appUser = AppUser(
                 id: firebaseUser.uid,
                 name: username,
+                email: email,
                 createdAt: Date(),
                 friends: [],
                 pendingInvites: [],
