@@ -25,18 +25,33 @@ struct MainView: View {
                 if viewModel.isAuthorized {
                     if let challenge = viewModel.activeChallenge {
                         VStack(spacing: DesignSystem.Spacing.s) {
-                            Text("Time left")
-                                .font(DesignSystem.Fonts.footnote)
-                                .foregroundColor(DesignSystem.Colors.secondary)
-                            HStack(spacing: DesignSystem.Spacing.s) {
-                                Image(systemName: "timer")
-                                    .foregroundColor(DesignSystem.Colors.accent)
-                                Text(viewModel.remainingString(from: challenge.createdAt, days: challenge.duration, now: now))
-                                    .font(DesignSystem.Fonts.headline)
+                            VStack(spacing: DesignSystem.Spacing.xs) {
+                                Text("Active Challenge")
+                                    .font(.headline)
                                     .foregroundColor(DesignSystem.Colors.primary)
+                                Text(challenge.name)
+                                    .font(.subheadline)
+                                    .foregroundColor(DesignSystem.Colors.secondary)
                             }
+                            .frame(maxWidth: .infinity)
+                            
+                            VStack(spacing: DesignSystem.Spacing.xs) {
+                                Text("Time left")
+                                    .font(.caption)
+                                    .foregroundColor(DesignSystem.Colors.secondary)
+                                Text(viewModel.remainingString(from: challenge.createdAt, days: challenge.duration, now: now))
+                                    .font(.title2.bold())
+                                    .foregroundColor(DesignSystem.Colors.accent)
+                                    .monospacedDigit()
+                            }
+                            .frame(maxWidth: .infinity)
                         }
-                        .cardStyle()
+                        .padding(DesignSystem.Spacing.l)
+                        .background(
+                            RoundedRectangle(cornerRadius: DesignSystem.Radius.l)
+                                .fill(DesignSystem.Colors.surface)
+                                .shadow(color: .black.opacity(0.05), radius: 10, x: 0, y: 5)
+                        )
                         .onReceive(ticker) { currentTime in
                             now = currentTime
                             Task { await viewModel.handleTick(now: currentTime) }
@@ -53,11 +68,11 @@ struct MainView: View {
                         )
                     }
                     
-                    VStack(spacing: DesignSystem.Spacing.s) {
-                        Text("\(coordinator.currentUser?.name ?? "You") - today")
-                            .font(DesignSystem.Fonts.headline)
+                    VStack(spacing: DesignSystem.Spacing.m) {
+                        Text("Today's Progress")
+                            .font(.title2.bold())
                             .foregroundColor(DesignSystem.Colors.primary)
-                            .multilineTextAlignment(.center)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                         
                         VStack(spacing: DesignSystem.Spacing.m) {
                             ForEach(viewModel.displayedMetrics) { metric in
@@ -83,14 +98,36 @@ struct MainView: View {
                             }
                         }
                     }
-                    .cardStyle()
+                    .padding(DesignSystem.Spacing.l)
+                    .background(
+                        RoundedRectangle(cornerRadius: DesignSystem.Radius.l)
+                            .fill(DesignSystem.Colors.surface)
+                            .shadow(color: .black.opacity(0.05), radius: 10, x: 0, y: 5)
+                    )
                     
                     if let rival = viewModel.competitiveUser {
-                        VStack(spacing: DesignSystem.Spacing.s) {
-                            Text("\(rival.name) - today")
-                                .font(DesignSystem.Fonts.headline)
-                                .foregroundColor(DesignSystem.Colors.primary)
-                                .multilineTextAlignment(.center)
+                        VStack(spacing: DesignSystem.Spacing.m) {
+                            HStack(spacing: DesignSystem.Spacing.m) {
+                                Circle()
+                                    .fill(DesignSystem.Colors.accent.opacity(0.1))
+                                    .frame(width: 48, height: 48)
+                                    .overlay(
+                                        Text(String(rival.name.prefix(1)))
+                                            .font(.title3.bold())
+                                            .foregroundColor(DesignSystem.Colors.accent)
+                                    )
+                                
+                                VStack(alignment: .leading, spacing: DesignSystem.Spacing.xs) {
+                                    Text(rival.name)
+                                        .font(.headline)
+                                        .foregroundColor(DesignSystem.Colors.primary)
+                                    Text("Your competitor")
+                                        .font(.caption)
+                                        .foregroundColor(DesignSystem.Colors.secondary)
+                                }
+                                
+                                Spacer()
+                            }
                             
                             VStack(spacing: DesignSystem.Spacing.m) {
                                 ForEach(viewModel.displayedMetrics) { metric in
@@ -116,14 +153,28 @@ struct MainView: View {
                                 }
                             }
                         }
-                        .cardStyle()
+                        .padding(DesignSystem.Spacing.l)
+                        .background(
+                            RoundedRectangle(cornerRadius: DesignSystem.Radius.l)
+                                .fill(DesignSystem.Colors.surface)
+                                .shadow(color: .black.opacity(0.05), radius: 10, x: 0, y: 5)
+                        )
                     }
                     
                 } else {
-                    Text("HealthKit access required or denied.")
-                        .font(DesignSystem.Fonts.body)
-                        .foregroundColor(DesignSystem.Colors.primary)
-                        .cardStyle()
+                    VStack(spacing: DesignSystem.Spacing.m) {
+                        Image(systemName: "heart.slash")
+                            .font(.largeTitle)
+                            .foregroundColor(DesignSystem.Colors.error)
+                        
+                        Text("HealthKit access required or denied.")
+                            .font(DesignSystem.Fonts.body)
+                            .foregroundColor(DesignSystem.Colors.primary)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(DesignSystem.Spacing.l)
+                    .background(DesignSystem.Colors.surface)
+                    .cornerRadius(DesignSystem.Radius.l)
                 }
             }
             .padding(DesignSystem.Spacing.l)
