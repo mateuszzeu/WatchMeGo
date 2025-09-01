@@ -25,6 +25,7 @@ enum DesignSystem {
         static let headline = Font.system(.headline, design: .rounded)
         static let body = Font.system(.body, design: .rounded)
         static let footnote = Font.system(.footnote, design: .rounded)
+        static let caption = Font.system(.caption, design: .rounded)
     }
 
     enum Spacing {

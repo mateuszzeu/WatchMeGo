@@ -16,7 +16,7 @@ struct StyledTextField: View {
     var body: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Spacing.xs) {
             Text(title)
-                .font(DesignSystem.Fonts.footnote)
+                .font(DesignSystem.Fonts.body)
                 .foregroundColor(isFocused ? DesignSystem.Colors.accent : DesignSystem.Colors.secondary.opacity(0.6))
                 .animation(.easeInOut(duration: 0.2), value: isFocused)
             
@@ -24,14 +24,16 @@ struct StyledTextField: View {
                 if isSecure {
                     SecureField("", text: $text)
                         .placeholder(when: text.isEmpty) {
-                            Text(title)
-                                .foregroundColor(DesignSystem.Colors.secondary.opacity(0.4))
+                            Text("Type...")
+                                .font(DesignSystem.Fonts.caption)
+                                .foregroundColor(DesignSystem.Colors.secondary.opacity(0.5))
                         }
                 } else {
                     TextField("", text: $text)
                         .placeholder(when: text.isEmpty) {
-                            Text(title)
-                                .foregroundColor(DesignSystem.Colors.secondary.opacity(0.4))
+                            Text("Type...")
+                                .font(DesignSystem.Fonts.caption)
+                                .foregroundColor(DesignSystem.Colors.secondary.opacity(0.5))
                         }
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
