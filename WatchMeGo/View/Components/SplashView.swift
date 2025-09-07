@@ -12,7 +12,7 @@ struct SplashView: View {
             
             VStack(spacing: DesignSystem.Spacing.l) {
                 Text("WatchMeGo")
-                    .font(DesignSystem.Fonts.title)
+                    .font(.title)
                     .foregroundColor(DesignSystem.Colors.primary)
                     .opacity(textOpacity)
                 

@@ -25,11 +25,11 @@ struct ProgressBarView: View {
                 Image(systemName: iconName)
                     .foregroundColor(color)
                 Text(label)
-                    .font(DesignSystem.Fonts.headline)
+                    .font(.headline)
                     .foregroundColor(color)
                 Spacer()
                 Text("\(value)/\(goal)")
-                    .font(DesignSystem.Fonts.footnote)
+                    .font(.footnote)
                     .foregroundColor(DesignSystem.Colors.secondary)
                     .monospacedDigit()
             }

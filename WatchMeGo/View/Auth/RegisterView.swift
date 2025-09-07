@@ -44,13 +44,13 @@ struct RegisterView: View {
                     .animation(.easeInOut(duration: 2.0).repeatForever(autoreverses: true), value: isAnimating)
                 
                 Text("Join the Challenge!")
-                    .font(DesignSystem.Fonts.title)
+                    .font(.title)
                     .foregroundColor(DesignSystem.Colors.primary)
                     .opacity(isAnimating ? 1.0 : 0.0)
                     .animation(.easeIn(duration: 0.8).delay(0.3), value: isAnimating)
                 
                 Text("Start your fitness journey today")
-                    .font(DesignSystem.Fonts.body)
+                    .font(.body)
                     .foregroundColor(DesignSystem.Colors.secondary)
                     .multilineTextAlignment(.center)
                     .opacity(isAnimating ? 1.0 : 0.0)
@@ -92,14 +92,14 @@ struct RegisterView: View {
                 Button("Already have an account? Sign In") {
                     coordinator.navigate(to: .login)
                 }
-                .font(DesignSystem.Fonts.footnote)
+                .font(.footnote)
                 .foregroundColor(DesignSystem.Colors.accent)
                 .opacity(isAnimating ? 1.0 : 0.0)
                 .animation(.easeIn(duration: 0.8).delay(1.5), value: isAnimating)
                 
                 if let info = viewModel.infoMessage {
                     Text(info)
-                        .font(DesignSystem.Fonts.footnote)
+                        .font(.footnote)
                         .foregroundColor(DesignSystem.Colors.secondary)
                         .padding(.top, DesignSystem.Spacing.s)
                 }

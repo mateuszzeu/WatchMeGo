@@ -20,14 +20,6 @@ enum DesignSystem {
         static let stand = Color("ActivityStand")
     }
 
-    enum Fonts {
-        static let title = Font.system(.largeTitle, design: .rounded).weight(.bold)
-        static let headline = Font.system(.headline, design: .rounded)
-        static let body = Font.system(.body, design: .rounded)
-        static let footnote = Font.system(.footnote, design: .rounded)
-        static let caption = Font.system(.caption, design: .rounded)
-    }
-
     enum Spacing {
         static let xs: CGFloat = 4
         static let s: CGFloat = 8

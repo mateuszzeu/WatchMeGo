@@ -15,7 +15,7 @@ struct FriendsSection: View {
     var body: some View {
         VStack(spacing: DesignSystem.Spacing.s) {
             Text("Friends")
-                .font(DesignSystem.Fonts.headline)
+                .font(.headline)
                 .foregroundColor(DesignSystem.Colors.primary)
 
             if friends.isEmpty {
@@ -41,7 +41,7 @@ struct FriendsSection: View {
                                     )
 
                                 Text(user.name)
-                                    .font(DesignSystem.Fonts.body)
+                                    .font(.body)
                                     .foregroundColor(DesignSystem.Colors.primary)
 
                                 Spacer()

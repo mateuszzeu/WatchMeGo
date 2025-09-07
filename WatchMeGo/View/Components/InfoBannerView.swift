@@ -16,7 +16,7 @@ struct InfoBannerView: View {
                 VStack {
                     Spacer()
                     Text(message)
-                        .font(DesignSystem.Fonts.footnote)
+                        .font(.footnote)
                         .foregroundColor(.white)
                         .padding(.horizontal, DesignSystem.Spacing.l)
                         .padding(.vertical, DesignSystem.Spacing.s)

@@ -12,7 +12,7 @@ struct ChallengeBannerView: View {
 
     var body: some View {
         Text("\(username), find your mate!")
-            .font(DesignSystem.Fonts.headline)
+            .font(.headline)
             .foregroundColor(DesignSystem.Colors.background)
             .frame(maxWidth: .infinity)
             .padding(.vertical, DesignSystem.Spacing.s)

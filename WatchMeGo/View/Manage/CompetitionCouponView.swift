@@ -17,30 +17,30 @@ struct CompetitionCouponView: View {
     var body: some View {
         VStack(spacing: DesignSystem.Spacing.m) {
             Text("\(challenger) invited you to a competition!")
-                .font(DesignSystem.Fonts.headline)
+                .font(.headline)
                 .foregroundColor(DesignSystem.Colors.primary)
                 .multilineTextAlignment(.center)
 
             if let challengeData = challenge {
                 VStack(spacing: DesignSystem.Spacing.xs) {
                     Text(challengeData.name)
-                        .font(DesignSystem.Fonts.body)
+                        .font(.body)
                         .foregroundColor(DesignSystem.Colors.primary)
 
                     if !challengeData.metrics.isEmpty {
                         Text(challengeData.metrics.map { $0.metric.title }.joined(separator: " • "))
-                            .font(DesignSystem.Fonts.footnote)
+                            .font(.footnote)
                             .foregroundColor(DesignSystem.Colors.secondary)
                             .multilineTextAlignment(.center)
                     }
 
                     Text("Duration: \(challengeData.duration) day\(challengeData.duration > 1 ? "s" : "")")
-                        .font(DesignSystem.Fonts.footnote)
+                        .font(.footnote)
                         .foregroundColor(DesignSystem.Colors.secondary)
 
                     if let prize = challengeData.prize, !prize.isEmpty {
                         Text("Prize: \(prize)")
-                            .font(DesignSystem.Fonts.footnote)
+                            .font(.footnote)
                             .foregroundColor(DesignSystem.Colors.secondary)
                     }
                 }

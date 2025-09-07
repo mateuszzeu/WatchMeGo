@@ -16,7 +16,7 @@ struct StyledTextField: View {
     var body: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Spacing.xs) {
             Text(title)
-                .font(DesignSystem.Fonts.body)
+                .font(.body)
                 .foregroundColor(isFocused ? DesignSystem.Colors.accent : DesignSystem.Colors.secondary.opacity(0.6))
                 .animation(.easeInOut(duration: 0.2), value: isFocused)
             
@@ -25,21 +25,21 @@ struct StyledTextField: View {
                     SecureField("", text: $text)
                         .placeholder(when: text.isEmpty) {
                             Text("Type...")
-                                .font(DesignSystem.Fonts.caption)
+                                .font(.caption)
                                 .foregroundColor(DesignSystem.Colors.secondary.opacity(0.5))
                         }
                 } else {
                     TextField("", text: $text)
                         .placeholder(when: text.isEmpty) {
                             Text("Type...")
-                                .font(DesignSystem.Fonts.caption)
+                                .font(.caption)
                                 .foregroundColor(DesignSystem.Colors.secondary.opacity(0.5))
                         }
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
                 }
             }
-            .font(DesignSystem.Fonts.body)
+            .font(.body)
             .focused($isFocused)
         }
         .padding(DesignSystem.Spacing.m)

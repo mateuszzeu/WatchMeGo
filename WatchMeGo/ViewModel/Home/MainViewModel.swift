@@ -11,19 +11,9 @@ import Foundation
 @Observable
 final class MainViewModel {
     
-    private enum ActivityGoal {
-        static let calories = 500
-        static let exerciseMinutes = 80
-        static let standHours = 10
-    }
-    
-    private enum DailyChallengeCap {
-        static let calories = 1500
-        static let exerciseMinutes = 250
-        static let standHours = 20
-    }
-    
     var popupMessage: PopupMessage?
+    
+    var selectedDifficulty: Difficulty = .medium
     
     var isAuthorized = false
     var calories = 0
@@ -152,18 +142,18 @@ final class MainViewModel {
     
     func defaultGoal(for metric: Metric) -> Int {
         switch metric {
-        case .calories: return ActivityGoal.calories
-        case .exerciseMinutes: return ActivityGoal.exerciseMinutes
-        case .standHours: return ActivityGoal.standHours
+        case .calories: return selectedDifficulty.caloriesGoal
+        case .exerciseMinutes: return selectedDifficulty.exerciseMinutesGoal
+        case .standHours: return selectedDifficulty.standHoursGoal
         }
     }
     
     func challengeGoal(for metric: Metric) -> Int {
         let days = activeChallenge?.duration ?? 1
         switch metric {
-        case .calories: return DailyChallengeCap.calories * days
-        case .exerciseMinutes: return DailyChallengeCap.exerciseMinutes * days
-        case .standHours: return DailyChallengeCap.standHours * days
+        case .calories: return selectedDifficulty.caloriesGoal * days
+        case .exerciseMinutes: return selectedDifficulty.exerciseMinutesGoal * days
+        case .standHours: return selectedDifficulty.standHoursGoal * days
         }
     }
     
@@ -214,9 +204,9 @@ final class MainViewModel {
         let dateString = Self.dayFormatter.string(from: Date())
         
         let challengeMet =
-        calories >= ActivityGoal.calories &&
-        exerciseMinutes >= ActivityGoal.exerciseMinutes &&
-        standHours >= ActivityGoal.standHours
+        calories >= selectedDifficulty.caloriesGoal &&
+        exerciseMinutes >= selectedDifficulty.exerciseMinutesGoal &&
+        standHours >= selectedDifficulty.standHoursGoal
         
         let progress = DailyProgress(
             calories: calories,

@@ -27,7 +27,7 @@ struct SettingsView: View {
                         .foregroundColor(DesignSystem.Colors.accent)
                     
                     Text(viewModel.currentUser.name)
-                        .font(DesignSystem.Fonts.title)
+                        .font(.title)
                         .foregroundColor(DesignSystem.Colors.primary)
                     
                     Spacer()
@@ -36,7 +36,7 @@ struct SettingsView: View {
                 
                 VStack(alignment: .leading, spacing: DesignSystem.Spacing.m) {
                     Text("Appearance")
-                        .font(DesignSystem.Fonts.headline)
+                        .font(.headline)
                         .foregroundColor(DesignSystem.Colors.primary)
                     
                     Toggle("Dark Mode", isOn: $isDarkMode)
@@ -45,7 +45,7 @@ struct SettingsView: View {
                 
                 VStack(alignment: .leading, spacing: DesignSystem.Spacing.m) {
                     Text("Account options")
-                        .font(DesignSystem.Fonts.headline)
+                        .font(.headline)
                         .foregroundColor(DesignSystem.Colors.primary)
                     
                     PrimaryButton(title: "Reset password") { viewModel.resetPassword() }

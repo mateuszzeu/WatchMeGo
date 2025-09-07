@@ -15,7 +15,7 @@ struct PendingInvitesSection: View {
     var body: some View {
         VStack(spacing: DesignSystem.Spacing.s) {
             Text("Pending Invites")
-                .font(DesignSystem.Fonts.headline)
+                .font(.headline)
                 .foregroundColor(DesignSystem.Colors.primary)
 
             if pendingUsers.isEmpty {
@@ -29,7 +29,7 @@ struct PendingInvitesSection: View {
                     ForEach(pendingUsers) { user in
                         HStack {
                             Text(user.name)
-                                .font(DesignSystem.Fonts.body)
+                                .font(.body)
                                 .foregroundColor(DesignSystem.Colors.primary)
                             Spacer()
                             Button("Accept") { onAccept(user) }

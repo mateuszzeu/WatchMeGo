@@ -68,6 +68,26 @@ struct MainView: View {
                         )
                     }
                     
+                    VStack(spacing: DesignSystem.Spacing.s) {
+                        Text("Difficulty")
+                            .font(.headline)
+                            .foregroundColor(DesignSystem.Colors.primary)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        
+                        Picker("Difficulty", selection: $viewModel.selectedDifficulty) {
+                            ForEach(Difficulty.allCases, id: \.self) { difficulty in
+                                Text(difficulty.rawValue).tag(difficulty)
+                            }
+                        }
+                        .pickerStyle(SegmentedPickerStyle())
+                    }
+                    .padding(DesignSystem.Spacing.l)
+                    .background(
+                        RoundedRectangle(cornerRadius: DesignSystem.Radius.l)
+                            .fill(DesignSystem.Colors.surface)
+                            .shadow(color: .black.opacity(0.05), radius: 10, x: 0, y: 5)
+                    )
+                    
                     VStack(spacing: DesignSystem.Spacing.m) {
                         Text("Today's Progress")
                             .font(.title2.bold())
@@ -168,7 +188,7 @@ struct MainView: View {
                             .foregroundColor(DesignSystem.Colors.error)
                         
                         Text("HealthKit access required or denied.")
-                            .font(DesignSystem.Fonts.body)
+                            .font(.body)
                             .foregroundColor(DesignSystem.Colors.primary)
                     }
                     .frame(maxWidth: .infinity)

@@ -22,30 +22,30 @@ struct ChallengeView: View {
                 if let challenge = viewModel.activeChallenge {
                     VStack(alignment: .leading, spacing: DesignSystem.Spacing.l) {
                         Text("Active Challenge")
-                            .font(DesignSystem.Fonts.headline)
+                            .font(.headline)
                             .foregroundColor(DesignSystem.Colors.primary)
                         
                         VStack(spacing: DesignSystem.Spacing.m) {
                             Text(challenge.name)
-                                .font(DesignSystem.Fonts.body)
+                                .font(.body)
                                 .foregroundColor(DesignSystem.Colors.primary)
                                 .multilineTextAlignment(.center)
                             
                             if !challenge.metrics.isEmpty {
                                 Text(challenge.metrics.map { $0.metric.title }.joined(separator: " • "))
-                                    .font(DesignSystem.Fonts.footnote)
+                                    .font(.footnote)
                                     .foregroundColor(DesignSystem.Colors.secondary)
                                     .multilineTextAlignment(.center)
                             }
                             
                             Text("Duration: \(challenge.duration) day\(challenge.duration > 1 ? "s" : "")")
-                                .font(DesignSystem.Fonts.footnote)
+                                .font(.footnote)
                                 .foregroundColor(DesignSystem.Colors.secondary)
                                 .multilineTextAlignment(.center)
                             
                             if let prize = challenge.prize, !prize.isEmpty {
                                 Text("Prize: \(prize)")
-                                    .font(DesignSystem.Fonts.footnote)
+                                    .font(.footnote)
                                     .foregroundColor(DesignSystem.Colors.secondary)
                                     .multilineTextAlignment(.center)
                             }
@@ -74,7 +74,7 @@ struct ChallengeView: View {
                         VStack(alignment: .leading, spacing: DesignSystem.Spacing.m) {
                             VStack(spacing: DesignSystem.Spacing.s) {
                                 Text("Select Friend")
-                                    .font(DesignSystem.Fonts.body.weight(.semibold))
+                                    .font(.body.weight(.semibold))
                                     .foregroundColor(DesignSystem.Colors.primary)
                                 
                                 ScrollView(.horizontal, showsIndicators: false) {
@@ -114,7 +114,7 @@ struct ChallengeView: View {
                             
                             VStack(spacing: DesignSystem.Spacing.s) {
                                 Text("Select Metrics")
-                                    .font(DesignSystem.Fonts.body.weight(.semibold))
+                                    .font(.body.weight(.semibold))
                                     .foregroundColor(DesignSystem.Colors.primary)
                                 
                                 ForEach($viewModel.metricSelections) { $metric in
@@ -131,7 +131,7 @@ struct ChallengeView: View {
                             
                             VStack(spacing: DesignSystem.Spacing.s) {
                                 Text("Challenge Duration")
-                                    .font(DesignSystem.Fonts.body.weight(.semibold))
+                                    .font(.body.weight(.semibold))
                                     .foregroundColor(DesignSystem.Colors.primary)
                                 
                                 Stepper(value: $viewModel.challengeDurationDays, in: 1...7) {

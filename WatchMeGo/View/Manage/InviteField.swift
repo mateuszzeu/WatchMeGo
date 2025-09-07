@@ -15,7 +15,7 @@ struct InviteField: View {
             TextField("Friend username", text: $text)
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled(true)
-                .font(DesignSystem.Fonts.body)
+                .font(.body)
                 .padding(.horizontal, DesignSystem.Spacing.s)
                 .frame(height: 44)
                 .background(.ultraThinMaterial)

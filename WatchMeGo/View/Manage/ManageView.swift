@@ -21,11 +21,11 @@ struct ManageView: View {
             VStack(spacing: DesignSystem.Spacing.l) {
                 VStack(spacing: DesignSystem.Spacing.xs) {
                     Text("Manage Friends & Invites")
-                        .font(DesignSystem.Fonts.headline)
+                        .font(.headline)
                         .foregroundColor(DesignSystem.Colors.primary)
                         .multilineTextAlignment(.center)
                     Text("Invite friends, review requests, and start competitions.")
-                        .font(DesignSystem.Fonts.footnote)
+                        .font(.footnote)
                         .foregroundColor(DesignSystem.Colors.secondary)
                         .multilineTextAlignment(.center)
                 }
@@ -33,7 +33,7 @@ struct ManageView: View {
 
                 VStack(spacing: DesignSystem.Spacing.m) {
                     Text("Invite a Friend")
-                        .font(DesignSystem.Fonts.headline)
+                        .font(.headline)
                         .foregroundColor(DesignSystem.Colors.primary)
                         .multilineTextAlignment(.center)
 

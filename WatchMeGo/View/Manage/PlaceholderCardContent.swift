@@ -18,14 +18,13 @@ struct PlaceholderCardContent: View {
                 .font(.system(size: 36, weight: .semibold))
                 .foregroundColor(DesignSystem.Colors.secondary)
             Text(title)
-                .font(DesignSystem.Fonts.body)
+                .font(.body)
                 .foregroundColor(DesignSystem.Colors.primary)
             Text(subtitle)
-                .font(DesignSystem.Fonts.footnote)
+                .font(.footnote)
                 .foregroundColor(DesignSystem.Colors.secondary)
                 .multilineTextAlignment(.center)
         }
-        //.frame(maxWidth: .infinity)
         .padding(.vertical, DesignSystem.Spacing.m)
     }
 }

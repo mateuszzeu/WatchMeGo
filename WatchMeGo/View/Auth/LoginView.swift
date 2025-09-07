@@ -44,13 +44,13 @@ struct LoginView: View {
                     .animation(.easeInOut(duration: 2.0).repeatForever(autoreverses: true), value: isAnimating)
                 
                 Text("Welcome Back!")
-                    .font(DesignSystem.Fonts.title)
+                    .font(.title)
                     .foregroundColor(DesignSystem.Colors.primary)
                     .opacity(isAnimating ? 1.0 : 0.0)
                     .animation(.easeIn(duration: 0.8).delay(0.3), value: isAnimating)
                 
                 Text("Ready to crush your goals?")
-                    .font(DesignSystem.Fonts.body)
+                    .font(.body)
                     .foregroundColor(DesignSystem.Colors.secondary)
                     .multilineTextAlignment(.center)
                     .opacity(isAnimating ? 1.0 : 0.0)
@@ -64,13 +64,13 @@ struct LoginView: View {
                                 .foregroundColor(DesignSystem.Colors.accent)
                             
                             Text("Quick Login")
-                                .font(DesignSystem.Fonts.headline)
+                                .font(.headline)
                                 .foregroundColor(DesignSystem.Colors.primary)
                         }
                         
                         if let userName = viewModel.lastLoggedInUser?.name {
                             Text("Sign in as \(userName)")
-                                .font(DesignSystem.Fonts.footnote)
+                                .font(.footnote)
                                 .foregroundColor(DesignSystem.Colors.primary)
                         }
                         
@@ -123,14 +123,14 @@ struct LoginView: View {
                 Button("No account? Register") {
                     coordinator.navigate(to: .register)
                 }
-                .font(DesignSystem.Fonts.footnote)
+                .font(.footnote)
                 .foregroundColor(DesignSystem.Colors.accent)
                 .opacity(isAnimating ? 1.0 : 0.0)
                 .animation(.easeIn(duration: 0.8).delay(1.3), value: isAnimating)
                 
                 if let info = viewModel.infoMessage {
                     Text(info)
-                        .font(DesignSystem.Fonts.footnote)
+                        .font(.footnote)
                         .foregroundColor(DesignSystem.Colors.secondary)
                         .padding(.top, DesignSystem.Spacing.s)
                 }
