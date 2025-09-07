@@ -13,9 +13,9 @@ struct SettingsView: View {
     @AppStorage("isDarkMode") private var isDarkMode = false
     @State private var showDeleteAlert = false
     
-    init(coordinator: Coordinator, user: AppUser) {
+    init(coordinator: Coordinator) {
         self.coordinator = coordinator
-        self.viewModel = SettingsViewModel(currentUser: user)
+        self.viewModel = SettingsViewModel(coordinator: coordinator)
     }
     
     var body: some View {
@@ -26,11 +26,30 @@ struct SettingsView: View {
                         .font(.system(size: 56))
                         .foregroundColor(DesignSystem.Colors.accent)
                     
-                    Text(viewModel.currentUser.name)
+                    Text(viewModel.currentUser?.name ?? "User")
                         .font(.title)
                         .foregroundColor(DesignSystem.Colors.primary)
                     
                     Spacer()
+                }
+                .cardStyle()
+                
+                VStack(alignment: .leading, spacing: DesignSystem.Spacing.m) {
+                    Text("Daily Goals")
+                        .font(.headline)
+                        .foregroundColor(DesignSystem.Colors.primary)
+                    
+                    Text("Set your daily activity goals. These affect your progress tracking and challenge targets.")
+                        .font(.caption)
+                        .foregroundColor(DesignSystem.Colors.secondary)
+                        .multilineTextAlignment(.leading)
+                    
+                    Picker("Difficulty", selection: $viewModel.selectedDifficulty) {
+                        ForEach(Difficulty.allCases, id: \.self) { difficulty in
+                            Text(difficulty.rawValue).tag(difficulty)
+                        }
+                    }
+                    .pickerStyle(SegmentedPickerStyle())
                 }
                 .cardStyle()
                 
@@ -71,21 +90,5 @@ struct SettingsView: View {
 }
 
 #Preview {
-    SettingsView(
-        coordinator: Coordinator(),
-        user: AppUser(
-            id: "test",
-            name: "Test",
-            email: "mail@example.com",
-            createdAt: Date(),
-            friends: [],
-            pendingInvites: [],
-            sentInvites: [],
-            currentProgress: nil,
-            history: [:],
-            activeCompetitionWith: nil,
-            pendingCompetitionWith: nil,
-            competitionStatus: "none"
-        )
-    )
+    SettingsView(coordinator: Coordinator())
 }

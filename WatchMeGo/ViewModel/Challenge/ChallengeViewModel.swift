@@ -11,7 +11,7 @@ import SwiftUI
 @MainActor
 @Observable
 final class ChallengeViewModel {
-    private(set) var loggedInUser: AppUser
+    private let coordinator: Coordinator
     
     var selectedFriendUsername = ""
     var challengeName = ""
@@ -21,10 +21,16 @@ final class ChallengeViewModel {
     
     var activeChallenge: Challenge?
     
-    var friendUsernames: [String] { loggedInUser.friends }
+    var currentUser: AppUser? {
+        coordinator.currentUser
+    }
     
-    init(loggedInUser: AppUser) {
-        self.loggedInUser = loggedInUser
+    var friendUsernames: [String] { 
+        currentUser?.friends ?? []
+    }
+    
+    init(coordinator: Coordinator) {
+        self.coordinator = coordinator
     }
     
     var isReadyToSend: Bool {
@@ -36,13 +42,13 @@ final class ChallengeViewModel {
     }
     
     func sendChallenge() async {
-        guard isReadyToSend else { return }
+        guard isReadyToSend, let user = currentUser else { return }
         do {
             guard let friend = try await UserService
                 .fetchUsers(byUsernames: [selectedFriendUsername])
                 .first else { throw AppError.userNotFound }
             
-            let pairID = [loggedInUser.id, friend.id].sorted().joined(separator: "_")
+            let pairID = [user.id, friend.id].sorted().joined(separator: "_")
             let challengeID = UUID().uuidString
             
             let selectedMetrics = metricSelections
@@ -53,8 +59,8 @@ final class ChallengeViewModel {
                 id: challengeID,
                 pairID: pairID,
                 name: challengeName,
-                senderID: loggedInUser.id,
-                senderName: loggedInUser.name,
+                senderID: user.id,
+                senderName: user.name,
                 receiverID: friend.id,
                 receiverName: friend.name,
                 mode: .versus,
@@ -65,7 +71,7 @@ final class ChallengeViewModel {
                 createdAt: Date()
             )
             
-            try await UserService.sendCompetitionInvite(fromUserID: loggedInUser.id, toFriendID: friend.id)
+            try await UserService.sendCompetitionInvite(fromUserID: user.id, toFriendID: friend.id)
             try await ChallengeService.createChallenge(newChallenge)
             resetForm()
         } catch {
@@ -75,7 +81,7 @@ final class ChallengeViewModel {
     
     func refreshUser() async {
         do {
-            loggedInUser = try await UserService.fetchUser(byID: loggedInUser.id)
+            try await coordinator.refreshCurrentUser()
             await loadActiveChallengeIfExists()
         } catch {
             MessageHandler.shared.showError(error)
@@ -83,12 +89,12 @@ final class ChallengeViewModel {
     }
     
     func loadActiveChallengeIfExists() async {
-        guard let opponentID = loggedInUser.activeCompetitionWith else {
+        guard let user = currentUser, let opponentID = user.activeCompetitionWith else {
             activeChallenge = nil
             return
         }
         do {
-            let pairID = [loggedInUser.id, opponentID].sorted().joined(separator: "_")
+            let pairID = [user.id, opponentID].sorted().joined(separator: "_")
             let challenges = try await ChallengeService.fetchChallengesByPair(pairID: pairID)
             activeChallenge = challenges.first(where: { $0.status == .active })
         } catch {
@@ -97,11 +103,11 @@ final class ChallengeViewModel {
     }
     
     func abortActiveChallenge() async {
-        guard let challenge = activeChallenge else { return }
+        guard let challenge = activeChallenge, let user = currentUser else { return }
         do {
             try await ChallengeService.deleteChallenge(challengeID: challenge.id)
-            if let opponentID = loggedInUser.activeCompetitionWith {
-                try await UserService.endCompetition(userID: loggedInUser.id, friendID: opponentID)
+            if let opponentID = user.activeCompetitionWith {
+                try await UserService.endCompetition(userID: user.id, friendID: opponentID)
             }
             activeChallenge = nil
             await refreshUser()

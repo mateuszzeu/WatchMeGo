@@ -11,9 +11,9 @@ struct ChallengeView: View {
     @Bindable var coordinator: Coordinator
     @Bindable private var viewModel: ChallengeViewModel
     
-    init(coordinator: Coordinator, user: AppUser) {
+    init(coordinator: Coordinator) {
         self.coordinator = coordinator
-        self.viewModel = ChallengeViewModel(loggedInUser: user)
+        self.viewModel = ChallengeViewModel(coordinator: coordinator)
     }
     
     var body: some View {
@@ -168,20 +168,5 @@ struct ChallengeView: View {
 }
 
 #Preview {
-    ChallengeView(
-        coordinator: Coordinator(),
-        user: AppUser(
-            id: "1",
-            name: "Alice",
-            email: "mail@example.com",
-            createdAt: Date(),
-            friends: ["Bob", "Carol", "Dave"],
-            pendingInvites: [],
-            sentInvites: [],
-            currentProgress: nil,
-            history: [:],
-            activeCompetitionWith: nil,
-            pendingCompetitionWith: nil
-        )
-    )
+    ChallengeView(coordinator: Coordinator())
 }

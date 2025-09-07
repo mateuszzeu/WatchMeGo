@@ -9,29 +9,28 @@ import SwiftUI
 
 struct MainTabView: View {
     @Bindable var coordinator: Coordinator
-    let user: AppUser
     
     var body: some View {
         TabView {
-            MainView(coordinator: coordinator, user: user)
+            MainView(coordinator: coordinator)
                 .tabItem {
                     Label("Dashboard", systemImage: "chart.bar.fill")
                         .environment(\.symbolVariants, .fill)
                 }
             
-            ManageView(coordinator: coordinator, user: user)
+            ManageView(coordinator: coordinator)
                 .tabItem {
                     Label("Social", systemImage: "person.3.fill")
                         .environment(\.symbolVariants, .fill)
                 }
             
-            ChallengeView(coordinator: coordinator, user: user)
+            ChallengeView(coordinator: coordinator)
                 .tabItem {
                     Label("Competitions", systemImage: "trophy.fill")
                         .environment(\.symbolVariants, .fill)
                 }
             
-            SettingsView(coordinator: coordinator, user: user)
+            SettingsView(coordinator: coordinator)
                 .tabItem {
                     Label("Profile", systemImage: "person.circle.fill")
                         .environment(\.symbolVariants, .fill)

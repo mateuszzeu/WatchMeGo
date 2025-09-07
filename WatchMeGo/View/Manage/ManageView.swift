@@ -11,9 +11,9 @@ struct ManageView: View {
     @Bindable var coordinator: Coordinator
     @Bindable private var viewModel: ManageViewModel
 
-    init(coordinator: Coordinator, user: AppUser) {
+    init(coordinator: Coordinator) {
         self.coordinator = coordinator
-        self.viewModel = ManageViewModel(currentUser: user)
+        self.viewModel = ManageViewModel(coordinator: coordinator)
     }
 
     var body: some View {

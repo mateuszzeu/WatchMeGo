@@ -14,9 +14,9 @@ struct MainView: View {
     @State private var now = Date()
     @State private var ticker = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
-    init(coordinator: Coordinator, user: AppUser) {
+    init(coordinator: Coordinator) {
         self.coordinator = coordinator
-        self.viewModel = MainViewModel(currentUser: user)
+        self.viewModel = MainViewModel(coordinator: coordinator)
     }
     
     var body: some View {
@@ -67,26 +67,6 @@ struct MainView: View {
                             onDecline: { Task { await viewModel.declineCompetitionInvite() } }
                         )
                     }
-                    
-                    VStack(spacing: DesignSystem.Spacing.s) {
-                        Text("Difficulty")
-                            .font(.headline)
-                            .foregroundColor(DesignSystem.Colors.primary)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                        
-                        Picker("Difficulty", selection: $viewModel.selectedDifficulty) {
-                            ForEach(Difficulty.allCases, id: \.self) { difficulty in
-                                Text(difficulty.rawValue).tag(difficulty)
-                            }
-                        }
-                        .pickerStyle(SegmentedPickerStyle())
-                    }
-                    .padding(DesignSystem.Spacing.l)
-                    .background(
-                        RoundedRectangle(cornerRadius: DesignSystem.Radius.l)
-                            .fill(DesignSystem.Colors.surface)
-                            .shadow(color: .black.opacity(0.05), radius: 10, x: 0, y: 5)
-                    )
                     
                     VStack(spacing: DesignSystem.Spacing.m) {
                         Text("Today's Progress")
@@ -216,20 +196,5 @@ struct MainView: View {
 }
 
 #Preview {
-    MainView(
-        coordinator: Coordinator(),
-        user: AppUser(
-            id: "1",
-            name: "Alice",
-            email: "mail@example.com",
-            createdAt: Date(),
-            friends: ["Bob", "Carol", "Dave"],
-            pendingInvites: [],
-            sentInvites: [],
-            currentProgress: nil,
-            history: [:],
-            activeCompetitionWith: nil,
-            pendingCompetitionWith: nil
-        )
-    )
+    MainView(coordinator: Coordinator())
 }

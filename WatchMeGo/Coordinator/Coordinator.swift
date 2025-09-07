@@ -19,6 +19,7 @@ final class Coordinator {
     
     var screen: Screen = .splash
     var currentUser: AppUser?
+    var selectedDifficulty: Difficulty = .medium
     
     func login(_ user: AppUser) {
         currentUser = user
@@ -32,5 +33,14 @@ final class Coordinator {
     
     func navigate(to screen: Screen) {
         self.screen = screen
+    }
+    
+    func refreshCurrentUser() async throws {
+        guard let userID = currentUser?.id else { return }
+        currentUser = try await UserService.fetchUser(byID: userID)
+    }
+    
+    func updateCurrentUser(_ user: AppUser) {
+        currentUser = user
     }
 }

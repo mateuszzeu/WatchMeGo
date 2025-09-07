@@ -10,11 +10,20 @@ import Foundation
 @MainActor
 @Observable
 final class SettingsViewModel {
-    private(set) var currentUser: AppUser
+    private let coordinator: Coordinator
     
-    init(currentUser: AppUser) {
-        self.currentUser = currentUser
+    var currentUser: AppUser? {
+        coordinator.currentUser
     }
+    
+    init(coordinator: Coordinator) {
+        self.coordinator = coordinator
+    }
+    
+    var selectedDifficulty: Difficulty {
+            get { coordinator.selectedDifficulty }
+            set { coordinator.selectedDifficulty = newValue }
+        }
     
     func logout(coordinator: Coordinator) {
         do {
@@ -48,5 +57,6 @@ final class SettingsViewModel {
         }
     }
 }
+
 
 

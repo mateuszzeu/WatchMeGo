@@ -36,8 +36,8 @@ private struct MainContentView: View {
     @Bindable var coordinator: Coordinator
     
     var body: some View {
-        if let user = coordinator.currentUser {
-            MainTabView(coordinator: coordinator, user: user)
+        if coordinator.currentUser != nil {
+            MainTabView(coordinator: coordinator)
         } else {
             LoginView(coordinator: coordinator)
         }
