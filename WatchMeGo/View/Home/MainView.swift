@@ -23,6 +23,8 @@ struct MainView: View {
         ScrollView {
             VStack(spacing: DesignSystem.Spacing.l) {
                 if viewModel.isAuthorized {
+                    BadgeRowView(badgeCounts: viewModel.badgeCounts)
+                    
                     if let challenge = viewModel.activeChallenge {
                         VStack(spacing: DesignSystem.Spacing.s) {
                             VStack(spacing: DesignSystem.Spacing.xs) {

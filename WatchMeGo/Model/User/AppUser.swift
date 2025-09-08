@@ -18,6 +18,7 @@ struct AppUser: Identifiable, Codable {
     
     var currentProgress: DailyProgress?
     var history: [String: DailyProgress]
+    var badges: [Badge] = []
     
     var activeCompetitionWith: String?
     var pendingCompetitionWith: String?

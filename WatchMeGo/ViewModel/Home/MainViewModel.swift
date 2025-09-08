@@ -32,6 +32,13 @@ final class MainViewModel {
     private var didFinalize = false
     private let coordinator: Coordinator
     
+    var todaysBadge: Badge?
+    
+    var badgeCounts: (easy: Int, medium: Int, hard: Int) {
+        guard let user = currentUser else { return (easy: 0, medium: 0, hard: 0) }
+        return BadgeService.getBadgeCounts(for: user)
+    }
+    
     var currentUser: AppUser? {
         coordinator.currentUser
     }
@@ -190,16 +197,9 @@ final class MainViewModel {
         }
     }
     
-    private static let dayFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        formatter.timeZone = .current
-        return formatter
-    }()
-    
     private func saveProgress() async {
         guard let user = currentUser else { return }
-        let dateString = Self.dayFormatter.string(from: Date())
+        let dateString = DateFormatter.dayFormatter.string(from: Date())
         
         let challengeMet =
         calories >= selectedDifficulty.caloriesGoal &&
@@ -215,6 +215,15 @@ final class MainViewModel {
         
         do {
             try await UserService.saveProgress(forUserID: user.id, date: dateString, progress: progress)
+            
+            if let newBadge = try await BadgeService.checkAndAwardBadge(
+                for: user.id,
+                progress: progress,
+                date: dateString
+            ) {
+                todaysBadge = newBadge
+                try await coordinator.refreshCurrentUser()
+            }
         } catch {
             MessageHandler.shared.showError(error)
         }
@@ -273,7 +282,7 @@ final class MainViewModel {
         var dateStrings: [String] = []
         for dayOffset in 0..<durationDays {
             if let date = Calendar.current.date(byAdding: .day, value: dayOffset, to: Calendar.current.startOfDay(for: start)) {
-                dateStrings.append(Self.dayFormatter.string(from: date))
+                dateStrings.append(DateFormatter.dayFormatter.string(from: date))
             }
         }
         return dateStrings
