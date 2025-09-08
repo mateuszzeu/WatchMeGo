@@ -201,16 +201,10 @@ final class MainViewModel {
         guard let user = currentUser else { return }
         let dateString = DateFormatter.dayFormatter.string(from: Date())
         
-        let challengeMet =
-        calories >= selectedDifficulty.caloriesGoal &&
-        exerciseMinutes >= selectedDifficulty.exerciseMinutesGoal &&
-        standHours >= selectedDifficulty.standHoursGoal
-        
         let progress = DailyProgress(
             calories: calories,
             exerciseMinutes: exerciseMinutes,
             standHours: standHours,
-            challengeMet: challengeMet
         )
         
         do {

@@ -10,5 +10,4 @@ struct DailyProgress: Codable {
     var calories: Int
     var exerciseMinutes: Int
     var standHours: Int
-    var challengeMet: Bool
 }
