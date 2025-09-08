@@ -28,9 +28,9 @@ enum BadgeLevel: String, CaseIterable, Codable {
     
     var color: Color {
         switch self {
-        case .easy: return .green
-        case .medium: return .blue
-        case .hard: return .purple
+        case .easy: return Color(red: 0.8, green: 0.5, blue: 0.2)
+        case .medium: return Color(red: 0.7, green: 0.7, blue: 0.7)
+        case .hard: return Color(red: 1.0, green: 0.8, blue: 0.0)
         }
     }
     

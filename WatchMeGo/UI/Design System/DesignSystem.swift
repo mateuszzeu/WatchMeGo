@@ -14,6 +14,7 @@ enum DesignSystem {
         static let background = Color("BackgroundPrimary")
         static let surface = Color("Surface")
         static let accent = Color("AccentColor")
+        static let progressBar = Color("ProgressBarColor")
         static let error = Color("Error")
         static let move = Color("ActivityMove")
         static let exercise = Color("ActivityExercise")

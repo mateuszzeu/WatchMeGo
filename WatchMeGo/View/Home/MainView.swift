@@ -90,7 +90,8 @@ struct MainView: View {
                                         case .standHours: return DesignSystem.Colors.stand
                                         }
                                     }(),
-                                    iconName: metric.iconName
+                                    iconName: metric.iconName,
+                                    isOpponent: false
                                 )
                             }
                         }
@@ -134,12 +135,13 @@ struct MainView: View {
                                         goal: viewModel.defaultGoal(for: metric),
                                         color: {
                                             switch metric {
-                                            case .calories: return DesignSystem.Colors.move.darker()
-                                            case .exerciseMinutes: return DesignSystem.Colors.exercise.darker()
-                                            case .standHours: return DesignSystem.Colors.stand.darker()
+                                            case .calories: return DesignSystem.Colors.move
+                                            case .exerciseMinutes: return DesignSystem.Colors.exercise
+                                            case .standHours: return DesignSystem.Colors.stand
                                             }
                                         }(),
-                                        iconName: metric.iconName
+                                        iconName: metric.iconName,
+                                        isOpponent: true
                                     )
                                 }
                             }

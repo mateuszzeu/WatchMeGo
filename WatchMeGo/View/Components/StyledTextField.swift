@@ -24,14 +24,14 @@ struct StyledTextField: View {
                 if isSecure {
                     SecureField("", text: $text)
                         .placeholder(when: text.isEmpty) {
-                            Text("Type...")
+                            Text("...")
                                 .font(.caption)
                                 .foregroundColor(DesignSystem.Colors.secondary.opacity(0.5))
                         }
                 } else {
                     TextField("", text: $text)
                         .placeholder(when: text.isEmpty) {
-                            Text("Type...")
+                            Text("...")
                                 .font(.caption)
                                 .foregroundColor(DesignSystem.Colors.secondary.opacity(0.5))
                         }
