@@ -21,7 +21,7 @@ struct SettingsView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: DesignSystem.Spacing.l) {
-                HStack(spacing: DesignSystem.Spacing.m) {
+                HStack(spacing: DesignSystem.Spacing.s) {
                     Image(systemName: "person.crop.circle.fill")
                         .font(.system(size: 56))
                         .foregroundColor(DesignSystem.Colors.accent)
@@ -34,12 +34,12 @@ struct SettingsView: View {
                 }
                 .cardStyle()
                 
-                VStack(alignment: .leading, spacing: DesignSystem.Spacing.m) {
+                VStack(alignment: .leading, spacing: DesignSystem.Spacing.s) {
                     Text("Daily Goals")
                         .font(.headline)
                         .foregroundColor(DesignSystem.Colors.primary)
                     
-                    Text("Set your daily activity goals. These affect your progress tracking and challenge targets.")
+                    Text("Set your daily activity goals.")
                         .font(.caption)
                         .foregroundColor(DesignSystem.Colors.secondary)
                         .multilineTextAlignment(.leading)
@@ -53,7 +53,7 @@ struct SettingsView: View {
                 }
                 .cardStyle()
                 
-                VStack(alignment: .leading, spacing: DesignSystem.Spacing.m) {
+                VStack(alignment: .leading, spacing: DesignSystem.Spacing.s) {
                     Text("Appearance")
                         .font(.headline)
                         .foregroundColor(DesignSystem.Colors.primary)

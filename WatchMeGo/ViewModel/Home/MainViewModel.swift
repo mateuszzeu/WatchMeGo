@@ -154,15 +154,6 @@ final class MainViewModel {
         }
     }
     
-    func challengeGoal(for metric: Metric) -> Int {
-        let days = activeChallenge?.duration ?? 1
-        switch metric {
-        case .calories: return selectedDifficulty.caloriesGoal * days
-        case .exerciseMinutes: return selectedDifficulty.exerciseMinutesGoal * days
-        case .standHours: return selectedDifficulty.standHoursGoal * days
-        }
-    }
-    
     func remainingString(from start: Date, days: Int, now: Date) -> String {
         let secondsRemaining = remainingSeconds(from: start, days: days, now: now)
         let daysRemaining = secondsRemaining / 86400

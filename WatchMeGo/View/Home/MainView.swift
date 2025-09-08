@@ -26,27 +26,28 @@ struct MainView: View {
                     if let challenge = viewModel.activeChallenge {
                         VStack(spacing: DesignSystem.Spacing.s) {
                             VStack(spacing: DesignSystem.Spacing.xs) {
-                                Text("Active Challenge")
+                                Text(challenge.name)
                                     .font(.headline)
                                     .foregroundColor(DesignSystem.Colors.primary)
-                                Text(challenge.name)
-                                    .font(.subheadline)
-                                    .foregroundColor(DesignSystem.Colors.secondary)
+                                
+                                if let competitiveUser = viewModel.competitiveUser {
+                                    Text("Active challenge with \(competitiveUser.name)")
+                                        .font(.caption2)
+                                        .foregroundColor(DesignSystem.Colors.secondary)
+                                        .opacity(0.6)
+                                }
                             }
                             .frame(maxWidth: .infinity)
                             
                             VStack(spacing: DesignSystem.Spacing.xs) {
-                                Text("Time left")
-                                    .font(.caption)
-                                    .foregroundColor(DesignSystem.Colors.secondary)
                                 Text(viewModel.remainingString(from: challenge.createdAt, days: challenge.duration, now: now))
-                                    .font(.title2.bold())
+                                    .font(.title3.bold())
                                     .foregroundColor(DesignSystem.Colors.accent)
                                     .monospacedDigit()
                             }
                             .frame(maxWidth: .infinity)
                         }
-                        .padding(DesignSystem.Spacing.l)
+                        .padding(DesignSystem.Spacing.s)
                         .background(
                             RoundedRectangle(cornerRadius: DesignSystem.Radius.l)
                                 .fill(DesignSystem.Colors.surface)
@@ -79,13 +80,7 @@ struct MainView: View {
                                 ProgressBarView(
                                     label: metric.title,
                                     value: viewModel.value(for: metric, of: nil),
-                                    goal: {
-                                        if viewModel.activeChallenge != nil {
-                                            return viewModel.challengeGoal(for: metric)
-                                        } else {
-                                            return viewModel.defaultGoal(for: metric)
-                                        }
-                                    }(),
+                                    goal: viewModel.defaultGoal(for: metric),
                                     color: {
                                         switch metric {
                                         case .calories: return DesignSystem.Colors.move
@@ -134,13 +129,7 @@ struct MainView: View {
                                     ProgressBarView(
                                         label: metric.title,
                                         value: viewModel.value(for: metric, of: rival),
-                                        goal: {
-                                            if viewModel.activeChallenge != nil {
-                                                return viewModel.challengeGoal(for: metric)
-                                            } else {
-                                                return viewModel.defaultGoal(for: metric)
-                                            }
-                                        }(),
+                                        goal: viewModel.defaultGoal(for: metric),
                                         color: {
                                             switch metric {
                                             case .calories: return DesignSystem.Colors.move.darker()
