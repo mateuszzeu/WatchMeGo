@@ -11,13 +11,13 @@ struct PendingInvitesSection: View {
     let pendingUsers: [AppUser]
     let onAccept: (AppUser) -> Void
     let onDecline: (AppUser) -> Void
-
+    
     var body: some View {
         VStack(spacing: DesignSystem.Spacing.s) {
             Text("Pending Invites")
                 .font(.headline)
                 .foregroundColor(DesignSystem.Colors.primary)
-
+            
             if pendingUsers.isEmpty {
                 PlaceholderCardContent(
                     systemImage: "envelope.badge",
@@ -42,11 +42,9 @@ struct PendingInvitesSection: View {
                                 .controlSize(.small)
                         }
                         .padding(DesignSystem.Spacing.m)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: DesignSystem.Radius.m)
-                                .stroke(DesignSystem.Colors.borderFriends, lineWidth: 3)
-                        )
+                        .background(DesignSystem.Colors.surface)
                         .cornerRadius(DesignSystem.Radius.m)
+                        .shadow(color: DesignSystem.Colors.primary.opacity(0.15), radius: 2, x: 0, y: 1)
                     }
                 }
             }

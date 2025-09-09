@@ -18,11 +18,9 @@ struct InviteField: View {
                 .font(.body)
                 .padding(.horizontal, DesignSystem.Spacing.s)
                 .frame(height: 44)
-                .overlay(
-                    RoundedRectangle(cornerRadius: DesignSystem.Radius.m)
-                        .stroke(DesignSystem.Colors.borderFriends, lineWidth: 3)
-                )
+                .background(DesignSystem.Colors.surface)
                 .cornerRadius(DesignSystem.Radius.m)
+                .shadow(color: DesignSystem.Colors.primary.opacity(0.15), radius: 2, x: 0, y: 1)
 
             Button(action: onSend) {
                 HStack(spacing: 6) {

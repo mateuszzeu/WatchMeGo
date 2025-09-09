@@ -50,14 +50,11 @@ struct FriendsSection: View {
                                     .foregroundColor(isInCompetition(user) ? DesignSystem.Colors.error : DesignSystem.Colors.secondary)
                                     .font(.system(size: 26))
                             }
-                            .padding(DesignSystem.Spacing.s)
+                            .padding(DesignSystem.Spacing.m)
                             .frame(maxWidth: .infinity)
                             .background(DesignSystem.Colors.surface)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: DesignSystem.Radius.m)
-                                    .stroke(DesignSystem.Colors.borderFriends, lineWidth: 3)
-                            )
                             .cornerRadius(DesignSystem.Radius.m)
+                            .shadow(color: DesignSystem.Colors.primary.opacity(0.15), radius: 2, x: 0, y: 1)
                         }
                         .buttonStyle(.plain)
                         .contentShape(Rectangle())
