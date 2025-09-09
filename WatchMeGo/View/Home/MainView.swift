@@ -26,32 +26,15 @@ struct MainView: View {
                     BadgeRowView(badgeCounts: viewModel.badgeCounts)
                     
                     if let challenge = viewModel.activeChallenge {
-                        VStack(spacing: DesignSystem.Spacing.s) {
-                            VStack(spacing: DesignSystem.Spacing.xs) {
-                                Text(challenge.name)
-                                    .font(.headline)
-                                    .foregroundColor(DesignSystem.Colors.primary)
-                                
-                                if let competitiveUser = viewModel.competitiveUser {
-                                    Text("Active challenge with \(competitiveUser.name)")
-                                        .font(.caption2)
-                                        .foregroundColor(DesignSystem.Colors.secondary)
-                                        .opacity(0.6)
-                                }
+                        ActiveChallengeView(
+                            challenge: challenge,
+                            competitiveUser: viewModel.competitiveUser,
+                            remainingString: viewModel.remainingString(from: challenge.createdAt, days: challenge.duration, now: now),
+                            onTick: { currentTime in
+                                now = currentTime
+                                Task { await viewModel.handleTick(now: currentTime) }
                             }
-                            
-                            VStack(spacing: DesignSystem.Spacing.xs) {
-                                Text(viewModel.remainingString(from: challenge.createdAt, days: challenge.duration, now: now))
-                                    .font(.title3.bold())
-                                    .foregroundColor(DesignSystem.Colors.accent)
-                                    .monospacedDigit()
-                            }
-                        }
-                        .cardStyle()
-                        .onReceive(ticker) { currentTime in
-                            now = currentTime
-                            Task { await viewModel.handleTick(now: currentTime) }
-                        }
+                        )
                     }
                     
                     if viewModel.hasPendingCompetitionInvite,
