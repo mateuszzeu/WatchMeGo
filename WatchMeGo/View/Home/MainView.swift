@@ -91,7 +91,6 @@ struct MainView: View {
                                         }
                                     }(),
                                     iconName: metric.iconName,
-                                    isOpponent: false
                                 )
                             }
                         }
@@ -141,7 +140,6 @@ struct MainView: View {
                                             }
                                         }(),
                                         iconName: metric.iconName,
-                                        isOpponent: true
                                     )
                                 }
                             }
