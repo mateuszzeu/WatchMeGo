@@ -37,7 +37,7 @@ struct ActiveChallengeView: View {
                     .tracking(1)
                 
                 Text(remainingString)
-                    .font(.title3.bold())
+                    .font(.title2.bold())
                     .foregroundColor(DesignSystem.Colors.accent)
                     .monospacedDigit()
             }

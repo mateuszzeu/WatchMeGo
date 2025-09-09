@@ -36,7 +36,7 @@ struct ProgressBarView: View {
 
             ZStack(alignment: .leading) {
                 Rectangle()
-                    .fill(DesignSystem.Colors.progressBar.opacity(0.15))
+                    .fill(DesignSystem.Colors.progressBar.opacity(0.3))
 
                 Rectangle()
                     .fill(DesignSystem.Colors.progressBar)
