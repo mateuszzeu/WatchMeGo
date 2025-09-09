@@ -19,6 +19,7 @@ enum DesignSystem {
         static let move = Color("ActivityMove")
         static let exercise = Color("ActivityExercise")
         static let stand = Color("ActivityStand")
+        static let borderFriends = Color("BorderFriends")
     }
 
     enum Spacing {

@@ -19,7 +19,7 @@ struct ManageView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: DesignSystem.Spacing.l) {
-                VStack(spacing: DesignSystem.Spacing.xs) {
+                VStack {
                     Text("Manage Friends & Invites")
                         .font(.headline)
                         .foregroundColor(DesignSystem.Colors.primary)
@@ -31,7 +31,7 @@ struct ManageView: View {
                 }
                 .cardStyle()
 
-                VStack(spacing: DesignSystem.Spacing.m) {
+                VStack {
                     Text("Invite a Friend")
                         .font(.headline)
                         .foregroundColor(DesignSystem.Colors.primary)

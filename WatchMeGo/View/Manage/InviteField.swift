@@ -20,7 +20,7 @@ struct InviteField: View {
                 .frame(height: 44)
                 .overlay(
                     RoundedRectangle(cornerRadius: DesignSystem.Radius.m)
-                        .stroke(DesignSystem.Colors.background, lineWidth: 3)
+                        .stroke(DesignSystem.Colors.borderFriends, lineWidth: 3)
                 )
                 .cornerRadius(DesignSystem.Radius.m)
 

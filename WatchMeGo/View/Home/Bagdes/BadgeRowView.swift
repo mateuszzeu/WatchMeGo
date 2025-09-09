@@ -46,7 +46,7 @@ struct BadgeRowView: View {
         .padding(.horizontal, DesignSystem.Spacing.m)
         .padding(.vertical, DesignSystem.Spacing.s)
         .background(
-            RoundedRectangle(cornerRadius: DesignSystem.Radius.m)
+            RoundedRectangle(cornerRadius: DesignSystem.Radius.l)
                 .fill(DesignSystem.Colors.surface)
                 .shadow(color: .black.opacity(0.03), radius: 4, x: 0, y: 2)
         )

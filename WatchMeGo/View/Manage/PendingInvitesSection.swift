@@ -44,7 +44,7 @@ struct PendingInvitesSection: View {
                         .padding(DesignSystem.Spacing.m)
                         .overlay(
                             RoundedRectangle(cornerRadius: DesignSystem.Radius.m)
-                                .stroke(DesignSystem.Colors.background, lineWidth: 3)
+                                .stroke(DesignSystem.Colors.borderFriends, lineWidth: 3)
                         )
                         .cornerRadius(DesignSystem.Radius.m)
                     }
