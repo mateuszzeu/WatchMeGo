@@ -52,7 +52,11 @@ struct FriendsSection: View {
                             }
                             .padding(DesignSystem.Spacing.s)
                             .frame(maxWidth: .infinity)
-                            .background(.ultraThinMaterial)
+                            .background(DesignSystem.Colors.surface)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: DesignSystem.Radius.m)
+                                    .stroke(DesignSystem.Colors.background, lineWidth: 3)
+                            )
                             .cornerRadius(DesignSystem.Radius.m)
                         }
                         .buttonStyle(.plain)
