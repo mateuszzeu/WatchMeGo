@@ -9,7 +9,7 @@ import SwiftUI
 extension View {
     func cardStyle() -> some View {
         self
-            .padding(DesignSystem.Spacing.m)
+            .padding(DesignSystem.Spacing.l)
             .frame(maxWidth: .infinity)
             .background(DesignSystem.Colors.surface)
             .cornerRadius(DesignSystem.Radius.l)

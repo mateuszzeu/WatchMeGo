@@ -39,7 +39,6 @@ struct MainView: View {
                                         .opacity(0.6)
                                 }
                             }
-                            .frame(maxWidth: .infinity)
                             
                             VStack(spacing: DesignSystem.Spacing.xs) {
                                 Text(viewModel.remainingString(from: challenge.createdAt, days: challenge.duration, now: now))
@@ -47,14 +46,8 @@ struct MainView: View {
                                     .foregroundColor(DesignSystem.Colors.accent)
                                     .monospacedDigit()
                             }
-                            .frame(maxWidth: .infinity)
                         }
-                        .padding(DesignSystem.Spacing.s)
-                        .background(
-                            RoundedRectangle(cornerRadius: DesignSystem.Radius.l)
-                                .fill(DesignSystem.Colors.surface)
-                                .shadow(color: .black.opacity(0.05), radius: 10, x: 0, y: 5)
-                        )
+                        .cardStyle()
                         .onReceive(ticker) { currentTime in
                             now = currentTime
                             Task { await viewModel.handleTick(now: currentTime) }
@@ -95,12 +88,7 @@ struct MainView: View {
                             }
                         }
                     }
-                    .padding(DesignSystem.Spacing.l)
-                    .background(
-                        RoundedRectangle(cornerRadius: DesignSystem.Radius.l)
-                            .fill(DesignSystem.Colors.surface)
-                            .shadow(color: .black.opacity(0.05), radius: 10, x: 0, y: 5)
-                    )
+                    .cardStyle()
                     
                     if let rival = viewModel.competitiveUser {
                         VStack(spacing: DesignSystem.Spacing.m) {
@@ -144,12 +132,7 @@ struct MainView: View {
                                 }
                             }
                         }
-                        .padding(DesignSystem.Spacing.l)
-                        .background(
-                            RoundedRectangle(cornerRadius: DesignSystem.Radius.l)
-                                .fill(DesignSystem.Colors.surface)
-                                .shadow(color: .black.opacity(0.05), radius: 10, x: 0, y: 5)
-                        )
+                        .cardStyle()
                     }
                     
                 } else {
@@ -162,10 +145,7 @@ struct MainView: View {
                             .font(.body)
                             .foregroundColor(DesignSystem.Colors.primary)
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding(DesignSystem.Spacing.l)
-                    .background(DesignSystem.Colors.surface)
-                    .cornerRadius(DesignSystem.Radius.l)
+                    .cardStyle()
                 }
             }
             .padding(DesignSystem.Spacing.l)
