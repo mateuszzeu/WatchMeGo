@@ -20,44 +20,10 @@ struct ChallengeView: View {
         ScrollView {
             VStack(spacing: DesignSystem.Spacing.l) {
                 if let challenge = viewModel.activeChallenge {
-                    VStack(alignment: .leading, spacing: DesignSystem.Spacing.l) {
-                        Text("Active Challenge")
-                            .font(.headline)
-                            .foregroundColor(DesignSystem.Colors.primary)
-                        
-                        VStack(spacing: DesignSystem.Spacing.m) {
-                            Text(challenge.name)
-                                .font(.body)
-                                .foregroundColor(DesignSystem.Colors.primary)
-                                .multilineTextAlignment(.center)
-                            
-                            if !challenge.metrics.isEmpty {
-                                Text(challenge.metrics.map { $0.metric.title }.joined(separator: " • "))
-                                    .font(.footnote)
-                                    .foregroundColor(DesignSystem.Colors.secondary)
-                                    .multilineTextAlignment(.center)
-                            }
-                            
-                            Text("Duration: \(challenge.duration) day\(challenge.duration > 1 ? "s" : "")")
-                                .font(.footnote)
-                                .foregroundColor(DesignSystem.Colors.secondary)
-                                .multilineTextAlignment(.center)
-                            
-                            if let prize = challenge.prize, !prize.isEmpty {
-                                Text("Prize: \(prize)")
-                                    .font(.footnote)
-                                    .foregroundColor(DesignSystem.Colors.secondary)
-                                    .multilineTextAlignment(.center)
-                            }
-                        }
-                        .cardStyle()
-                        
-                        PrimaryButton(title: "Abort Challenge") {
-                            Task { await viewModel.abortActiveChallenge() }
-                        }
-                    }
-                    .cardStyle()
-                    
+                    ActiveChallengeCardView(
+                        challenge: challenge,
+                        onAbortChallenge: { await viewModel.abortActiveChallenge() }
+                    )
                 } else {
                     VStack(spacing: DesignSystem.Spacing.l) {
                         Text("Create Challenge")
@@ -79,7 +45,7 @@ struct ChallengeView: View {
                                             .padding(.horizontal, 14)
                                             .background(
                                                 Capsule()
-                                                    .fill(isSelected ? DesignSystem.Colors.primary : DesignSystem.Colors.surface)
+                                                    .fill(isSelected ? DesignSystem.Colors.accent : DesignSystem.Colors.surface)
                                             )
                                             .overlay(
                                                 Capsule().stroke(DesignSystem.Colors.primary.opacity(isSelected ? 0 : 0.25), lineWidth: 1)
