@@ -213,7 +213,8 @@ final class MainViewModel {
             if let newBadge = try await BadgeService.checkAndAwardBadge(
                 for: user.id,
                 progress: progress,
-                date: dateString
+                date: dateString,
+                existingBadges: user.badges
             ) {
                 todaysBadge = newBadge
                 try await coordinator.refreshCurrentUser()

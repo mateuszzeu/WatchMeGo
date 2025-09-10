@@ -31,8 +31,12 @@ final class BadgeService {
         return nil
     }
     
-    static func checkAndAwardBadge(for userID: String, progress: DailyProgress, date: String) async throws -> Badge? {
+    static func checkAndAwardBadge(for userID: String, progress: DailyProgress, date: String, existingBadges: [Badge]) async throws -> Badge? {
+        guard isBadgeAwardTime() else { return nil }
         guard let badgeLevel = determineBadgeLevel(for: progress) else { return nil }
+        
+        let hasBadgeForDate = existingBadges.contains { $0.date == date }
+        guard !hasBadgeForDate else { return nil }
         
         let newBadge = Badge(level: badgeLevel, date: date)
         
@@ -41,6 +45,15 @@ final class BadgeService {
         ])
         
         return newBadge
+    }
+    
+    private static func isBadgeAwardTime() -> Bool {
+        let calendar = Calendar.current
+        let now = Date()
+        let hour = calendar.component(.hour, from: now)
+        let minute = calendar.component(.minute, from: now)
+        
+        return hour == 23 && minute >= 59
     }
     
     static func getBadgeCounts(for user: AppUser) -> (easy: Int, medium: Int, hard: Int) {
