@@ -14,34 +14,27 @@ struct StyledTextField: View {
     @FocusState private var isFocused: Bool
     
     var body: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spacing.xs) {
-            Text(title)
-                .font(.body)
-                .foregroundColor(isFocused ? DesignSystem.Colors.accent : DesignSystem.Colors.secondary.opacity(0.6))
-                .animation(.easeInOut(duration: 0.2), value: isFocused)
-            
-            Group {
-                if isSecure {
-                    SecureField("", text: $text)
-                        .placeholder(when: text.isEmpty) {
-                            Text("...")
-                                .font(.caption)
-                                .foregroundColor(DesignSystem.Colors.secondary.opacity(0.5))
-                        }
-                } else {
-                    TextField("", text: $text)
-                        .placeholder(when: text.isEmpty) {
-                            Text("...")
-                                .font(.caption)
-                                .foregroundColor(DesignSystem.Colors.secondary.opacity(0.5))
-                        }
-                        .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled()
-                }
+        Group {
+            if isSecure {
+                SecureField("", text: $text)
+                    .placeholder(when: text.isEmpty) {
+                        Text(title)
+                            .font(.body)
+                            .foregroundColor(DesignSystem.Colors.secondary.opacity(0.3))
+                    }
+            } else {
+                TextField("", text: $text)
+                    .placeholder(when: text.isEmpty) {
+                        Text(title)
+                            .font(.body)
+                            .foregroundColor(DesignSystem.Colors.secondary.opacity(0.3))
+                    }
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
             }
-            .font(.body)
-            .focused($isFocused)
         }
+        .font(.body)
+        .focused($isFocused)
         .padding(DesignSystem.Spacing.m)
         .background(
             RoundedRectangle(cornerRadius: DesignSystem.Radius.m)
