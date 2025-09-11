@@ -13,7 +13,7 @@ struct ActiveChallengeCardView: View {
     @State private var viewModel = ActiveChallengeCardViewModel()
     
     var body: some View {
-        VStack(spacing: DesignSystem.Spacing.m) {
+        VStack {
             VStack(spacing: DesignSystem.Spacing.s) {
                 Text("Active Challenge")
                     .font(.headline)
@@ -71,12 +71,12 @@ struct ActiveChallengeCardView: View {
             }
             .cardStyle()
             
-            VStack(spacing: DesignSystem.Spacing.l) {
+            VStack(spacing: DesignSystem.Spacing.m) {
                 Text("Leaderboard")
                     .font(.title)
                     .foregroundColor(DesignSystem.Colors.primary)
                 
-                HStack(spacing: DesignSystem.Spacing.l) {
+                HStack(spacing: DesignSystem.Spacing.xl) {
                     ProgressColumnView(
                         name: viewModel.isUserWinning ? viewModel.currentUserName : viewModel.competitorName,
                         progress: viewModel.isUserWinning ? viewModel.currentUserProgress : viewModel.competitorProgress,
@@ -92,10 +92,10 @@ struct ActiveChallengeCardView: View {
                 
                 VStack(spacing: DesignSystem.Spacing.s) {
                     Text("Challenge History")
-                        .font(.caption.weight(.semibold))
+                        .font(.footnote.weight(.semibold))
                         .foregroundColor(DesignSystem.Colors.secondary)
                     
-                    HStack(spacing: DesignSystem.Spacing.m) {
+                    HStack(spacing: DesignSystem.Spacing.s) {
                         ForEach(viewModel.dailyWinners, id: \.day) { dailyWinner in
                             DayWinnerView(
                                 day: dailyWinner.day,

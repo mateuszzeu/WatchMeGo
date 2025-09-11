@@ -4,6 +4,7 @@
 //
 //  Created by MAT on 10/09/2025.
 //
+
 import SwiftUI
 
 struct ProgressColumnView: View {
@@ -14,7 +15,7 @@ struct ProgressColumnView: View {
     @State private var crownRotation: Double = 0
     @State private var pulseScale: CGFloat = 1.0
     
-    private var fillHeight: CGFloat { 200 * CGFloat(progress) / 2000 }
+    private var fillHeight: CGFloat { min(200, 200 * CGFloat(min(progress, 3000)) / CGFloat(3000)) }
     private var color: Color { isWinning ? .yellow : .blue }
     
     var body: some View {
@@ -49,7 +50,7 @@ struct ProgressColumnView: View {
                 
                 Text("\(progress)").font(.caption.weight(.bold)).foregroundColor(.white)
                     .shadow(color: .black.opacity(0.3), radius: 1)
-                    .offset(y: -100 + fillHeight/2)
+                    .offset(y: -fillHeight/2)
             }
         }
         .onAppear {

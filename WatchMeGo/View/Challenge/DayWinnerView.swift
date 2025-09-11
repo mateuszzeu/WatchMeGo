@@ -23,14 +23,14 @@ struct DayWinnerView: View {
                 .font(.caption2)
                 .foregroundColor(DesignSystem.Colors.secondary)
             
-            Text(winner)
-                .font(.caption)
-                .foregroundColor(isCurrentUser ? DesignSystem.Colors.accent : DesignSystem.Colors.primary)
+            Circle()
+                .fill(isCurrentUser ? DesignSystem.Colors.accent : DesignSystem.Colors.primary)
+                .frame(width: 32, height: 32)
+                .overlay(
+                    Text(winner.prefix(1))
+                        .font(.caption.weight(.bold))
+                        .foregroundColor(DesignSystem.Colors.surface)
+                )
         }
-        .padding()
-        .background(
-            Capsule()
-                .fill(isCurrentUser ? DesignSystem.Colors.accent.opacity(0.1) : DesignSystem.Colors.surface)
-        )
     }
 }

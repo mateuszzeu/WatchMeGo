@@ -27,6 +27,7 @@ enum DesignSystem {
         static let s: CGFloat = 8
         static let m: CGFloat = 16
         static let l: CGFloat = 24
+        static let xl: CGFloat = 40
     }
 
     enum Radius {
