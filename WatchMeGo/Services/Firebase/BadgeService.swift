@@ -32,28 +32,32 @@ final class BadgeService {
     }
     
     static func checkAndAwardBadge(for userID: String, progress: DailyProgress, date: String, existingBadges: [Badge]) async throws -> Badge? {
-        guard isBadgeAwardTime() else { return nil }
-        guard let badgeLevel = determineBadgeLevel(for: progress) else { return nil }
+        guard let newBadgeLevel = determineBadgeLevel(for: progress) else { return nil }
         
-        let hasBadgeForDate = existingBadges.contains { $0.date == date }
-        guard !hasBadgeForDate else { return nil }
+        let existingBadgeForDate = existingBadges.first { $0.date == date }
         
-        let newBadge = Badge(level: badgeLevel, date: date)
-        
-        try await usersCollection.document(userID).updateData([
-            "badges": FieldValue.arrayUnion([try Firestore.Encoder().encode(newBadge)])
-        ])
-        
-        return newBadge
-    }
-    
-    private static func isBadgeAwardTime() -> Bool {
-        let calendar = Calendar.current
-        let now = Date()
-        let hour = calendar.component(.hour, from: now)
-        let minute = calendar.component(.minute, from: now)
-        
-        return hour == 23 && minute >= 59
+        if let existingBadge = existingBadgeForDate {
+            if newBadgeLevel.rawValue > existingBadge.level.rawValue {
+                try await usersCollection.document(userID).updateData([
+                    "badges": FieldValue.arrayRemove([try Firestore.Encoder().encode(existingBadge)])
+                ])
+                
+                let upgradedBadge = Badge(level: newBadgeLevel, date: date)
+                try await usersCollection.document(userID).updateData([
+                    "badges": FieldValue.arrayUnion([try Firestore.Encoder().encode(upgradedBadge)])
+                ])
+                
+                return upgradedBadge
+            }
+            return nil
+        } else {
+            let newBadge = Badge(level: newBadgeLevel, date: date)
+            try await usersCollection.document(userID).updateData([
+                "badges": FieldValue.arrayUnion([try Firestore.Encoder().encode(newBadge)])
+            ])
+            
+            return newBadge
+        }
     }
     
     static func getBadgeCounts(for user: AppUser) -> (easy: Int, medium: Int, hard: Int) {
