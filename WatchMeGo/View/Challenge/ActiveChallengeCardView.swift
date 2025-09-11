@@ -20,27 +20,49 @@ struct ActiveChallengeCardView: View {
                     .foregroundColor(DesignSystem.Colors.primary)
                 
                 Text(challenge.name)
-                    .font(.body)
+                    .font(.caption)
                     .foregroundColor(DesignSystem.Colors.primary)
                     .multilineTextAlignment(.center)
                 
                 if !challenge.metrics.isEmpty {
-                    Text(challenge.metrics.map { $0.metric.title }.joined(separator: " • "))
-                        .font(.footnote)
-                        .foregroundColor(DesignSystem.Colors.secondary)
-                        .multilineTextAlignment(.center)
+                    HStack(spacing: DesignSystem.Spacing.m) {
+                        ForEach(challenge.metrics, id: \.metric) { metric in
+                            VStack(spacing: DesignSystem.Spacing.xs) {
+                                Image(systemName: metric.metric.iconName)
+                                    .foregroundColor(DesignSystem.Colors.accent)
+                                    .font(.title3)
+                                
+                                Text(metric.metric.title)
+                                    .font(.caption)
+                                    .foregroundColor(DesignSystem.Colors.secondary)
+                                    .multilineTextAlignment(.center)
+                            }
+                        }
+                    }
                 }
                 
-                Text("Duration: \(challenge.duration) day\(challenge.duration > 1 ? "s" : "")")
-                    .font(.footnote)
-                    .foregroundColor(DesignSystem.Colors.secondary)
-                    .multilineTextAlignment(.center)
-                
-                if let prize = challenge.prize, !prize.isEmpty {
-                    Text("Prize: \(prize)")
-                        .font(.footnote)
-                        .foregroundColor(DesignSystem.Colors.secondary)
-                        .multilineTextAlignment(.center)
+                HStack(spacing: DesignSystem.Spacing.l) {
+                    VStack(spacing: DesignSystem.Spacing.xs) {
+                        Image(systemName: "calendar")
+                            .foregroundColor(DesignSystem.Colors.secondary)
+                            .font(.title3)
+                        
+                        Text("\(challenge.duration) day\(challenge.duration > 1 ? "s" : "")")
+                            .font(.caption)
+                            .foregroundColor(DesignSystem.Colors.secondary)
+                    }
+                    
+                    if let prize = challenge.prize, !prize.isEmpty {
+                        VStack(spacing: DesignSystem.Spacing.xs) {
+                            Image(systemName: "gift")
+                                .foregroundColor(DesignSystem.Colors.accent)
+                                .font(.title3)
+                            
+                            Text(prize)
+                                .font(.caption)
+                                .foregroundColor(DesignSystem.Colors.accent)
+                        }
+                    }
                 }
                 
                 PrimaryButton(title: "Abort Challenge") {
