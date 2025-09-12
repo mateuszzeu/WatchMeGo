@@ -18,7 +18,7 @@
 
 ---
 
-### 🏠 Main View
+### 🏠 Dashboard
 <img width="332" height="720" alt="Main_Solo_View" src="https://github.com/user-attachments/assets/eed3258f-a6ac-4545-bac2-a96152919949" /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img width="332" height="720" alt="Social_View_NoFriends" src="https://github.com/user-attachments/assets/6d6d9691-5725-46d3-9626-5a095eaf98db" />
 
 ---
@@ -34,15 +34,14 @@
 
 ---
 
-### 🔥 Active Challenge
-<img width="332" height="720" alt="Active_CHallenge_Light" src="https://github.com/user-attachments/assets/b5681b67-6326-41b3-a1f8-e8f187a55c30" />  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<img width="332" height="720" alt="Active_Challenge_Dark" src="https://github.com/user-attachments/assets/b8908903-02bd-43d8-8692-f517254f71ef" />
-
----
-
 ### 📨 Challenge Invite and Ongoing View
 
 <img width="332" height="720" alt="Invite_Competition" src="https://github.com/user-attachments/assets/3368971c-a42c-4839-8f55-6b299496b147" /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ![active_challenge_main](https://github.com/user-attachments/assets/071d5988-c5b3-417c-9ae5-329290c6e369)
+
+---
+### 🔥 Active Challenge
+<img width="332" height="720" alt="Active_CHallenge_Light" src="https://github.com/user-attachments/assets/b5681b67-6326-41b3-a1f8-e8f187a55c30" />  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<img width="332" height="720" alt="Active_Challenge_Dark" src="https://github.com/user-attachments/assets/b8908903-02bd-43d8-8692-f517254f71ef" />
 
 ---
 
