@@ -10,19 +10,24 @@ struct SplashView: View {
             DesignSystem.Colors.background
                 .ignoresSafeArea()
             
-            VStack(spacing: DesignSystem.Spacing.l) {
-                Text("WatchMeGo")
-                    .font(.title)
-                    .foregroundColor(DesignSystem.Colors.primary)
-                    .opacity(textOpacity)
+            VStack {
+                VStack(spacing: DesignSystem.Spacing.l) {
+                    Text("WatchMeGo")
+                        .font(.title)
+                        .foregroundColor(DesignSystem.Colors.primary)
+                        .opacity(textOpacity)
+                    
+                    Image(systemName: "figure.run.circle.fill")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 120, height: 120)
+                        .foregroundColor(DesignSystem.Colors.accent)
+                        .scaleEffect(logoScale)
+                        .opacity(logoOpacity)
+                }
+                .padding(.top, 150)
                 
-                Image(systemName: "figure.run.circle.fill")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 120, height: 120)
-                    .foregroundColor(DesignSystem.Colors.accent)
-                    .scaleEffect(logoScale)
-                    .opacity(logoOpacity)
+                Spacer()
             }
         }
         .onAppear {
