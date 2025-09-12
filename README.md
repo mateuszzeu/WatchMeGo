@@ -1,4 +1,4 @@
-# ⌚️ WatchMeGo - iOS Fitness Competition App
+# WatchMeGo - iOS Fitness Competition App
 
 <p align="center">
   <img src="https://img.shields.io/badge/SwiftUI-007AFF?style=for-the-badge&logo=swift&logoColor=white">
@@ -7,7 +7,7 @@
   <img src="https://img.shields.io/badge/iOS%2017%2B-lightgrey?style=for-the-badge&logo=apple&logoColor=white">
 </p>
 
-## 🚀 About The App
+## ⌚️ About The App
 
 **WatchMeGo** is a modern iOS application for fitness competitions with friends. The app uses data from Apple's HealthKit to track daily activity, allowing users to create challenges, monitor progress in real-time, and earn motivating achievements. It combines elements of gamification, activity tracking, and social features into a single, cohesive platform.
 
