@@ -9,6 +9,9 @@ import SwiftUI
 
 enum AppError: Error, LocalizedError {
     case emptyField(fieldName: String)
+    case invalidEmail
+    case passwordTooShort
+    case usernameTooShort
     case userNotFound
     case selfInvite
     case alreadyFriends
@@ -21,6 +24,12 @@ enum AppError: Error, LocalizedError {
         switch self {
         case .emptyField(let fieldName):
             return "\(fieldName) field cannot be empty."
+        case .invalidEmail:
+            return "Please enter a valid email address."
+        case .passwordTooShort:
+            return "Password must be at least 6 characters long."
+        case .usernameTooShort:
+            return "Username must be at least 3 characters long."
         case .userNotFound:
             return "User not found."
         case .selfInvite:

@@ -16,7 +16,11 @@ final class RegisterViewModel {
 
     func register(email: String, password: String, username: String, coordinator: Coordinator) async {
         do {
-            guard try await isUsernameAvailable(username) else {
+            try validateInput(email: email, password: password, username: username)
+            
+            let formattedUsername = formatUsername(username)
+            
+            guard try await isUsernameAvailable(formattedUsername) else {
                 throw AppError.usernameTaken
             }
 
@@ -25,7 +29,7 @@ final class RegisterViewModel {
 
             let appUser = AppUser(
                 id: firebaseUser.uid,
-                name: username,
+                name: formattedUsername,
                 email: email,
                 createdAt: Date(),
                 friends: [],
@@ -43,6 +47,47 @@ final class RegisterViewModel {
         } catch {
             MessageHandler.shared.showError(error)
         }
+    }
+    
+    private func validateInput(email: String, password: String, username: String) throws {
+        if email.isEmpty {
+            throw AppError.emptyField(fieldName: "Email")
+        }
+        
+        if !isValidEmail(email) {
+            throw AppError.invalidEmail
+        }
+        
+        if password.isEmpty {
+            throw AppError.emptyField(fieldName: "Password")
+        }
+        
+        if password.count < 6 {
+            throw AppError.passwordTooShort
+        }
+        
+        if username.isEmpty {
+            throw AppError.emptyField(fieldName: "Username")
+        }
+        
+        if username.count < 3 {
+            throw AppError.usernameTooShort
+        }
+    }
+    
+    private func isValidEmail(_ email: String) -> Bool {
+        let emailRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
+        let emailPredicate = NSPredicate(format: "SELF MATCHES %@", emailRegex)
+        return emailPredicate.evaluate(with: email)
+    }
+    
+    private func formatUsername(_ username: String) -> String {
+        let trimmed = username.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return username }
+        
+        let firstLetter = trimmed.prefix(1).uppercased()
+        let rest = trimmed.dropFirst().lowercased()
+        return firstLetter + rest
     }
 
     private func isUsernameAvailable(_ username: String) async throws -> Bool {
