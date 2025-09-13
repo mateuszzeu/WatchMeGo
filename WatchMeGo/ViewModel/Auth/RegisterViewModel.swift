@@ -49,7 +49,7 @@ final class RegisterViewModel {
         }
     }
     
-    private func validateInput(email: String, password: String, username: String) throws {
+    func validateInput(email: String, password: String, username: String) throws {
         if email.isEmpty {
             throw AppError.emptyField(fieldName: "Email")
         }
@@ -75,13 +75,13 @@ final class RegisterViewModel {
         }
     }
     
-    private func isValidEmail(_ email: String) -> Bool {
+    func isValidEmail(_ email: String) -> Bool {
         let emailRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
         let emailPredicate = NSPredicate(format: "SELF MATCHES %@", emailRegex)
         return emailPredicate.evaluate(with: email)
     }
     
-    private func formatUsername(_ username: String) -> String {
+    func formatUsername(_ username: String) -> String {
         let trimmed = username.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return username }
         
@@ -90,7 +90,7 @@ final class RegisterViewModel {
         return firstLetter + rest
     }
 
-    private func isUsernameAvailable(_ username: String) async throws -> Bool {
+    func isUsernameAvailable(_ username: String) async throws -> Bool {
         let snapshot = try await Firestore.firestore()
             .collection("users")
             .whereField("name", isEqualTo: username)

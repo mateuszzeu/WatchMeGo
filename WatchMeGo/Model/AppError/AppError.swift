@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-enum AppError: Error, LocalizedError {
+enum AppError: Error, LocalizedError, Equatable {
     case emptyField(fieldName: String)
     case invalidEmail
     case passwordTooShort
