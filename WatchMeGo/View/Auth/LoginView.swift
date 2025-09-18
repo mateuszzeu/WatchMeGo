@@ -11,7 +11,7 @@ import LocalAuthentication
 struct LoginView: View {
     @Bindable var coordinator: Coordinator
     @Bindable private var viewModel = LoginViewModel()
-    @State private var username = ""
+    @State private var email = ""
     @State private var password = ""
     @State private var isAnimating = false
     
@@ -81,7 +81,7 @@ struct LoginView: View {
                 }
                 
                 VStack(spacing: DesignSystem.Spacing.m) {
-                    StyledTextField(title: "Username", text: $username)
+                    StyledTextField(title: "Email", text: $email)
                         .offset(x: isAnimating ? 0 : -50)
                         .opacity(isAnimating ? 1.0 : 0.0)
                         .animation(.easeOut(duration: 0.6).delay(0.7), value: isAnimating)
@@ -93,9 +93,9 @@ struct LoginView: View {
                 }
                 
                 PrimaryButton(title: "Sign In") {
-                    Task { await viewModel.login(username: username, password: password, coordinator: coordinator) }
+                    Task { await viewModel.login(email: email, password: password, coordinator: coordinator) }
                 }
-                .disabled(username.isEmpty || password.isEmpty)
+                .disabled(email.isEmpty || password.isEmpty)
                 .scaleEffect(isAnimating ? 1.0 : 0.8)
                 .opacity(isAnimating ? 1.0 : 0.0)
                 .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(1.1), value: isAnimating)

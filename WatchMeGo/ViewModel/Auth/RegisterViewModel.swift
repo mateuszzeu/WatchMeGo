@@ -7,38 +7,26 @@
 
 import Foundation
 import FirebaseAuth
-import FirebaseFirestore
 
 @MainActor
 @Observable
 final class RegisterViewModel {
     var infoMessage: String?
 
-    func register(email: String, password: String, username: String, coordinator: Coordinator) async {
+    func register(email: String, password: String, name: String, coordinator: Coordinator) async {
         do {
-            try validateInput(email: email, password: password, username: username)
+            try validateInput(email: email, password: password, name: name)
             
-            let formattedUsername = formatUsername(username)
+            let formattedName = formatName(name)
             
-            guard try await isUsernameAvailable(formattedUsername) else {
-                throw AppError.usernameTaken
-            }
-
             let result = try await Auth.auth().createUser(withEmail: email, password: password)
             let firebaseUser = result.user
 
             let appUser = AppUser(
                 id: firebaseUser.uid,
-                name: formattedUsername,
+                name: formattedName,
                 email: email,
-                createdAt: Date(),
-                friends: [],
-                pendingInvites: [],
-                sentInvites: [],
-                currentProgress: nil,
-                history: [:],
-                activeCompetitionWith: nil,
-                pendingCompetitionWith: nil
+                createdAt: Date()
             )
 
             try await UserService.createUser(appUser)
@@ -49,7 +37,7 @@ final class RegisterViewModel {
         }
     }
     
-    func validateInput(email: String, password: String, username: String) throws {
+    func validateInput(email: String, password: String, name: String) throws {
         if email.isEmpty {
             throw AppError.emptyField(fieldName: "Email")
         }
@@ -66,12 +54,12 @@ final class RegisterViewModel {
             throw AppError.passwordTooShort
         }
         
-        if username.isEmpty {
-            throw AppError.emptyField(fieldName: "Username")
+        if name.isEmpty {
+            throw AppError.emptyField(fieldName: "Name")
         }
         
-        if username.count < 3 {
-            throw AppError.usernameTooShort
+        if name.count < 2 {
+            throw AppError.nameTooShort
         }
     }
     
@@ -81,21 +69,12 @@ final class RegisterViewModel {
         return emailPredicate.evaluate(with: email)
     }
     
-    func formatUsername(_ username: String) -> String {
-        let trimmed = username.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty else { return username }
+    func formatName(_ name: String) -> String {
+        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return name }
         
         let firstLetter = trimmed.prefix(1).uppercased()
         let rest = trimmed.dropFirst().lowercased()
         return firstLetter + rest
-    }
-
-    func isUsernameAvailable(_ username: String) async throws -> Bool {
-        let snapshot = try await Firestore.firestore()
-            .collection("users")
-            .whereField("name", isEqualTo: username)
-            .limit(to: 1)
-            .getDocuments()
-        return snapshot.documents.isEmpty
     }
 }

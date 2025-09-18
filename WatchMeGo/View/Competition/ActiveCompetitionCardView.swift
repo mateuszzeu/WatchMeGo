@@ -1,38 +1,39 @@
 //
-//  ActiveChallengeCardView.swift
+//  ActiveCompetitionCardView.swift
 //  WatchMeGo
 //
 //  Created by MAT on 10/09/2025.
+//
 
 import SwiftUI
 
-struct ActiveChallengeCardView: View {
-    let challenge: Challenge
-    let onAbortChallenge: () async -> Void
+struct ActiveCompetitionCardView: View {
+    let competition: Competition
+    let onAbortCompetition: () async -> Void
     
-    @State private var viewModel = ActiveChallengeCardViewModel()
+    @State private var viewModel = ActiveCompetitionCardViewModel()
     
     var body: some View {
         VStack {
             VStack(spacing: DesignSystem.Spacing.s) {
-                Text("Active Challenge")
+                Text("Active Competition")
                     .font(.headline)
                     .foregroundColor(DesignSystem.Colors.primary)
                 
-                Text(challenge.name)
+                Text(competition.name)
                     .font(.caption)
                     .foregroundColor(DesignSystem.Colors.primary)
                     .multilineTextAlignment(.center)
                 
-                if !challenge.metrics.isEmpty {
+                if !competition.metrics.isEmpty {
                     HStack(spacing: DesignSystem.Spacing.m) {
-                        ForEach(challenge.metrics, id: \.metric) { metric in
+                        ForEach(competition.metrics, id: \.self) { metric in
                             VStack(spacing: DesignSystem.Spacing.xs) {
-                                Image(systemName: metric.metric.iconName)
+                                Image(systemName: metric.iconName)
                                     .foregroundColor(DesignSystem.Colors.accent)
                                     .font(.title3)
                                 
-                                Text(metric.metric.title)
+                                Text(metric.title)
                                     .font(.caption)
                                     .foregroundColor(DesignSystem.Colors.secondary)
                                     .multilineTextAlignment(.center)
@@ -47,12 +48,12 @@ struct ActiveChallengeCardView: View {
                             .foregroundColor(DesignSystem.Colors.secondary)
                             .font(.title3)
                         
-                        Text("\(challenge.duration) day\(challenge.duration > 1 ? "s" : "")")
+                        Text("\(competition.duration) day\(competition.duration > 1 ? "s" : "")")
                             .font(.caption)
                             .foregroundColor(DesignSystem.Colors.secondary)
                     }
                     
-                    if let prize = challenge.prize, !prize.isEmpty {
+                    if let prize = competition.prize, !prize.isEmpty {
                         VStack(spacing: DesignSystem.Spacing.xs) {
                             Image(systemName: "gift")
                                 .foregroundColor(DesignSystem.Colors.accent)
@@ -65,8 +66,8 @@ struct ActiveChallengeCardView: View {
                     }
                 }
                 
-                PrimaryButton(title: "Abort Challenge") {
-                    Task { await onAbortChallenge() }
+                PrimaryButton(title: "Abort Competition") {
+                    Task { await onAbortCompetition() }
                 }
             }
             .cardStyle()
@@ -91,7 +92,7 @@ struct ActiveChallengeCardView: View {
                 }
                 
                 VStack(spacing: DesignSystem.Spacing.s) {
-                    Text("Challenge History")
+                    Text("Competition History")
                         .font(.footnote.weight(.semibold))
                         .foregroundColor(DesignSystem.Colors.secondary)
                     
@@ -108,8 +109,8 @@ struct ActiveChallengeCardView: View {
             }
             .cardStyle()
         }
-        .task(id: challenge.id) {
-            await viewModel.loadProgressData(for: challenge)
+        .task(id: competition.id) {
+            await viewModel.loadProgressData(for: competition)
         }
     }
 }

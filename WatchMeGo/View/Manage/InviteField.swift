@@ -12,7 +12,7 @@ struct InviteField: View {
 
     var body: some View {
         HStack(spacing: DesignSystem.Spacing.s) {
-            TextField("Friend username", text: $text)
+            TextField("Friend email", text: $text)
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled(true)
                 .font(.body)
@@ -39,4 +39,3 @@ struct InviteField: View {
         }
     }
 }
-

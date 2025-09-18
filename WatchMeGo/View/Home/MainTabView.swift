@@ -24,7 +24,7 @@ struct MainTabView: View {
                         .environment(\.symbolVariants, .fill)
                 }
             
-            ChallengeView(coordinator: coordinator)
+            CompetitionView(coordinator: coordinator)
                 .tabItem {
                     Label("Competitions", systemImage: "trophy.fill")
                         .environment(\.symbolVariants, .fill)

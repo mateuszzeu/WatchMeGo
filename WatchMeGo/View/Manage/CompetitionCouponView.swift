@@ -8,37 +8,37 @@
 import SwiftUI
 
 struct CompetitionCouponView: View {
-    let challenger: String
-    let challenge: Challenge?
+    let competitor: String
+    let competition: Competition?
     let onAccept: () -> Void
     let onDecline: () -> Void
     @State private var appear = false
 
     var body: some View {
         VStack(spacing: DesignSystem.Spacing.m) {
-            Text("\(challenger) invited you to a competition!")
+            Text("\(competitor) invited you to a competition!")
                 .font(.headline)
                 .foregroundColor(DesignSystem.Colors.primary)
                 .multilineTextAlignment(.center)
 
-            if let challengeData = challenge {
+            if let competition = competition {
                 VStack(spacing: DesignSystem.Spacing.xs) {
-                    Text(challengeData.name)
+                    Text(competition.name)
                         .font(.body)
                         .foregroundColor(DesignSystem.Colors.primary)
 
-                    if !challengeData.metrics.isEmpty {
-                        Text(challengeData.metrics.map { $0.metric.title }.joined(separator: " • "))
+                    if !competition.metrics.isEmpty {
+                        Text(competition.metrics.map { $0.title }.joined(separator: " • "))
                             .font(.footnote)
                             .foregroundColor(DesignSystem.Colors.secondary)
                             .multilineTextAlignment(.center)
                     }
 
-                    Text("Duration: \(challengeData.duration) day\(challengeData.duration > 1 ? "s" : "")")
+                    Text("Duration: \(competition.duration) day\(competition.duration > 1 ? "s" : "")")
                         .font(.footnote)
                         .foregroundColor(DesignSystem.Colors.secondary)
 
-                    if let prize = challengeData.prize, !prize.isEmpty {
+                    if let prize = competition.prize, !prize.isEmpty {
                         Text("Prize: \(prize)")
                             .font(.footnote)
                             .foregroundColor(DesignSystem.Colors.secondary)
@@ -79,8 +79,7 @@ struct CompetitionCouponView: View {
 }
 
 #Preview {
-    CompetitionCouponView(challenger: "Jane", challenge: nil, onAccept: {}, onDecline: {})
+    CompetitionCouponView(competitor: "Jane", competition: nil, onAccept: {}, onDecline: {})
         .padding()
         .background(DesignSystem.Colors.background)
 }
-

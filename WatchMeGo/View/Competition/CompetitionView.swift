@@ -1,5 +1,5 @@
 //
-//  ChallengeView.swift
+//  CompetitionView.swift
 //  WatchMeGo
 //
 //  Created by Liza on 06/08/2025.
@@ -7,26 +7,26 @@
 
 import SwiftUI
 
-struct ChallengeView: View {
+struct CompetitionView: View {
     @Bindable var coordinator: Coordinator
-    @Bindable private var viewModel: ChallengeViewModel
+    @Bindable private var viewModel: CompetitionViewModel
     
     init(coordinator: Coordinator) {
         self.coordinator = coordinator
-        self.viewModel = ChallengeViewModel(coordinator: coordinator)
+        self.viewModel = CompetitionViewModel(coordinator: coordinator)
     }
     
     var body: some View {
         ScrollView {
             VStack(spacing: DesignSystem.Spacing.l) {
-                if let challenge = viewModel.activeChallenge {
-                    ActiveChallengeCardView(
-                        challenge: challenge,
-                        onAbortChallenge: { await viewModel.abortActiveChallenge() }
+                if let competition = viewModel.activeCompetition {
+                    ActiveCompetitionCardView(
+                        competition: competition,
+                        onAbortCompetition: { await viewModel.abortActiveCompetition() }
                     )
                 } else {
                     VStack(spacing: DesignSystem.Spacing.l) {
-                        Text("Create Challenge")
+                        Text("Create Competition")
                             .font(.title2.bold())
                             .foregroundColor(DesignSystem.Colors.primary)
                         
@@ -37,8 +37,8 @@ struct ChallengeView: View {
                             
                             ScrollView(.horizontal, showsIndicators: false) {
                                 HStack(spacing: DesignSystem.Spacing.s) {
-                                    ForEach(viewModel.friendUsernames, id: \.self) { friend in
-                                        let isSelected = (viewModel.selectedFriendUsername == friend)
+                                    ForEach(viewModel.friendEmails, id: \.self) { friend in
+                                        let isSelected = (viewModel.selectedFriendEmail == friend)
                                         Text(friend)
                                             .font(.callout.weight(isSelected ? .semibold : .regular))
                                             .padding(.vertical, 10)
@@ -52,18 +52,18 @@ struct ChallengeView: View {
                                             )
                                             .foregroundColor(isSelected ? .white : DesignSystem.Colors.primary)
                                             .onTapGesture {
-                                                viewModel.selectedFriendUsername = friend
+                                                viewModel.selectedFriendEmail = friend
                                             }
                                     }
                                 }
                             }
                             
-                            StyledTextField(title: "Challenge Name", text: $viewModel.challengeName)
+                            StyledTextField(title: "Competition Name", text: $viewModel.competitionName)
                         }
                         .cardStyle()
                         .onAppear {
-                            if viewModel.selectedFriendUsername.isEmpty, let first = viewModel.friendUsernames.first {
-                                viewModel.selectedFriendUsername = first
+                            if viewModel.selectedFriendEmail.isEmpty, let first = viewModel.friendEmails.first {
+                                viewModel.selectedFriendEmail = first
                             }
                         }
                         
@@ -83,19 +83,19 @@ struct ChallengeView: View {
                         .cardStyle()
                         
                         VStack(spacing: DesignSystem.Spacing.s) {
-                            Text("Challenge Duration")
+                            Text("Competition Duration")
                                 .font(.body.weight(.semibold))
                                 .foregroundColor(DesignSystem.Colors.primary)
                             
-                            Stepper(value: $viewModel.challengeDurationDays, in: 1...7) {
-                                Text("\(viewModel.challengeDurationDays) day\(viewModel.challengeDurationDays > 1 ? "s" : "")")
+                            Stepper(value: $viewModel.competitionDurationDays, in: 1...7) {
+                                Text("\(viewModel.competitionDurationDays) day\(viewModel.competitionDurationDays > 1 ? "s" : "")")
                                     .foregroundColor(DesignSystem.Colors.secondary)
                             }
                             
-                            StyledTextField(title: "Prize (optional)", text: $viewModel.challengePrize)
+                            StyledTextField(title: "Prize (optional)", text: $viewModel.competitionPrize)
                             
-                            PrimaryButton(title: "Send Challenge") {
-                                Task { await viewModel.sendChallenge() }
+                            PrimaryButton(title: "Send Competition") {
+                                Task { await viewModel.sendCompetition() } 
                             }
                             .disabled(!viewModel.isReadyToSend)
                         }
@@ -114,5 +114,5 @@ struct ChallengeView: View {
 }
 
 #Preview {
-    ChallengeView(coordinator: Coordinator())
+    CompetitionView(coordinator: Coordinator())
 }

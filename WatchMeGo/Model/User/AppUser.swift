@@ -11,17 +11,5 @@ struct AppUser: Identifiable, Codable {
     var name: String
     var email: String
     var createdAt: Date
-    
-    var friends: [String]
-    var pendingInvites: [String]
-    var sentInvites: [String]
-    
-    var currentProgress: DailyProgress?
-    var history: [String: DailyProgress]
-    var badges: [Badge] = []
-    
-    var activeCompetitionWith: String?
-    var pendingCompetitionWith: String?
-    var competitionStatus = "none"
 }
 

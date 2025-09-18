@@ -1,13 +1,13 @@
 //
-//  ActiveChallengeView.swift
+//  ActiveCompetitionView.swift
 //  WatchMeGo
 //
 //  Created by MAT on 09/09/2025.
 //
 import SwiftUI
 
-struct ActiveChallengeView: View {
-    let challenge: Challenge
+struct ActiveCompetitionView: View {
+    let competition: Competition
     let competitiveUser: AppUser?
     let remainingString: String
     let onTick: (Date) -> Void
@@ -18,12 +18,12 @@ struct ActiveChallengeView: View {
     var body: some View {
         VStack(spacing: DesignSystem.Spacing.s) {
             VStack {
-                Text(challenge.name)
+                Text(competition.name)
                     .font(.title2)
                     .foregroundColor(DesignSystem.Colors.primary)
                 
                 if let competitiveUser = competitiveUser {
-                    Text("Active challenge with \(competitiveUser.name)")
+                    Text("Active competition with \(competitiveUser.name)")
                         .font(.caption2)
                         .foregroundColor(DesignSystem.Colors.secondary)
                         .opacity(0.7)

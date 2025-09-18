@@ -25,11 +25,11 @@ struct MainView: View {
                 if viewModel.isAuthorized {
                     BadgeRowView(badgeCounts: viewModel.badgeCounts)
                     
-                    if let challenge = viewModel.activeChallenge {
-                        ActiveChallengeView(
-                            challenge: challenge,
+                    if let competition = viewModel.activeCompetition {
+                        ActiveCompetitionView(
+                            competition: competition,
                             competitiveUser: viewModel.competitiveUser,
-                            remainingString: viewModel.remainingString(from: challenge.createdAt, days: challenge.duration, now: now),
+                            remainingString: viewModel.remainingString(from: competition.startDate, days: competition.duration, now: now),
                             onTick: { currentTime in
                                 now = currentTime
                                 Task { await viewModel.handleTick(now: currentTime) }
@@ -38,10 +38,10 @@ struct MainView: View {
                     }
                     
                     if viewModel.hasPendingCompetitionInvite,
-                       let challenger = viewModel.pendingCompetitionChallengerName {
+                       let competitor = viewModel.pendingCompetitionChallengerName {
                         CompetitionCouponView(
-                            challenger: challenger,
-                            challenge: viewModel.couponChallenge,
+                            competitor: competitor,
+                            competition: viewModel.couponCompetition,
                             onAccept: { Task { await viewModel.acceptCompetitionInvite() } },
                             onDecline: { Task { await viewModel.declineCompetitionInvite() } }
                         )
@@ -141,7 +141,7 @@ struct MainView: View {
         }
         .alert(item: $viewModel.popupMessage) { item in
             Alert(
-                title: Text("Challenge ended"),
+                title: Text("Competition ended"),
                 message: Text(item.text),
                 dismissButton: .default(Text("OK"))
             )

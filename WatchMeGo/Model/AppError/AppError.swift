@@ -11,13 +11,12 @@ enum AppError: Error, LocalizedError, Equatable {
     case emptyField(fieldName: String)
     case invalidEmail
     case passwordTooShort
-    case usernameTooShort
+    case nameTooShort
     case userNotFound
     case selfInvite
     case alreadyFriends
     case inviteAlreadySent
     case alreadyInCompetition
-    case usernameTaken
     case accountDeletionFailed
     
     var errorDescription: String? {
@@ -28,8 +27,8 @@ enum AppError: Error, LocalizedError, Equatable {
             return "Please enter a valid email address."
         case .passwordTooShort:
             return "Password must be at least 6 characters long."
-        case .usernameTooShort:
-            return "Username must be at least 3 characters long."
+        case .nameTooShort:
+            return "Name must be at least 2 characters long."
         case .userNotFound:
             return "User not found."
         case .selfInvite:
@@ -40,8 +39,6 @@ enum AppError: Error, LocalizedError, Equatable {
             return "Invite already sent."
         case .alreadyInCompetition:
             return "User is already in a competition."
-        case .usernameTaken:
-            return "This username is already taken."
         case .accountDeletionFailed:
             return "Failed to delete account. Please try again."
         }

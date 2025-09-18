@@ -2,14 +2,15 @@
 //  BadgeService.swift
 //  WatchMeGo
 //
-//  Created by MAT on 08/09/2025.
+//  Created by MAT on 16/09/2025.
 //
-import Foundation
+
 import FirebaseFirestore
+import FirebaseAuth
 
 final class BadgeService {
     static var database: Firestore { Firestore.firestore() }
-    static var usersCollection: CollectionReference { database.collection("users") }
+    static var badgesCollection: CollectionReference { database.collection("badges") }
     
     static func determineBadgeLevel(for progress: DailyProgress) -> BadgeLevel? {
         let easyMet = progress.calories >= Difficulty.easy.caloriesGoal &&
@@ -31,41 +32,48 @@ final class BadgeService {
         return nil
     }
     
-    static func checkAndAwardBadge(for userID: String, progress: DailyProgress, date: String, existingBadges: [Badge]) async throws -> Badge? {
+    static func checkAndAwardBadge(for userId: String, progress: DailyProgress, date: String) async throws -> Badge? {
         guard let newBadgeLevel = determineBadgeLevel(for: progress) else { return nil }
         
-        let existingBadgeForDate = existingBadges.first { $0.date == date }
+        let badgeId = "\(userId)_\(date)_\(newBadgeLevel.rawValue)"
+        let existingBadge = try await badgesCollection.document(badgeId).getDocument()
         
-        if let existingBadge = existingBadgeForDate {
-            if newBadgeLevel.rawValue > existingBadge.level.rawValue {
-                try await usersCollection.document(userID).updateData([
-                    "badges": FieldValue.arrayRemove([try Firestore.Encoder().encode(existingBadge)])
-                ])
-                
-                let upgradedBadge = Badge(level: newBadgeLevel, date: date)
-                try await usersCollection.document(userID).updateData([
-                    "badges": FieldValue.arrayUnion([try Firestore.Encoder().encode(upgradedBadge)])
-                ])
-                
-                return upgradedBadge
-            }
+        if existingBadge.exists {
             return nil
-        } else {
-            let newBadge = Badge(level: newBadgeLevel, date: date)
-            try await usersCollection.document(userID).updateData([
-                "badges": FieldValue.arrayUnion([try Firestore.Encoder().encode(newBadge)])
-            ])
-            
-            return newBadge
         }
+        
+        let newBadge = Badge(level: newBadgeLevel, date: date)
+        let badgeData: [String: Any] = [
+            "userId": userId,
+            "date": date,
+            "level": newBadgeLevel.rawValue,
+            "earnedAt": FieldValue.serverTimestamp()
+        ]
+        
+        try await badgesCollection.document(badgeId).setData(badgeData)
+        return newBadge
     }
     
-    static func getBadgeCounts(for user: AppUser) -> (easy: Int, medium: Int, hard: Int) {
-        let easyCount = user.badges.filter { $0.level == .easy }.count
-        let mediumCount = user.badges.filter { $0.level == .medium }.count
-        let hardCount = user.badges.filter { $0.level == .hard }.count
+    static func getBadgeCounts(for userId: String) async throws -> (easy: Int, medium: Int, hard: Int) {
+        let snapshot = try await badgesCollection
+            .whereField("userId", isEqualTo: userId)
+            .getDocuments()
+        
+        var easyCount = 0
+        var mediumCount = 0
+        var hardCount = 0
+        
+        for document in snapshot.documents {
+            guard let level = document.data()["level"] as? String else { continue }
+            
+            switch level {
+            case "easy": easyCount += 1
+            case "medium": mediumCount += 1
+            case "hard": hardCount += 1
+            default: break
+            }
+        }
+        
         return (easy: easyCount, medium: mediumCount, hard: hardCount)
     }
 }
-
-

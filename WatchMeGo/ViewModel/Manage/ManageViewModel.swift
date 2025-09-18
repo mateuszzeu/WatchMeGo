@@ -12,9 +12,8 @@ import Foundation
 final class ManageViewModel {
     private let coordinator: Coordinator
 
-    var usernameToInvite = ""
-
-    var pendingUsers: [AppUser] = []
+    var emailToInvite = ""
+    var pendingInvites: [Friendship] = []
     var friends: [AppUser] = []
     
     var currentUser: AppUser? {
@@ -29,10 +28,10 @@ final class ManageViewModel {
         Task {
             do {
                 guard let user = currentUser else { return }
-                try await UserService.sendInvite(from: user, toUsername: usernameToInvite)
-                MessageHandler.shared.showSuccess("Invitation sent to \(usernameToInvite)!")
-                usernameToInvite = ""
-                try await reloadUserAndData()
+                try await UserService.sendInvite(from: user.id, to: emailToInvite)
+                MessageHandler.shared.showSuccess("Invitation sent to \(emailToInvite)!")
+                emailToInvite = ""
+                await loadData()
             } catch {
                 MessageHandler.shared.showError(error)
             }
@@ -41,50 +40,36 @@ final class ManageViewModel {
 
     func loadData() async {
         do {
-            try await coordinator.refreshCurrentUser()
-
-            let pendingNames = coordinator.currentUser?.pendingInvites ?? []
-            let friendNames = coordinator.currentUser?.friends ?? []
-
-            pendingUsers = try await UserService.fetchUsers(byUsernames: pendingNames)
-            friends = try await UserService.fetchUsers(byUsernames: friendNames)
+            guard let user = currentUser else { return }
+            
+            pendingInvites = try await UserService.fetchPendingInvites(for: user.id)
+            friends = try await UserService.fetchFriends(for: user.id)
         } catch {
             MessageHandler.shared.showError(error)
         }
     }
 
-    func accept(_ user: AppUser) {
+    func accept(_ friendship: Friendship) {
         Task {
             do {
-                guard let currentUser = currentUser else { return }
-                try await UserService.acceptInvite(my: currentUser, from: user)
-                MessageHandler.shared.showSuccess("You are now friends with \(user.name)!")
-                try await reloadUserAndData()
+                try await UserService.acceptInvite(friendshipId: friendship.id)
+                MessageHandler.shared.showSuccess("Invitation accepted!")
+                await loadData()
             } catch {
                 MessageHandler.shared.showError(error)
             }
         }
     }
 
-    func decline(_ user: AppUser) {
+    func decline(_ friendship: Friendship) {
         Task {
             do {
-                guard let currentUser = currentUser else { return }
-                try await UserService.declineInvite(my: currentUser, from: user)
+                try await UserService.declineInvite(friendshipId: friendship.id)
                 MessageHandler.shared.showSuccess("Invitation declined")
-                try await reloadUserAndData()
+                await loadData()
             } catch {
                 MessageHandler.shared.showError(error)
             }
         }
-    }
-
-    func isInCompetition(with friend: AppUser) -> Bool {
-        currentUser?.activeCompetitionWith == friend.id
-    }
-
-    private func reloadUserAndData() async throws {
-        try await coordinator.refreshCurrentUser()
-        await loadData()
     }
 }

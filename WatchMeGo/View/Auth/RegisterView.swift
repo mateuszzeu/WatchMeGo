@@ -12,7 +12,7 @@ struct RegisterView: View {
     @Bindable private var viewModel = RegisterViewModel()
     @State private var email = ""
     @State private var password = ""
-    @State private var username = ""
+    @State private var name = ""
     @State private var isAnimating = false
     
     var body: some View {
@@ -30,7 +30,7 @@ struct RegisterView: View {
                     .scaleEffect(isAnimating ? 1.1 : 1.0)
                     .animation(.easeInOut(duration: 2.0).repeatForever(autoreverses: true), value: isAnimating)
                 
-                Text("Join the Challenge!")
+                Text("Join the Competition!")
                     .font(.title)
                     .foregroundColor(DesignSystem.Colors.primary)
                     .opacity(isAnimating ? 1.0 : 0.0)
@@ -44,7 +44,7 @@ struct RegisterView: View {
                     .animation(.easeIn(duration: 0.8).delay(0.5), value: isAnimating)
                 
                 VStack(spacing: DesignSystem.Spacing.m) {
-                    StyledTextField(title: "Username", text: $username)
+                    StyledTextField(title: "Name", text: $name)
                         .offset(x: isAnimating ? 0 : -50)
                         .opacity(isAnimating ? 1.0 : 0.0)
                         .animation(.easeOut(duration: 0.6).delay(0.7), value: isAnimating)
@@ -65,12 +65,12 @@ struct RegisterView: View {
                         await viewModel.register(
                             email: email,
                             password: password,
-                            username: username,
+                            name: name,
                             coordinator: coordinator
                         )
                     }
                 }
-                .disabled(email.isEmpty || password.isEmpty || username.isEmpty)
+                .disabled(email.isEmpty || password.isEmpty || name.isEmpty)
                 .scaleEffect(isAnimating ? 1.0 : 0.8)
                 .opacity(isAnimating ? 1.0 : 0.0)
                 .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(1.3), value: isAnimating)

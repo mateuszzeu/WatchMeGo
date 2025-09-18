@@ -6,11 +6,12 @@
 //
 
 import Foundation
+import FirebaseFirestore
 
 @MainActor
 @Observable
 final class MainViewModel {
-    
+    private var competitionListener: ListenerRegistration?
     var popupMessage: PopupMessage?
     
     var selectedDifficulty: Difficulty {
@@ -24,30 +25,23 @@ final class MainViewModel {
     var standHours = 0
     
     var pendingCompetitionChallengerName: String?
-    var couponChallenge: Challenge?
+    var couponCompetition: Competition?
     
     var competitiveUser: AppUser?
-    var activeChallenge: Challenge?
+    var activeCompetition: Competition?
     
     private var didFinalize = false
     private let coordinator: Coordinator
     
     var todaysBadge: Badge?
-    
-    var badgeCounts: (easy: Int, medium: Int, hard: Int) {
-        guard let user = currentUser else { return (easy: 0, medium: 0, hard: 0) }
-        return BadgeService.getBadgeCounts(for: user)
-    }
+    var badgeCounts: (easy: Int, medium: Int, hard: Int) = (0, 0, 0)
     
     var currentUser: AppUser? {
         coordinator.currentUser
     }
     
     var hasPendingCompetitionInvite: Bool {
-        guard let user = currentUser else { return false }
-        return user.competitionStatus == "pendingReceived"
-        && user.pendingCompetitionWith != nil
-        && user.activeCompetitionWith == nil
+        couponCompetition != nil
     }
     
     init(coordinator: Coordinator) {
@@ -74,28 +68,17 @@ final class MainViewModel {
         standHours = await standHoursValue
         
         await saveProgress()
+        await loadBadgeCounts()
         
-        if let competitiveID = currentUser?.activeCompetitionWith {
-            competitiveUser = try? await UserService.fetchUser(byID: competitiveID)
-            await loadActiveChallenge(for: currentUser!.id, and: competitiveID)
-        } else {
-            competitiveUser = nil
-            activeChallenge = nil
-        }
-        
+        await loadActiveCompetition()
         await loadCompetitionCoupon()
     }
     
     func acceptCompetitionInvite() async {
-        guard
-            let user = currentUser,
-            let fromUserID = user.pendingCompetitionWith,
-            let challengeID = couponChallenge?.id
-        else { return }
+        guard let user = currentUser, let competition = couponCompetition else { return }
         
         do {
-            try await UserService.acceptCompetitionInvite(userID: user.id, friendID: fromUserID)
-            try await ChallengeService.setChallengeStatus(challengeID: challengeID, to: .active)
+            try await CompetitionService.acceptCompetition(competitionId: competition.id)
             try await coordinator.refreshCurrentUser()
             await loadDataAndSave()
         } catch {
@@ -104,9 +87,10 @@ final class MainViewModel {
     }
     
     func declineCompetitionInvite() async {
-        guard let user = currentUser, let fromUserID = user.pendingCompetitionWith else { return }
+        guard let competition = couponCompetition else { return }
+        
         do {
-            try await UserService.declineCompetitionInvite(userID: user.id, friendID: fromUserID)
+            try await CompetitionService.declineCompetition(competitionId: competition.id)
             try await coordinator.refreshCurrentUser()
             await loadDataAndSave()
         } catch {
@@ -115,42 +99,103 @@ final class MainViewModel {
     }
     
     private func loadCompetitionCoupon() async {
-        guard let user = currentUser, let challengerID = user.pendingCompetitionWith else {
+        guard let user = currentUser else {
             pendingCompetitionChallengerName = nil
-            couponChallenge = nil
+            couponCompetition = nil
             return
         }
         
         do {
-            let challenger = try await UserService.fetchUser(byID: challengerID)
-            pendingCompetitionChallengerName = challenger.name
+            let pendingCompetitions = try await CompetitionService.fetchPendingCompetitions(for: user.id)
+            couponCompetition = pendingCompetitions.first
             
-            let pairID = [user.id, challengerID].sorted().joined(separator: "_")
-            let challenges = try await ChallengeService.fetchChallengesByPair(pairID: pairID)
-            couponChallenge = challenges.first(where: { $0.status == .pending })
+            if let competition = couponCompetition {
+                let challengerId = CompetitionService.getCompetitionPartner(for: user.id, in: competition)
+                if let challengerId = challengerId {
+                    let challenger = try await UserService.fetchUser(byID: challengerId)
+                    pendingCompetitionChallengerName = challenger.name
+                }
+            }
+        } catch {
+            MessageHandler.shared.showError(error)
+        }
+    }
+    
+    private func loadActiveCompetition() async {
+        competitionListener?.remove()
+        
+        guard let user = currentUser else {
+            activeCompetition = nil
+            competitiveUser = nil
+            return
+        }
+        
+        do {
+            let activeCompetitions = try await CompetitionService.fetchActiveCompetitions(for: user.id)
+            
+            if let competition = activeCompetitions.first {
+                self.activeCompetition = competition
+                
+                if let partnerId = CompetitionService.getCompetitionPartner(for: user.id, in: competition) {
+                    self.competitiveUser = try await UserService.fetchUser(byID: partnerId)
+                }
+                
+                self.competitionListener = CompetitionService.listenForCompetitionUpdates(competitionId: competition.id) { [weak self] updatedCompetition in
+                    self?.activeCompetition = updatedCompetition
+                }
+            } else {
+                self.activeCompetition = nil
+                self.competitiveUser = nil
+            }
+        } catch {
+            MessageHandler.shared.showError(error)
+        }
+    }
+
+    private func loadBadgeCounts() async {
+        guard let user = currentUser else { return }
+        
+        do {
+            badgeCounts = try await BadgeService.getBadgeCounts(for: user.id)
         } catch {
             MessageHandler.shared.showError(error)
         }
     }
     
     func handleTick(now: Date) async {
-        guard let challenge = activeChallenge, !didFinalize else { return }
-        if remainingSeconds(from: challenge.createdAt, days: challenge.duration, now: now) == 0 {
-            await finalizeChallenge()
+        guard let competition = activeCompetition, !didFinalize else { return }
+        if remainingSeconds(from: competition.startDate, days: competition.duration, now: now) == 0 {
+            await finalizeCompetition()
         }
     }
     
     func value(for metric: Metric, of user: AppUser?) -> Int {
-        guard let user else { return localValue(for: metric) }
+        guard let user = user else {
+            return localValue(for: metric)
+        }
+
+        guard let competitionProgress = activeCompetition?.progress else {
+            return 0
+        }
+        
+        let dateString = DateFormatter.dayFormatter.string(from: Date())
+        
+        guard let rivalTodaysProgress = competitionProgress[user.id]?[dateString] else {
+            return 0
+        }
+
         switch metric {
-        case .calories: return user.currentProgress?.calories ?? 0
-        case .exerciseMinutes: return user.currentProgress?.exerciseMinutes ?? 0
-        case .standHours: return user.currentProgress?.standHours ?? 0
+        case .calories:
+            return rivalTodaysProgress.calories
+        case .exerciseMinutes:
+            return rivalTodaysProgress.exerciseMinutes
+        case .standHours:
+            return rivalTodaysProgress.standHours
         }
     }
     
     var displayedMetrics: [Metric] {
-        activeChallenge?.metrics.map { $0.metric } ?? Metric.allCases
+        activeCompetition?.metrics ?? Metric.allCases
     }
     
     func defaultGoal(for metric: Metric) -> Int {
@@ -204,69 +249,62 @@ final class MainViewModel {
         let progress = DailyProgress(
             calories: calories,
             exerciseMinutes: exerciseMinutes,
-            standHours: standHours,
+            standHours: standHours
         )
         
         do {
-            try await UserService.saveProgress(forUserID: user.id, date: dateString, progress: progress)
+            try await ProgressService.saveProgress(for: user.id, date: dateString, progress: progress)
             
             if let newBadge = try await BadgeService.checkAndAwardBadge(
                 for: user.id,
                 progress: progress,
-                date: dateString,
-                existingBadges: user.badges
+                date: dateString
             ) {
                 todaysBadge = newBadge
-                try await coordinator.refreshCurrentUser()
+                await loadBadgeCounts()
             }
         } catch {
             MessageHandler.shared.showError(error)
         }
     }
     
-    private func loadActiveChallenge(for myUserID: String, and rivalID: String) async {
-        do {
-            let pairID = [myUserID, rivalID].sorted().joined(separator: "_")
-            let challenges = try await ChallengeService.fetchChallengesByPair(pairID: pairID)
-            activeChallenge = challenges.first { $0.status == .active }
-        } catch {
-            MessageHandler.shared.showError(error)
-        }
-    }
-    
-    private func finalizeChallenge() async {
-        guard let challenge = activeChallenge, currentUser != nil else { return }
+    private func finalizeCompetition() async {
+        guard let competition = activeCompetition, let user = currentUser else { return }
         didFinalize = true
+        
         do {
-            let me = try await UserService.fetchUser(
-                byID: challenge.senderID == competitiveUser?.id ? challenge.receiverID : challenge.senderID
-            )
-            let rivalID = (me.id == challenge.senderID) ? challenge.receiverID : challenge.senderID
-            let rival = try await UserService.fetchUser(byID: rivalID)
+            let partnerId = CompetitionService.getCompetitionPartner(for: user.id, in: competition)
+            guard let partnerId = partnerId else { return }
             
-            let dayKeys = datesRangeStrings(from: challenge.createdAt, durationDays: challenge.duration)
+            let partner = try await UserService.fetchUser(byID: partnerId)
+            
+            let dayKeys = datesRangeStrings(from: competition.startDate, durationDays: competition.duration)
+            
+            let updatedCompetition = try await CompetitionService.fetchCompetition(byId: competition.id)
+            guard let competitionData = updatedCompetition else { return }
             
             var myWins = 0, theirWins = 0
             for metric in displayedMetrics {
-                let mySum = sum(metric, in: dayKeys, from: me.history)
-                let theirSum = sum(metric, in: dayKeys, from: rival.history)
+                let myHistory = competitionData.progress?[user.id] ?? [:]
+                let theirHistory = competitionData.progress?[partnerId] ?? [:]
+                
+                let mySum = sum(metric, in: dayKeys, from: myHistory)
+                let theirSum = sum(metric, in: dayKeys, from: theirHistory)
                 if mySum > theirSum { myWins += 1 }
                 else if mySum < theirSum { theirWins += 1 }
             }
             
             let short: String
-            if myWins > theirWins { short = "Challenge ended - winner: You! 🎉" }
-            else if myWins < theirWins { short = "Challenge ended - winner: \(rival.name)! 🎉" }
-            else { short = "Challenge ended - tie 🤝" }
+            if myWins > theirWins { short = "Competition ended - winner: You! 🎉" }
+            else if myWins < theirWins { short = "Competition ended - winner: \(partner.name)! 🎉" }
+            else { short = "Competition ended - tie 🤝" }
             
             popupMessage = PopupMessage(text: short)
             
-            try await UserService.setResultMessage(forUserID: rival.id, message: short)
+            try await UserService.setResultMessage(forUserID: partner.id, message: short)
+            try await CompetitionService.endCompetition(competitionId: competition.id)
             
-            try await ChallengeService.deleteChallenge(challengeID: challenge.id)
-            try await UserService.endCompetition(userID: me.id, friendID: rival.id)
-            
-            activeChallenge = nil
+            activeCompetition = nil
             competitiveUser = nil
         } catch {
             MessageHandler.shared.showError(error)

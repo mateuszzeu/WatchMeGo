@@ -11,10 +11,116 @@ import FirebaseAuth
 final class UserService {
     static var database: Firestore { Firestore.firestore() }
     static var usersCollection: CollectionReference { database.collection("users") }
+    static var friendshipsCollection: CollectionReference { database.collection("friendships") }
     
     static func createUser(_ user: AppUser) async throws {
         let encodedUserData = try Firestore.Encoder().encode(user)
         try await usersCollection.document(user.id).setData(encodedUserData)
+    }
+    
+    static func fetchUser(byID userID: String) async throws -> AppUser {
+        let snapshot = try await usersCollection.document(userID).getDocument()
+        let decoder = Firestore.Decoder()
+        guard let data = snapshot.data(),
+              let decodedUser = try? decoder.decode(AppUser.self, from: data) else {
+            throw AppError.userNotFound
+        }
+        return decodedUser
+    }
+    
+    static func fetchUserByEmail(_ email: String) async throws -> AppUser? {
+        let snapshot = try await usersCollection.whereField("email", isEqualTo: email).limit(to: 1).getDocuments()
+        guard let document = snapshot.documents.first else { return nil }
+        let decoder = Firestore.Decoder()
+        return try? decoder.decode(AppUser.self, from: document.data())
+    }
+    
+    static func sendInvite(from senderId: String, to recipientEmail: String) async throws {
+        guard let recipient = try await fetchUserByEmail(recipientEmail) else {
+            throw AppError.userNotFound
+        }
+        
+        if senderId == recipient.id {
+            throw AppError.selfInvite
+        }
+        
+        let friendshipId = [senderId, recipient.id].sorted().joined(separator: "_")
+        let existingFriendship = try await friendshipsCollection.document(friendshipId).getDocument()
+        
+        if existingFriendship.exists {
+            let decoder = Firestore.Decoder()
+            guard let friendship = try? decoder.decode(Friendship.self, from: existingFriendship.data()!) else {
+                throw AppError.userNotFound
+            }
+            
+            switch friendship.status {
+            case .accepted:
+                throw AppError.alreadyFriends
+            case .pending:
+                throw AppError.inviteAlreadySent
+            case .rejected:
+                try await friendshipsCollection.document(friendshipId).updateData([
+                    "status": Friendship.FriendshipStatus.pending.rawValue,
+                    "requesterId": senderId
+                ])
+                return
+            }
+        }
+        
+        let friendship = Friendship(
+            id: friendshipId,
+            users: [senderId, recipient.id].sorted(),
+            requesterId: senderId,
+            status: .pending
+        )
+        
+        let encodedFriendship = try Firestore.Encoder().encode(friendship)
+        try await friendshipsCollection.document(friendshipId).setData(encodedFriendship)
+    }
+    
+    static func fetchPendingInvites(for userId: String) async throws -> [Friendship] {
+        let snapshot = try await friendshipsCollection
+            .whereField("users", arrayContains: userId)
+            .whereField("status", isEqualTo: Friendship.FriendshipStatus.pending.rawValue)
+            .whereField("requesterId", isNotEqualTo: userId)
+            .getDocuments()
+        
+        let decoder = Firestore.Decoder()
+        return snapshot.documents.compactMap { try? decoder.decode(Friendship.self, from: $0.data()) }
+    }
+    
+    static func fetchFriends(for userId: String) async throws -> [AppUser] {
+        let snapshot = try await friendshipsCollection
+            .whereField("users", arrayContains: userId)
+            .whereField("status", isEqualTo: Friendship.FriendshipStatus.accepted.rawValue)
+            .getDocuments()
+        
+        let decoder = Firestore.Decoder()
+        let friendships = snapshot.documents.compactMap { try? decoder.decode(Friendship.self, from: $0.data()) }
+        
+        let friendIds = friendships.compactMap { friendship in
+            friendship.users.first { $0 != userId }
+        }
+        
+        guard !friendIds.isEmpty else { return [] }
+        
+        let friendsSnapshot = try await usersCollection
+            .whereField(FieldPath.documentID(), in: friendIds)
+            .getDocuments()
+        
+        return friendsSnapshot.documents.compactMap { document in
+            try? Firestore.Decoder().decode(AppUser.self, from: document.data())
+        }
+    }
+    
+    static func acceptInvite(friendshipId: String) async throws {
+        try await friendshipsCollection.document(friendshipId).updateData([
+            "status": Friendship.FriendshipStatus.accepted.rawValue
+        ])
+    }
+    
+    static func declineInvite(friendshipId: String) async throws {
+        try await friendshipsCollection.document(friendshipId).delete()
     }
     
     static func resetPassword() async throws {
@@ -29,164 +135,16 @@ final class UserService {
             throw AppError.userNotFound
         }
         
-        let userData = try await fetchUser(byID: user.uid)
+        let userFriendships = try await friendshipsCollection
+            .whereField("users", arrayContains: user.uid)
+            .getDocuments()
         
-        if let opponentID = userData.activeCompetitionWith {
-            
-            let pairID = [user.uid, opponentID].sorted().joined(separator: "_")
-            
-            if let challenges = try? await ChallengeService.fetchChallengesByPair(pairID: pairID),
-               let activeChallenge = challenges.first(where: { $0.status == .active }) {
-                
-                try await ChallengeService.deleteChallenge(challengeID: activeChallenge.id)
-            }
-            try await endCompetition(userID: user.uid, friendID: opponentID)
-        }
-        
-        for friendName in userData.friends {
-            if let friendUsers = try? await fetchUsers(byUsernames: [friendName]),
-               let friend = friendUsers.first {
-                
-                try await usersCollection.document(friend.id).updateData([
-                    "friends": FieldValue.arrayRemove([userData.name])
-                ])
-            }
+        for document in userFriendships.documents {
+            try await document.reference.delete()
         }
         
         try await usersCollection.document(user.uid).delete()
         try await user.delete()
-    }
-    
-    static func fetchUser(byID userID: String) async throws -> AppUser {
-        let snapshot = try await usersCollection.document(userID).getDocument()
-        let decoder = Firestore.Decoder()
-        guard let data = snapshot.data(),
-              let decodedUser = try? decoder.decode(AppUser.self, from: data) else {
-            throw AppError.userNotFound
-        }
-        return decodedUser
-    }
-    
-    static func fetchUsers(byUsernames usernames: [String]) async throws -> [AppUser] {
-        guard !usernames.isEmpty else { return [] }
-        let snapshot = try await usersCollection.whereField("name", in: usernames).getDocuments()
-        let decoder = Firestore.Decoder()
-        return snapshot.documents.compactMap { try? decoder.decode(AppUser.self, from: $0.data()) }
-    }
-    
-    static func saveProgress(forUserID userID: String, date: String, progress: DailyProgress) async throws {
-        let encoded = try Firestore.Encoder().encode(progress)
-        
-        try await usersCollection.document(userID).setData([
-            "currentProgress": encoded
-        ], merge: true)
-        
-        try await usersCollection.document(userID).updateData([
-            "history.\(date)": encoded
-        ])
-    }
-    
-    static func sendInvite(from sender: AppUser, toUsername recipientUsername: String) async throws {
-        if recipientUsername == sender.name { throw AppError.selfInvite }
-        
-        if sender.friends.contains(recipientUsername) { throw AppError.alreadyFriends }
-        if sender.sentInvites.contains(recipientUsername) { throw AppError.inviteAlreadySent }
-        
-        let snapshot = try await usersCollection.whereField("name", isEqualTo: recipientUsername).limit(to: 1).getDocuments()
-        guard let recipientDocument = snapshot.documents.first else { throw AppError.userNotFound }
-        
-        let senderReference = usersCollection.document(sender.id)
-        let recipientReference = recipientDocument.reference
-        
-        try await senderReference.updateData(["sentInvites": FieldValue.arrayUnion([recipientUsername])])
-        try await recipientReference.updateData(["pendingInvites": FieldValue.arrayUnion([sender.name])])
-    }
-    
-    static func acceptInvite(my currentUser: AppUser, from otherUser: AppUser) async throws {
-        let currentUserReference = usersCollection.document(currentUser.id)
-        let otherUserReference = usersCollection.document(otherUser.id)
-        
-        try await currentUserReference.updateData([
-            "pendingInvites": FieldValue.arrayRemove([otherUser.name]),
-            "friends": FieldValue.arrayUnion([otherUser.name])
-        ])
-        
-        try await otherUserReference.updateData([
-            "sentInvites": FieldValue.arrayRemove([currentUser.name]),
-            "friends": FieldValue.arrayUnion([currentUser.name])
-        ])
-    }
-    
-    static func declineInvite(my currentUser: AppUser, from otherUser: AppUser) async throws {
-        let currentUserReference = usersCollection.document(currentUser.id)
-        let otherUserReference = usersCollection.document(otherUser.id)
-        
-        try await currentUserReference.updateData([
-            "pendingInvites": FieldValue.arrayRemove([otherUser.name])
-        ])
-        
-        try await otherUserReference.updateData([
-            "sentInvites": FieldValue.arrayRemove([currentUser.name])
-        ])
-    }
-    
-    static func sendCompetitionInvite(fromUserID userID: String, toFriendID friendID: String) async throws {
-        let senderDocument = try await usersCollection.document(userID).getDocument()
-        let recipientDocument = try await usersCollection.document(friendID).getDocument()
-        
-        guard let senderData = senderDocument.data(), let recipientData = recipientDocument.data() else {
-            throw AppError.userNotFound
-        }
-        
-        let senderStatus = senderData["competitionStatus"] as? String ?? "none"
-        let recipientStatus = recipientData["competitionStatus"] as? String ?? "none"
-        if senderStatus == "active" || recipientStatus == "active" {
-            throw AppError.alreadyInCompetition
-        }
-        
-        try await usersCollection.document(userID).updateData([
-            "pendingCompetitionWith": friendID,
-            "competitionStatus": "pendingSent"
-        ])
-        try await usersCollection.document(friendID).updateData([
-            "pendingCompetitionWith": userID,
-            "competitionStatus": "pendingReceived"
-        ])
-    }
-    
-    static func acceptCompetitionInvite(userID: String, friendID: String) async throws {
-        try await usersCollection.document(userID).updateData([
-            "activeCompetitionWith": friendID,
-            "pendingCompetitionWith": FieldValue.delete(),
-            "competitionStatus": "active"
-        ])
-        try await usersCollection.document(friendID).updateData([
-            "activeCompetitionWith": userID,
-            "pendingCompetitionWith": FieldValue.delete(),
-            "competitionStatus": "active"
-        ])
-    }
-    
-    static func declineCompetitionInvite(userID: String, friendID: String) async throws {
-        try await usersCollection.document(userID).updateData([
-            "pendingCompetitionWith": FieldValue.delete(),
-            "competitionStatus": "none"
-        ])
-        try await usersCollection.document(friendID).updateData([
-            "pendingCompetitionWith": FieldValue.delete(),
-            "competitionStatus": "none"
-        ])
-    }
-    
-    static func endCompetition(userID: String, friendID: String) async throws {
-        try await usersCollection.document(userID).updateData([
-            "activeCompetitionWith": FieldValue.delete(),
-            "competitionStatus": "none"
-        ])
-        try await usersCollection.document(friendID).updateData([
-            "activeCompetitionWith": FieldValue.delete(),
-            "competitionStatus": "none"
-        ])
     }
     
     static func logout() throws {
@@ -214,22 +172,5 @@ final class UserService {
         ])
         
         return message
-    }
-    
-    static func fetchUserByUsername(_ username: String) async throws -> AppUser {
-        let snapshot = try await usersCollection.whereField("name", isEqualTo: username).limit(to: 1).getDocuments()
-        guard let document = snapshot.documents.first else {
-            throw AppError.userNotFound
-        }
-        let decoder = Firestore.Decoder()
-        guard let decodedUser = try? decoder.decode(AppUser.self, from: document.data()) else {
-            throw AppError.userNotFound
-        }
-        return decodedUser
-    }
-    
-    static func getEmailByUsername(_ username: String) async throws -> String {
-        let user = try await fetchUserByUsername(username)
-        return user.email
     }
 }
