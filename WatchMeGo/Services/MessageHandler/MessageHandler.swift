@@ -11,6 +11,8 @@ import SwiftUI
 @Observable
 final class MessageHandler {
     static let shared = MessageHandler()
+    
+    private init() {}
 
     var message: String?
     var messageType: MessageType = .error

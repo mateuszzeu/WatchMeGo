@@ -14,6 +14,8 @@ final class HealthKitService {
     let caloriesType = HKObjectType.quantityType(forIdentifier: .activeEnergyBurned)!
     let standHourType = HKObjectType.categoryType(forIdentifier: .appleStandHour)!
     let exerciseType = HKObjectType.quantityType(forIdentifier: .appleExerciseTime)!
+    
+    private init() {}
 
     func requestAuthorization() async -> Bool {
         await withCheckedContinuation { continuation in

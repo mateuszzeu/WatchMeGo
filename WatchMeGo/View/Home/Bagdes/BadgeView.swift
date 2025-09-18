@@ -19,15 +19,8 @@ struct BadgeView: View {
     var body: some View {
         Image(systemName: "trophy.fill")
             .font(.system(size: size * 0.6))
-            .foregroundColor(badgeColor)
+            .foregroundColor(badge?.level.color ?? .secondary)
             .frame(width: size, height: size)
-    }
-    
-    private var badgeColor: Color {
-        guard let badge = badge else {
-            return DesignSystem.Colors.secondary.opacity(0.3)
-        }
-        return badge.level.color
     }
 }
 
