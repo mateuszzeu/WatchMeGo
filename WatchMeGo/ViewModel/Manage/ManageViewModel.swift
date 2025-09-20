@@ -14,6 +14,7 @@ final class ManageViewModel {
 
     var emailToInvite = ""
     var pendingInvites: [Friendship] = []
+    var requesterNames: [String: String] = [:]
     var friends: [AppUser] = []
     
     var currentUser: AppUser? {
@@ -44,6 +45,8 @@ final class ManageViewModel {
             
             pendingInvites = try await UserService.fetchPendingInvites(for: user.id)
             friends = try await UserService.fetchFriends(for: user.id)
+            
+            await loadRequesterNames()
         } catch {
             MessageHandler.shared.showError(error)
         }
@@ -69,6 +72,19 @@ final class ManageViewModel {
                 await loadData()
             } catch {
                 MessageHandler.shared.showError(error)
+            }
+        }
+    }
+    
+    private func loadRequesterNames() async {
+        requesterNames.removeAll()
+        
+        for friendship in pendingInvites {
+            do {
+                let name = try await UserService.fetchUserName(byID: friendship.requesterId)
+                requesterNames[friendship.requesterId] = name
+            } catch {
+                requesterNames[friendship.requesterId] = friendship.requesterId
             }
         }
     }

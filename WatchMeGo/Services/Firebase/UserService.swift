@@ -35,6 +35,11 @@ final class UserService {
         return try? decoder.decode(AppUser.self, from: document.data())
     }
     
+    static func fetchUserName(byID userID: String) async throws -> String {
+        let user = try await fetchUser(byID: userID)
+        return user.name
+    }
+    
     static func sendInvite(from senderId: String, to recipientEmail: String) async throws {
         guard let recipient = try await fetchUserByEmail(recipientEmail) else {
             throw AppError.userNotFound
