@@ -8,8 +8,11 @@ import FirebaseFirestore
 import FirebaseAuth
 
 final class CompetitionService {
+    
     static var database: Firestore { Firestore.firestore() }
     static var competitionsCollection: CollectionReference { database.collection("competitions") }
+    
+    // MARK: - Competition Creation & Management
     
     static func createCompetition(
         between users: [String],
@@ -22,11 +25,11 @@ final class CompetitionService {
         let competitionId = UUID().uuidString
         let dateString = DateFormatter.dayFormatter.string(from: Date())
         var initialProgress: [String: [String: DailyProgress]] = [:]
-
+        
         if let progress = try await ProgressService.fetchProgress(for: initiatorId, date: dateString) {
             initialProgress[initiatorId] = [dateString: progress]
         }
-
+        
         let competition = Competition(
             id: competitionId,
             name: name,
@@ -49,12 +52,17 @@ final class CompetitionService {
     static func acceptCompetition(competitionId: String) async throws {
         guard let acceptingUser = Auth.auth().currentUser else { return }
         
+        let acceptingUserActiveCompetitions = try await fetchActiveCompetitions(for: acceptingUser.uid)
+        if !acceptingUserActiveCompetitions.isEmpty {
+            throw AppError.needToAbortCurrentCompetition
+        }
+        
         let dateString = DateFormatter.dayFormatter.string(from: Date())
         var dataToUpdate: [String: Any] = [
             "status": Competition.CompetitionStatus.active.rawValue,
             "startDate": FieldValue.serverTimestamp()
         ]
-
+        
         if let progress = try await ProgressService.fetchProgress(for: acceptingUser.uid, date: dateString) {
             let progressData: [String: Any] = [
                 "calories": progress.calories,
@@ -63,7 +71,7 @@ final class CompetitionService {
             ]
             dataToUpdate["progress.\(acceptingUser.uid).\(dateString)"] = progressData
         }
-
+        
         try await competitionsCollection.document(competitionId).updateData(dataToUpdate)
     }
     
@@ -72,7 +80,20 @@ final class CompetitionService {
             "status": Competition.CompetitionStatus.cancelled.rawValue
         ])
     }
-
+    
+    static func endCompetition(competitionId: String) async throws {
+        try await competitionsCollection.document(competitionId).updateData([
+            "status": Competition.CompetitionStatus.completed.rawValue,
+            "endDate": FieldValue.serverTimestamp()
+        ])
+    }
+    
+    static func deleteCompetition(competitionId: String) async throws {
+        try await competitionsCollection.document(competitionId).delete()
+    }
+    
+    // MARK: - Competition Fetching
+    
     static func fetchActiveCompetitions(for userId: String) async throws -> [Competition] {
         let snapshot = try await competitionsCollection
             .whereField("users", arrayContains: userId)
@@ -96,20 +117,7 @@ final class CompetitionService {
         try? await competitionsCollection.document(competitionId).getDocument(as: Competition.self)
     }
     
-    static func endCompetition(competitionId: String) async throws {
-        try await competitionsCollection.document(competitionId).updateData([
-            "status": Competition.CompetitionStatus.completed.rawValue,
-            "endDate": FieldValue.serverTimestamp()
-        ])
-    }
-    
-    static func deleteCompetition(competitionId: String) async throws {
-        try await competitionsCollection.document(competitionId).delete()
-    }
-    
-    static func getCompetitionPartner(for userId: String, in competition: Competition) -> String? {
-        return competition.users.first { $0 != userId }
-    }
+    // MARK: - Competition Progress & Updates
     
     static func updateCompetitionProgress(
         competitionId: String,
@@ -121,7 +129,7 @@ final class CompetitionService {
             "progress.\(userId).\(date)": progress
         ])
     }
-
+    
     static func listenForCompetitionUpdates(competitionId: String, completion: @escaping (Competition?) -> Void) -> ListenerRegistration {
         let listener = competitionsCollection.document(competitionId).addSnapshotListener { documentSnapshot, error in
             guard let document = documentSnapshot else {
@@ -131,5 +139,11 @@ final class CompetitionService {
             completion(try? document.data(as: Competition.self))
         }
         return listener
+    }
+    
+    // MARK: - Helper Methods
+    
+    static func getCompetitionPartner(for userId: String, in competition: Competition) -> String? {
+        return competition.users.first { $0 != userId }
     }
 }

@@ -134,6 +134,7 @@ struct MainView: View {
             .padding(DesignSystem.Spacing.l)
         }
         .background(DesignSystem.Colors.background)
+        .overlay(InfoBannerView())
         .task {
             guard coordinator.currentUser != nil else { return }
             await viewModel.loadDataAndSave()

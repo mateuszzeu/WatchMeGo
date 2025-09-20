@@ -17,6 +17,7 @@ enum AppError: Error, LocalizedError, Equatable {
     case alreadyFriends
     case inviteAlreadySent
     case alreadyInCompetition
+    case needToAbortCurrentCompetition
     case accountDeletionFailed
     
     var errorDescription: String? {
@@ -39,6 +40,8 @@ enum AppError: Error, LocalizedError, Equatable {
             return "Invite already sent."
         case .alreadyInCompetition:
             return "User is already in a competition."
+        case .needToAbortCurrentCompetition:
+            return "You need to finish your current competition before joining a new one."
         case .accountDeletionFailed:
             return "Failed to delete account. Please try again."
         }
