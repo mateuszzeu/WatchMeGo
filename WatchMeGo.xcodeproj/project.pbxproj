@@ -206,6 +206,7 @@
 					};
 					6E70514A2E2AA83E0056896B = {
 						CreatedOnToolsVersion = 16.4;
+						LastSwiftMigration = 2600;
 						TestTargetID = 6E70513D2E2AA83D0056896B;
 					};
 					6E7051542E2AA83E0056896B = {
@@ -492,6 +493,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 434W4NYSB5;
@@ -501,6 +503,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = xzeu.WatchMeGoTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WatchMeGo.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/WatchMeGo";
@@ -511,6 +514,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 434W4NYSB5;
