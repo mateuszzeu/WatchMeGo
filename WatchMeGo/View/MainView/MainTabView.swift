@@ -14,25 +14,25 @@ struct MainTabView: View {
         TabView {
             MainView(coordinator: coordinator)
                 .tabItem {
-                    Label("Dashboard", systemImage: "chart.bar.fill")
+                    Label("Home", systemImage: "house.fill")
                         .environment(\.symbolVariants, .fill)
                 }
             
             ManageView(coordinator: coordinator)
                 .tabItem {
-                    Label("Social", systemImage: "person.3.fill")
+                    Label("Friends", systemImage: "person.2.fill")
                         .environment(\.symbolVariants, .fill)
                 }
             
             CompetitionView(coordinator: coordinator)
                 .tabItem {
-                    Label("Competitions", systemImage: "trophy.fill")
+                    Label("Challenge", systemImage: "flame.fill")
                         .environment(\.symbolVariants, .fill)
                 }
             
             SettingsView(coordinator: coordinator)
                 .tabItem {
-                    Label("Profile", systemImage: "person.circle.fill")
+                    Label("Settings", systemImage: "gearshape.fill")
                         .environment(\.symbolVariants, .fill)
                 }
         }
