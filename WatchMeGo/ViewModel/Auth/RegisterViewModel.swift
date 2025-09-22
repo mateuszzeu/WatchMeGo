@@ -11,7 +11,6 @@ import FirebaseAuth
 @MainActor
 @Observable
 final class RegisterViewModel {
-    var infoMessage: String?
 
     func register(email: String, password: String, name: String, coordinator: Coordinator) async {
         do {
@@ -30,8 +29,10 @@ final class RegisterViewModel {
             )
 
             try await UserService.createUser(appUser)
+            
+            MessageHandler.shared.showSuccess("Registered & Signed in!")
+            
             coordinator.login(appUser)
-            infoMessage = "Registered & Signed in!"
         } catch {
             MessageHandler.shared.showError(error)
         }

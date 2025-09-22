@@ -24,22 +24,10 @@ struct AppRootView: View {
             case .register:
                 RegisterView(coordinator: coordinator)
             case .main:
-                MainContentView(coordinator: coordinator)
+                MainTabView(coordinator: coordinator)
             }
         }
         .animation(.easeInOut(duration: 0.5), value: coordinator.screen)
         .preferredColorScheme(isDarkMode ? .dark : .light)
-    }
-}
-
-private struct MainContentView: View {
-    @Bindable var coordinator: Coordinator
-    
-    var body: some View {
-        if coordinator.currentUser != nil {
-            MainTabView(coordinator: coordinator)
-        } else {
-            LoginView(coordinator: coordinator)
-        }
     }
 }

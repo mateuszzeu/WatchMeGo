@@ -61,6 +61,7 @@ final class CompetitionViewModel {
                 prize: competitionPrize.isEmpty ? nil : competitionPrize,
                 name: competitionName
             )
+            MessageHandler.shared.showSuccess("Competition invitation sent to \(friend.name)!")
             resetForm()
         } catch {
             MessageHandler.shared.showError(error)

@@ -12,7 +12,6 @@ import LocalAuthentication
 @MainActor
 @Observable
 final class LoginViewModel {
-    var infoMessage: String?
     var faceIDError: String?
     var lastLoggedInUser: AppUser?
     var isQuickLoginAvailable = false
@@ -46,9 +45,11 @@ final class LoginViewModel {
             
             let appUser = try await UserService.fetchUser(byID: user.uid)
             coordinator.login(appUser)
-            infoMessage = "Signed in!"
             
             lastLoggedInUser = appUser
+            
+            MessageHandler.shared.showSuccess("Signed in!")
+            
             isQuickLoginAvailable = true
         } catch {
             MessageHandler.shared.showError(error)

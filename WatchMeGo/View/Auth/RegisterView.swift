@@ -83,13 +83,6 @@ struct RegisterView: View {
                 .opacity(isAnimating ? 1.0 : 0.0)
                 .animation(.easeIn(duration: 0.8).delay(1.5), value: isAnimating)
                 
-                if let info = viewModel.infoMessage {
-                    Text(info)
-                        .font(.footnote)
-                        .foregroundColor(DesignSystem.Colors.secondary)
-                        .padding(.top, DesignSystem.Spacing.s)
-                }
-                
                 Spacer()
                     .frame(height: 60)
             }
